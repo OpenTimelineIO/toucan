@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/darbyjohnston/toucan/actions/workflows/ci-workflow.yml/badge.svg)](https://github.com/darbyjohnston/toucan/actions/workflows/ci-workflow.yml)
+[![Build Status](https://github.com/OpenTimelineIO/toucan/actions/workflows/ci-workflow.yml/badge.svg)](https://github.com/OpenTimelineIO/toucan/actions/workflows/ci-workflow.yml)
 
 <img src="images/toucan.svg" alt="toucan" width="100">
 
@@ -124,7 +124,7 @@ Building on Linux
 -----------------
 Clone the repository:
 ```
-git clone https://github.com/darbyjohnston/toucan.git
+git clone https://github.com/OpenTimelineIO/toucan.git
 ```
 Run the super build:
 ```
@@ -142,7 +142,7 @@ Building on macOS
 -----------------
 Clone the repository:
 ```
-git clone https://github.com/darbyjohnston/toucan.git
+git clone https://github.com/OpenTimelineIO/toucan.git
 ```
 Run the super build:
 ```
@@ -157,7 +157,7 @@ Building on Windows
 -------------------
 Clone the repository:
 ```
-git clone https://github.com/darbyjohnston/toucan.git
+git clone https://github.com/OpenTimelineIO/toucan.git
 ```
 Run the super build:
 ```

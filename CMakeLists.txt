@@ -4,7 +4,7 @@ project(
     toucan
     VERSION 0.1.0
     DESCRIPTION "toucan"
-    HOMEPAGE_URL "https://github.com/darbyjohnston/toucan"
+    HOMEPAGE_URL "https://github.com/OpenTimelineIO/toucan"
     LANGUAGES CXX C)
 
 set(toucan_VIEW ON CACHE BOOL "Build viewer application")

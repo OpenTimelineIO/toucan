@@ -4,7 +4,7 @@ project(
     toucan-SuperBuild
     VERSION 0.1.0
     DESCRIPTION "toucan superbuild"
-    HOMEPAGE_URL "https://github.com/darbyjohnston/toucan"
+    HOMEPAGE_URL "https://github.com/OpenTimelineIO/toucan"
     LANGUAGES CXX C)
 
 set(toucan_ZLIB ON CACHE BOOL "Build ZLIB")
