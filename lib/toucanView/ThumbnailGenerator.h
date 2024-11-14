@@ -5,10 +5,9 @@
 
 #include <toucan/ImageEffectHost.h>
 #include <toucan/ImageGraph.h>
+#include <toucan/Timeline.h>
 
 #include <dtk/core/Image.h>
-
-#include <opentimelineio/timeline.h>
 
 #include <atomic>
 #include <filesystem>
@@ -32,7 +31,7 @@ namespace toucan
     public:
         ThumbnailGenerator(
             const std::filesystem::path&,
-            const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>&,
+            const std::shared_ptr<Timeline>&,
             const std::shared_ptr<ImageEffectHost>&);
 
         ~ThumbnailGenerator();
@@ -50,7 +49,7 @@ namespace toucan
         void _cancel();
 
         std::filesystem::path _path;
-        OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline> _timeline;
+        std::shared_ptr<Timeline> _timeline;
         std::shared_ptr<ImageEffectHost> _host;
         std::shared_ptr<ImageGraph> _graph;
         float _aspect = 1.F;

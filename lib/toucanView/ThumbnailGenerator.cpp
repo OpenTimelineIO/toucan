@@ -13,7 +13,7 @@ namespace toucan
 {
     ThumbnailGenerator::ThumbnailGenerator(
         const std::filesystem::path& path,
-        const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>& timeline,
+        const std::shared_ptr<Timeline>& timeline,
         const std::shared_ptr<ImageEffectHost>& host) :
         _path(path),
         _timeline(timeline),

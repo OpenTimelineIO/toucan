@@ -48,6 +48,9 @@ namespace toucan
     //! Return the zero padding for the given number.
     size_t getNumberPadding(const std::string&);
 
+    //! Make a unique temp directory.
+    std::filesystem::path makeUniqueTemp();
+
 #if defined(_WINDOWS)
     //! Get an error string from a Windows system call.
     std::string getLastError();

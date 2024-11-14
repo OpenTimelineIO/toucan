@@ -18,19 +18,11 @@ namespace toucan
         const std::shared_ptr<Document>& document,
         const std::shared_ptr<IWidget>& parent)
     {
-        const auto& timeline = document->getTimeline();
-        const OTIO_NS::RationalTime& duration = timeline->duration();
-        OTIO_NS::RationalTime startTime(0.0, duration.rate());
-        auto opt = timeline->global_start_time();
-        if (opt.has_value())
-        {
-            startTime = opt.value();
-        }
         IItem::_init(
             context,
             app,
             nullptr,
-            OTIO_NS::TimeRange(startTime, duration),
+            document->getTimeline()->getTimeRange(),
             "toucan::TimelineItem",
             parent);
 
@@ -40,7 +32,7 @@ namespace toucan
             0,
             0 | static_cast<int>(dtk::KeyModifier::Shift) | static_cast<int>(dtk::KeyModifier::Control));
 
-        _timeline = timeline;
+        _timeline = document->getTimeline()->otio();
         _timeUnitsModel = app->getTimeUnitsModel();
         _selectionModel = document->getSelectionModel();
         _thumbnails.setMax(100);
@@ -183,7 +175,7 @@ namespace toucan
 
         const dtk::Box2I& g = getGeometry();
         const int y = g.min.y + _size.fontMetrics.lineHeight + _size.margin * 2;
-        for (int x = g.min.x; x < g.max.x; x += _size.thumbnailSize.w)
+        for (int x = g.min.x; x < g.max.x && _size.thumbnailSize.w > 0; x += _size.thumbnailSize.w)
         {
             const dtk::Box2I g2(x, y, _size.thumbnailSize.w, _size.thumbnailSize.h);
             if (dtk::intersects(g2, drawRect))

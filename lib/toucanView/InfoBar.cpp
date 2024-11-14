@@ -33,7 +33,7 @@ namespace toucan
                 if (document)
                 {
                     const IMATH_NAMESPACE::V2i& imageSize = document->getImageSize();
-                    const size_t trackCount = document->getTimeline()->find_children<OTIO_NS::Track>().size();
+                    const size_t trackCount = document->getTimeline()->otio()->find_children<OTIO_NS::Track>().size();
 
                     text = dtk::Format("{0}: {1}x{2}, {3} tracks").
                         arg(dtk::elide(document->getPath().filename().string())).

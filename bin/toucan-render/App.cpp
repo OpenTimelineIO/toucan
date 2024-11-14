@@ -7,6 +7,7 @@
 
 #include <toucan/ImageEffectHost.h>
 #include <toucan/ImageGraph.h>
+#include <toucan/Timeline.h>
 #include <toucan/Util.h>
 
 #include <OpenImageIO/imagebufalgo.h>
@@ -147,22 +148,11 @@ namespace toucan
         const size_t outputNumberPadding = getNumberPadding(outputSplit.second);
 
         // Open the timeline.
-        OTIO_NS::ErrorStatus errorStatus;
-        auto timeline = OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>(
-            dynamic_cast<OTIO_NS::Timeline*>(OTIO_NS::Timeline::from_json_file(inputPath.string(), &errorStatus)));
-        if (!timeline)
-        {
-            std::stringstream ss;
-            ss << inputPath.string() << ": " << errorStatus.full_description << std::endl;
-            throw std::runtime_error(ss.str());
-        }
+        auto timeline = std::make_shared<Timeline>(inputPath);
 
-        // Compute time values.
-        const OTIO_NS::RationalTime startTime = timeline->global_start_time().has_value() ?
-            timeline->global_start_time().value() :
-            OTIO_NS::RationalTime(0.0, timeline->duration().rate());
-        const OTIO_NS::TimeRange timeRange(startTime, timeline->duration());
-        const OTIO_NS::RationalTime timeInc(1.0, timeline->duration().rate());
+        // Get time values.
+        const OTIO_NS::TimeRange& timeRange = timeline->getTimeRange();
+        const OTIO_NS::RationalTime timeInc(1.0, timeRange.duration().rate());
         const int frames = timeRange.duration().value();
         
         // Create the image graph.
@@ -235,7 +225,7 @@ namespace toucan
 
         // Render the timeline frames.
         int filmstripX = 0;
-        for (OTIO_NS::RationalTime time = startTime;
+        for (OTIO_NS::RationalTime time = timeRange.start_time();
             time <= timeRange.end_time_inclusive();
             time += timeInc)
         {

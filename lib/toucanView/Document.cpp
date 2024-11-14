@@ -8,6 +8,8 @@
 #include "ThumbnailGenerator.h"
 #include "ViewModel.h"
 
+#include <toucan/Timeline.h>
+
 #include <dtk/core/Math.h>
 
 namespace toucan
@@ -19,23 +21,12 @@ namespace toucan
         _host(host),
         _path(path)
     {
-        OTIO_NS::ErrorStatus errorStatus;
-        _timeline = OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>(
-            dynamic_cast<OTIO_NS::Timeline*>(OTIO_NS::Timeline::from_json_file(path.string(), &errorStatus)));
-        if (!_timeline)
-        {
-            throw std::runtime_error(errorStatus.full_description);
-        }
-        
-        const auto& globalStartTime = _timeline->global_start_time();
-        const OTIO_NS::RationalTime& duration = _timeline->duration();
-        const OTIO_NS::RationalTime startTime = globalStartTime.has_value() ?
-            globalStartTime.value() :
-            OTIO_NS::RationalTime(0.0, duration.rate());
+        _timeline = std::make_shared<Timeline>(path.string());        
 
         _playbackModel = std::make_shared<PlaybackModel>(context);
-        _playbackModel->setTimeRange(OTIO_NS::TimeRange(startTime, duration));
-        _playbackModel->setCurrentTime(startTime);
+        const OTIO_NS::TimeRange& timeRange = _timeline->getTimeRange();
+        _playbackModel->setTimeRange(timeRange);
+        _playbackModel->setCurrentTime(timeRange.start_time());
 
         _viewModel = std::make_shared<ViewModel>();
 
@@ -77,7 +68,7 @@ namespace toucan
         return _path;
     }
 
-    const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>& Document::getTimeline() const
+    const std::shared_ptr<Timeline>& Document::getTimeline() const
     {
         return _timeline;
     }

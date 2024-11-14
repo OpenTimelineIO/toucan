@@ -5,11 +5,10 @@
 
 #include <toucan/ImageNode.h>
 #include <toucan/MessageLog.h>
+#include <toucan/Timeline.h>
 
 #include <dtk/core/LRUCache.h>
 
-#include <opentimelineio/clip.h>
-#include <opentimelineio/timeline.h>
 #include <opentimelineio/track.h>
 #include <opentimelineio/transition.h>
 
@@ -32,7 +31,7 @@ namespace toucan
     public:
         ImageGraph(
             const std::filesystem::path&,
-            const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>&,
+            const std::shared_ptr<Timeline>&,
             const ImageGraphOptions& = ImageGraphOptions());
 
         ~ImageGraph();
@@ -62,11 +61,9 @@ namespace toucan
             const std::vector<OTIO_NS::SerializableObject::Retainer<OTIO_NS::Effect> >&,
             const std::shared_ptr<IImageNode>&);
 
-        std::filesystem::path _getMediaPath(const std::string&) const;
-
         std::filesystem::path _path;
-        OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline> _timeline;
-        OTIO_NS::RationalTime _globalStartTime;
+        std::shared_ptr<Timeline> _timeline;
+        OTIO_NS::TimeRange _timeRange;
         ImageGraphOptions _options;
         IMATH_NAMESPACE::V2i _imageSize = IMATH_NAMESPACE::V2i(0, 0);
         dtk::LRUCache<OTIO_NS::MediaReference*, std::shared_ptr<ReadNode> > _loadCache;

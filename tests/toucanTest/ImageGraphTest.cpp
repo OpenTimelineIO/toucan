@@ -4,6 +4,7 @@
 #include "ImageGraphTest.h"
 
 #include <toucan/ImageGraph.h>
+#include <toucan/Timeline.h>
 #include <toucan/Util.h>
 
 #include <sstream>
@@ -34,25 +35,24 @@ namespace toucan
         {
             // Open the timeline.
             const std::filesystem::path timelinePath = path / (otioFile + ".otio");
-            OTIO_NS::ErrorStatus errorStatus;
-            auto timeline = OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>(
-                dynamic_cast<OTIO_NS::Timeline*>(OTIO_NS::Timeline::from_json_file(timelinePath.string(), &errorStatus)));
-            if (!timeline)
+            std::shared_ptr<Timeline> timeline;
+            try
             {
-                std::cout << "ERROR: " << timelinePath.string() << ": " << errorStatus.full_description << std::endl;
+                timeline = std::make_shared<Timeline>(timelinePath);
+            }
+            catch (const std::exception& e)
+            {
+                std::cout << "ERROR: " << e.what() << std::endl;
                 continue;
             }
 
-            // Compute time values.
-            const OTIO_NS::RationalTime startTime = timeline->global_start_time().has_value() ?
-                timeline->global_start_time().value() :
-                OTIO_NS::RationalTime(0.0, timeline->duration().rate());
-            const OTIO_NS::TimeRange timeRange(startTime, timeline->duration());
-            const OTIO_NS::RationalTime timeInc(1.0, timeline->duration().rate());
+            // Get time values.
+            const OTIO_NS::TimeRange& timeRange = timeline->getTimeRange();
+            const OTIO_NS::RationalTime timeInc(1.0, timeRange.duration().rate());
 
             // Render the timeline frames.
             const auto graph = std::make_shared<ImageGraph>(path, timeline);
-            for (OTIO_NS::RationalTime time = startTime;
+            for (OTIO_NS::RationalTime time = timeRange.start_time();
                 time <= timeRange.end_time_inclusive();
                 time += timeInc)
             {

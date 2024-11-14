@@ -10,6 +10,7 @@ set(HEADERS
     PropertySet.h
     Read.h
     TimeWarp.h
+    Timeline.h
     Util.h)
 set(HEADERS_PRIVATE
     ImageEffect_p.h)
@@ -25,6 +26,7 @@ set(SOURCE
     PropertySet.cpp
     Read.cpp
     TimeWarp.cpp
+    Timeline.cpp
     Util.cpp)
 if(WIN32)
     list(APPEND SOURCE
@@ -32,7 +34,8 @@ if(WIN32)
         UtilWin32.cpp)
 else()
     list(APPEND SOURCE
-        PluginUnix.cpp)
+        PluginUnix.cpp
+        UtilUnix.cpp)
 endif()
 
 add_library(toucan ${HEADERS} ${HEADERS_PRIVATE} ${SOURCE})
