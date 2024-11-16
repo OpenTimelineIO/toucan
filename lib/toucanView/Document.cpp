@@ -21,10 +21,10 @@ namespace toucan
         _host(host),
         _path(path)
     {
-        _timeline = std::make_shared<Timeline>(path.string());        
+        _timelineWrapper = std::make_shared<TimelineWrapper>(path.string());
 
         _playbackModel = std::make_shared<PlaybackModel>(context);
-        const OTIO_NS::TimeRange& timeRange = _timeline->getTimeRange();
+        const OTIO_NS::TimeRange& timeRange = _timelineWrapper->getTimeRange();
         _playbackModel->setTimeRange(timeRange);
         _playbackModel->setCurrentTime(timeRange.start_time());
 
@@ -34,7 +34,7 @@ namespace toucan
 
         _thumbnailGenerator = std::make_shared<ThumbnailGenerator>(
             _path.parent_path(),
-            _timeline,
+            _timelineWrapper,
             _host);
 
         _currentImage = dtk::ObservableValue<std::shared_ptr<dtk::Image> >::create();
@@ -45,7 +45,7 @@ namespace toucan
         ImageGraphOptions graphOptions;
         _graph = std::make_shared<ImageGraph>(
             path.parent_path(),
-            _timeline,
+            _timelineWrapper,
             graphOptions);
 
         _currentTimeObserver = dtk::ValueObserver<OTIO_NS::RationalTime>::create(
@@ -68,9 +68,14 @@ namespace toucan
         return _path;
     }
 
-    const std::shared_ptr<Timeline>& Document::getTimeline() const
+    const std::shared_ptr<TimelineWrapper>& Document::getTimelineWrapper() const
     {
-        return _timeline;
+        return _timelineWrapper;
+    }
+
+    const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>& Document::getTimeline() const
+    {
+        return _timelineWrapper->getTimeline();
     }
 
     const std::shared_ptr<PlaybackModel>& Document::getPlaybackModel() const

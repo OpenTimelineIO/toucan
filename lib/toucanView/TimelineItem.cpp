@@ -22,7 +22,7 @@ namespace toucan
             context,
             app,
             nullptr,
-            document->getTimeline()->getTimeRange(),
+            document->getTimelineWrapper()->getTimeRange(),
             "toucan::TimelineItem",
             parent);
 
@@ -32,7 +32,7 @@ namespace toucan
             0,
             0 | static_cast<int>(dtk::KeyModifier::Shift) | static_cast<int>(dtk::KeyModifier::Control));
 
-        _timeline = document->getTimeline()->otio();
+        _timeline = document->getTimeline();
         _timeUnitsModel = app->getTimeUnitsModel();
         _selectionModel = document->getSelectionModel();
         _thumbnails.setMax(100);

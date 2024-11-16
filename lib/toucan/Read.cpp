@@ -13,13 +13,15 @@ namespace toucan
 {
     ReadNode::ReadNode(
         const std::filesystem::path& path,
+        const MemoryReference& memoryReference,
         const std::vector<std::shared_ptr<IImageNode> >& inputs) :
         IImageNode("Read", inputs),
-        _path(path)
+        _path(path),
+        _memoryReader(getMemoryReader(memoryReference))
     {
         try
         {
-            _ffRead = std::make_shared<FFmpegRead>(path);
+            _ffRead = std::make_unique<FFmpegRead>(path, memoryReference);
             _spec = _ffRead->getSpec();
             _timeRange = _ffRead->getTimeRange();
         }
@@ -27,7 +29,7 @@ namespace toucan
         {}
         if (!_ffRead)
         {
-            _input = OIIO::ImageInput::open(_path.string());
+            _input = OIIO::ImageInput::open(_path.string(), nullptr, _memoryReader.get());
             if (_input)
             {
                 _spec = _input->spec();
@@ -41,6 +43,11 @@ namespace toucan
         {
             _input->close();
         }
+    }
+
+    const OIIO::ImageSpec& ReadNode::getSpec() const
+    {
+        return _spec;
     }
 
     const OTIO_NS::TimeRange& ReadNode::getTimeRange() const
@@ -115,13 +122,14 @@ namespace toucan
     }
 
     SequenceReadNode::SequenceReadNode(
-        const std::filesystem::path& base,
+        const std::string& base,
         const std::string& namePrefix,
         const std::string& nameSuffix,
         int startFrame,
         int frameStep,
         double rate,
         int frameZeroPadding,
+        const MemoryReferences& memoryReferences,
         const std::vector<std::shared_ptr<IImageNode> >& inputs) :
         IImageNode("SequenceRead", inputs),
         _base(base),
@@ -130,8 +138,26 @@ namespace toucan
         _startFrame(startFrame),
         _frameStep(frameStep),
         _rate(rate),
-        _frameZeroPadding(frameZeroPadding)
-    {}
+        _frameZeroPadding(frameZeroPadding),
+        _memoryReferences(memoryReferences)
+    {
+        const std::string url = getSequenceFrame(
+            _base,
+            _namePrefix,
+            _startFrame,
+            _frameZeroPadding,
+            _nameSuffix);
+        std::unique_ptr<OIIO::Filesystem::IOMemReader> memoryReader;
+        const auto i = _memoryReferences.find(url);
+        if (i != _memoryReferences.end() && i->second.isValid())
+        {
+            memoryReader = getMemoryReader(i->second);
+        }
+        if (auto input = OIIO::ImageInput::open(url, nullptr, memoryReader.get()))
+        {
+            _spec = input->spec();
+        }
+    }
 
     SequenceReadNode::~SequenceReadNode()
     {}
@@ -140,16 +166,23 @@ namespace toucan
     {
         std::stringstream ss;
         ss << "Read: " << getSequenceFrame(
-            std::filesystem::path(),
+            _base,
             _namePrefix,
             _startFrame,
             _frameZeroPadding,
-            _nameSuffix).string();
+            _nameSuffix);
         return ss.str();
+    }
+
+    const OIIO::ImageSpec& SequenceReadNode::getSpec() const
+    {
+        return _spec;
     }
 
     OIIO::ImageBuf SequenceReadNode::exec()
     {
+        OIIO::ImageBuf out;
+
         OTIO_NS::RationalTime offsetTime = _time;
         if (!_timeOffset.is_invalid_time())
         {
@@ -157,23 +190,52 @@ namespace toucan
         }
 
         const int frame = offsetTime.floor().to_frames();
-        const std::filesystem::path path = getSequenceFrame(
+        const std::string url = getSequenceFrame(
             _base,
             _namePrefix,
             frame,
             _frameZeroPadding,
             _nameSuffix);
-        OIIO::ImageBuf buf(path.string());
-
-        const auto& spec = buf.spec();
-        if (3 == spec.nchannels)
+        std::unique_ptr<OIIO::Filesystem::IOMemReader> memoryReader;
+        const auto i = _memoryReferences.find(url);
+        if (i != _memoryReferences.end() && i->second.isValid())
         {
-            // Add an alpha channel.
-            const int channelorder[] = { 0, 1, 2, -1 };
-            const float channelvalues[] = { 0, 0, 0, 1.0 };
-            const std::string channelnames[] = { "", "", "", "A" };
-            buf = OIIO::ImageBufAlgo::channels(buf, 4, channelorder, channelvalues, channelnames);
+            memoryReader = getMemoryReader(i->second);
         }
-        return buf;
+        if (auto input = OIIO::ImageInput::open(url, nullptr, memoryReader.get()))
+        {
+            const auto& spec = input->spec();
+            auto pixels = std::unique_ptr<unsigned char[]>(
+                new unsigned char[spec.width * spec.height * spec.nchannels * spec.channel_bytes()]);
+            input->read_image(
+                0,
+                0,
+                0,
+                spec.nchannels,
+                spec.format,
+                &pixels[0]);
+
+            OIIO::ImageBuf buf(
+                OIIO::ImageSpec(spec.width, spec.height, spec.nchannels, spec.format),
+                pixels.get(),
+                spec.nchannels * spec.channel_bytes(),
+                spec.width * spec.nchannels * spec.channel_bytes(),
+                0);
+
+            if (3 == spec.nchannels)
+            {
+                // Add an alpha channel.
+                const int channelOrder[] = { 0, 1, 2, -1 };
+                const float channelValues[] = { 0, 0, 0, 1.0 };
+                const std::string channelNames[] = { "", "", "", "A" };
+                out = OIIO::ImageBufAlgo::channels(buf, 4, channelOrder, channelValues, channelNames);
+            }
+            else
+            {
+                OIIO::ImageBufAlgo::copy(out, buf);
+            }
+        }
+
+        return out;
     }
 }

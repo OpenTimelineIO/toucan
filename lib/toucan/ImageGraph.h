@@ -5,10 +5,11 @@
 
 #include <toucan/ImageNode.h>
 #include <toucan/MessageLog.h>
-#include <toucan/Timeline.h>
+#include <toucan/TimelineWrapper.h>
 
 #include <dtk/core/LRUCache.h>
 
+#include <opentimelineio/mediaReference.h>
 #include <opentimelineio/track.h>
 #include <opentimelineio/transition.h>
 
@@ -31,7 +32,7 @@ namespace toucan
     public:
         ImageGraph(
             const std::filesystem::path&,
-            const std::shared_ptr<Timeline>&,
+            const std::shared_ptr<TimelineWrapper>&,
             const ImageGraphOptions& = ImageGraphOptions());
 
         ~ImageGraph();
@@ -62,7 +63,7 @@ namespace toucan
             const std::shared_ptr<IImageNode>&);
 
         std::filesystem::path _path;
-        std::shared_ptr<Timeline> _timeline;
+        std::shared_ptr<TimelineWrapper> _timelineWrapper;
         OTIO_NS::TimeRange _timeRange;
         ImageGraphOptions _options;
         IMATH_NAMESPACE::V2i _imageSize = IMATH_NAMESPACE::V2i(0, 0);

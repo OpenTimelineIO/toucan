@@ -5,13 +5,11 @@
 
 #include <toucan/ImageEffectHost.h>
 #include <toucan/ImageGraph.h>
-#include <toucan/Timeline.h>
+#include <toucan/TimelineWrapper.h>
 
 #include <dtk/core/Context.h>
 #include <dtk/core/Image.h>
 #include <dtk/core/ObservableValue.h>
-
-#include <opentimelineio/timeline.h>
 
 #include <filesystem>
 
@@ -34,7 +32,8 @@ namespace toucan
 
         const std::filesystem::path& getPath() const;
 
-        const std::shared_ptr<Timeline>& getTimeline() const;
+        const std::shared_ptr<TimelineWrapper>& getTimelineWrapper() const;
+        const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>& getTimeline() const;
 
         const std::shared_ptr<PlaybackModel>& getPlaybackModel() const;
         const std::shared_ptr<ViewModel>& getViewModel() const;
@@ -54,7 +53,7 @@ namespace toucan
 
         std::shared_ptr<ImageEffectHost> _host;
         std::filesystem::path _path;
-        std::shared_ptr<Timeline> _timeline;
+        std::shared_ptr<TimelineWrapper> _timelineWrapper;
         std::shared_ptr<PlaybackModel> _playbackModel;
         std::shared_ptr<ViewModel> _viewModel;
         std::shared_ptr<SelectionModel> _selectionModel;

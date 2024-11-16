@@ -7,7 +7,7 @@
 
 #include <toucan/ImageEffectHost.h>
 #include <toucan/ImageGraph.h>
-#include <toucan/Timeline.h>
+#include <toucan/TimelineWrapper.h>
 #include <toucan/Util.h>
 
 #include <OpenImageIO/imagebufalgo.h>
@@ -148,10 +148,10 @@ namespace toucan
         const size_t outputNumberPadding = getNumberPadding(outputSplit.second);
 
         // Open the timeline.
-        auto timeline = std::make_shared<Timeline>(inputPath);
+        auto timelineWrapper = std::make_shared<TimelineWrapper>(inputPath);
 
         // Get time values.
-        const OTIO_NS::TimeRange& timeRange = timeline->getTimeRange();
+        const OTIO_NS::TimeRange& timeRange = timelineWrapper->getTimeRange();
         const OTIO_NS::RationalTime timeInc(1.0, timeRange.duration().rate());
         const int frames = timeRange.duration().value();
         
@@ -165,7 +165,7 @@ namespace toucan
         imageGraphOptions.log = log;
         const auto graph = std::make_shared<ImageGraph>(
             inputPath.parent_path(),
-            timeline,
+            timelineWrapper,
             imageGraphOptions);
         const IMATH_NAMESPACE::V2d imageSize = graph->getImageSize();
 
@@ -245,13 +245,13 @@ namespace toucan
                 {
                     if (!_args.outputRaw)
                     {
-                        const std::filesystem::path path = getSequenceFrame(
-                            outputPath.parent_path(),
+                        const std::string fileName = getSequenceFrame(
+                            outputPath.parent_path().string(),
                             outputSplit.first,
                             outputStartFrame + time.to_frames(),
                             outputNumberPadding,
                             outputPath.extension().string());
-                        buf.write(path.string());
+                        buf.write(fileName);
                     }
                     else
                     {
@@ -278,14 +278,14 @@ namespace toucan
                 // Write the graph.
                 if (_options.graph)
                 {
-                    const std::filesystem::path path = getSequenceFrame(
-                        outputPath.parent_path(),
+                    const std::string fileName = getSequenceFrame(
+                        outputPath.parent_path().string(),
                         outputSplit.first,
                         outputStartFrame + time.to_frames(),
                         outputNumberPadding,
                         ".dot");
                     const std::vector<std::string> lines = node->graph(inputPath.stem().string());
-                    if (FILE* f = fopen(path.string().c_str(), "w"))
+                    if (FILE* f = fopen(fileName.c_str(), "w"))
                     {
                         for (const auto& line : lines)
                         {

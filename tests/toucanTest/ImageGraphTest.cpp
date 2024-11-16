@@ -4,7 +4,7 @@
 #include "ImageGraphTest.h"
 
 #include <toucan/ImageGraph.h>
-#include <toucan/Timeline.h>
+#include <toucan/TimelineWrapper.h>
 #include <toucan/Util.h>
 
 #include <sstream>
@@ -35,10 +35,10 @@ namespace toucan
         {
             // Open the timeline.
             const std::filesystem::path timelinePath = path / (otioFile + ".otio");
-            std::shared_ptr<Timeline> timeline;
+            std::shared_ptr<TimelineWrapper> timelineWrapper;
             try
             {
-                timeline = std::make_shared<Timeline>(timelinePath);
+                timelineWrapper = std::make_shared<TimelineWrapper>(timelinePath);
             }
             catch (const std::exception& e)
             {
@@ -47,11 +47,11 @@ namespace toucan
             }
 
             // Get time values.
-            const OTIO_NS::TimeRange& timeRange = timeline->getTimeRange();
+            const OTIO_NS::TimeRange& timeRange = timelineWrapper->getTimeRange();
             const OTIO_NS::RationalTime timeInc(1.0, timeRange.duration().rate());
 
             // Render the timeline frames.
-            const auto graph = std::make_shared<ImageGraph>(path, timeline);
+            const auto graph = std::make_shared<ImageGraph>(path, timelineWrapper);
             for (OTIO_NS::RationalTime time = timeRange.start_time();
                 time <= timeRange.end_time_inclusive();
                 time += timeInc)
@@ -64,13 +64,13 @@ namespace toucan
                     const auto buf = op->exec();
 
                     // Save the image.
-                    const std::filesystem::path imagePath = getSequenceFrame(
-                        std::filesystem::path(),
+                    const std::string fileName = getSequenceFrame(
+                        std::string(),
                         "imageGraphTest_" + otioFile + ".",
                         time.to_frames(),
                         6,
                         ".png");
-                    buf.write(imagePath.string());
+                    buf.write(fileName);
                 }
             }
         }

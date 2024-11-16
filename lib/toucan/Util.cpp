@@ -115,18 +115,19 @@ namespace toucan
         return out;
     }
 
-    std::filesystem::path getSequenceFrame(
-        const std::filesystem::path& path,
+    std::string getSequenceFrame(
+        const std::string& base,
         const std::string& namePrefix,
         int frame,
         int padding,
         const std::string& nameSuffix)
     {
         std::stringstream ss;
-        ss << namePrefix <<
+        ss << base <<
+            namePrefix <<
             std::setw(padding) << std::setfill('0') << frame <<
             nameSuffix;
-        return (path / ss.str()).string();
+        return ss.str();
     }
 
     namespace
