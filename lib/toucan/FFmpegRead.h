@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "MemoryMap.h"
+
 #include <opentimelineio/anyVector.h>
 
 #include <OpenImageIO/imagebuf.h>
@@ -23,7 +25,9 @@ namespace toucan
     class FFmpegRead : public std::enable_shared_from_this<FFmpegRead>
     {
     public:
-        FFmpegRead(const std::filesystem::path&);
+        FFmpegRead(
+            const std::filesystem::path&,
+            const MemoryReference& = {});
 
         virtual ~FFmpegRead();
 
@@ -37,11 +41,25 @@ namespace toucan
         OIIO::ImageBuf _read();
 
         std::filesystem::path _path;
+        MemoryReference _memoryReference;
         OIIO::ImageSpec _spec;
         OTIO_NS::TimeRange _timeRange;
         OTIO_NS::RationalTime _currentTime;
 
+        struct AVIOBufferData
+        {
+            AVIOBufferData();
+            AVIOBufferData(const uint8_t*, size_t size);
+
+            const uint8_t* data = nullptr;
+            size_t size = 0;
+            size_t offset = 0;
+        };
+        static int _avIOBufferRead(void* opaque, uint8_t* buf, int bufSize);
+        static int64_t _avIOBufferSeek(void* opaque, int64_t offset, int whence);
+
         AVFormatContext* _avFormatContext = nullptr;
+        AVIOBufferData _avIOBufferData;
         uint8_t* _avIOContextBuffer = nullptr;
         AVIOContext* _avIOContext = nullptr;
         AVRational _avSpeed = { 24, 1 };

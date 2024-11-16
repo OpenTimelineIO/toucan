@@ -18,6 +18,8 @@ namespace toucan
 {
     namespace
     {
+        const size_t avIOContextBufferSize = 4096;
+
         void logCallback(void*, int level, const char* fmt, va_list vl)
         {
             switch (level)
@@ -70,12 +72,43 @@ namespace toucan
         }
     }
 
-    FFmpegRead::FFmpegRead(const std::filesystem::path& path) :
-        _path(path)
+    FFmpegRead::FFmpegRead(
+        const std::filesystem::path& path,
+        const MemoryReference& memoryReference) :
+        _path(path),
+        _memoryReference(memoryReference)
     {
         av_log_set_level(AV_LOG_QUIET);
         //av_log_set_level(AV_LOG_VERBOSE);
         //av_log_set_callback(logCallback);
+
+        if (memoryReference.isValid())
+        {
+            _avFormatContext = avformat_alloc_context();
+            if (!_avFormatContext)
+            {
+                throw std::runtime_error("Cannot allocate format context");
+            }
+
+            _avIOBufferData = AVIOBufferData(
+                reinterpret_cast<const uint8_t*>(memoryReference.getData()),
+                memoryReference.getSize());
+            _avIOContextBuffer = static_cast<uint8_t*>(av_malloc(avIOContextBufferSize));
+            _avIOContext = avio_alloc_context(
+                _avIOContextBuffer,
+                avIOContextBufferSize,
+                0,
+                &_avIOBufferData,
+                &_avIOBufferRead,
+                nullptr,
+                &_avIOBufferSeek);
+            if (!_avIOContext)
+            {
+                throw std::runtime_error("Cannot allocate I/O context");
+            }
+
+            _avFormatContext->pb = _avIOContext;
+        }
 
         const std::string fileName = path.string();
         int r = avformat_open_input(
@@ -577,5 +610,50 @@ namespace toucan
             }
         }
         return out;
+    }
+
+    FFmpegRead::AVIOBufferData::AVIOBufferData()
+    {}
+
+    FFmpegRead::AVIOBufferData::AVIOBufferData(const uint8_t* data, size_t size) :
+        data(data),
+        size(size)
+    {}
+
+    int FFmpegRead::_avIOBufferRead(void* opaque, uint8_t* buf, int bufSize)
+    {
+        AVIOBufferData* bufferData = static_cast<AVIOBufferData*>(opaque);
+
+        const int64_t remaining = bufferData->size - bufferData->offset;
+        int bufSizeClamped = std::min(std::max(
+            static_cast<int64_t>(bufSize),
+            static_cast<int64_t>(0)),
+            remaining);
+        if (!bufSizeClamped)
+        {
+            return AVERROR_EOF;
+        }
+
+        memcpy(buf, bufferData->data + bufferData->offset, bufSizeClamped);
+        bufferData->offset += bufSizeClamped;
+
+        return bufSizeClamped;
+    }
+
+    int64_t FFmpegRead::_avIOBufferSeek(void* opaque, int64_t offset, int whence)
+    {
+        AVIOBufferData* bufferData = static_cast<AVIOBufferData*>(opaque);
+
+        if (whence & AVSEEK_SIZE)
+        {
+            return bufferData->size;
+        }
+
+        bufferData->offset = std::min(std::max(
+            offset,
+            static_cast<int64_t>(0)),
+            static_cast<int64_t>(bufferData->size));
+
+        return offset;
     }
 }

@@ -5,12 +5,13 @@ set(HEADERS
     ImageEffectHost.h
     ImageGraph.h
     ImageNode.h
+    MemoryMap.h
     MessageLog.h
     Plugin.h
     PropertySet.h
     Read.h
     TimeWarp.h
-    Timeline.h
+    TimelineWrapper.h
     Util.h)
 set(HEADERS_PRIVATE
     ImageEffect_p.h)
@@ -21,19 +22,22 @@ set(SOURCE
     ImageEffectHost.cpp
     ImageGraph.cpp
     ImageNode.cpp
+    MemoryMap.cpp
     MessageLog.cpp
     Plugin.cpp
     PropertySet.cpp
     Read.cpp
     TimeWarp.cpp
-    Timeline.cpp
+    TimelineWrapper.cpp
     Util.cpp)
 if(WIN32)
     list(APPEND SOURCE
+        MemoryMapWin32.cpp
         PluginWin32.cpp
         UtilWin32.cpp)
 else()
     list(APPEND SOURCE
+        MemoryMapUnix.cpp
         PluginUnix.cpp
         UtilUnix.cpp)
 endif()

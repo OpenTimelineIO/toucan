@@ -5,7 +5,7 @@
 
 #include <toucan/ImageEffectHost.h>
 #include <toucan/ImageGraph.h>
-#include <toucan/Timeline.h>
+#include <toucan/TimelineWrapper.h>
 
 #include <dtk/core/Image.h>
 
@@ -31,7 +31,7 @@ namespace toucan
     public:
         ThumbnailGenerator(
             const std::filesystem::path&,
-            const std::shared_ptr<Timeline>&,
+            const std::shared_ptr<TimelineWrapper>&,
             const std::shared_ptr<ImageEffectHost>&);
 
         ~ThumbnailGenerator();
@@ -49,7 +49,7 @@ namespace toucan
         void _cancel();
 
         std::filesystem::path _path;
-        std::shared_ptr<Timeline> _timeline;
+        std::shared_ptr<TimelineWrapper> _timelineWrapper;
         std::shared_ptr<ImageEffectHost> _host;
         std::shared_ptr<ImageGraph> _graph;
         float _aspect = 1.F;

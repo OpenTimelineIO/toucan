@@ -13,17 +13,17 @@ namespace toucan
 {
     ThumbnailGenerator::ThumbnailGenerator(
         const std::filesystem::path& path,
-        const std::shared_ptr<Timeline>& timeline,
+        const std::shared_ptr<TimelineWrapper>& timelineWrapper,
         const std::shared_ptr<ImageEffectHost>& host) :
         _path(path),
-        _timeline(timeline),
+        _timelineWrapper(timelineWrapper),
         _host(host)
     {
         _thread.running = true;
         _thread.thread = std::thread(
             [this]
             {
-                _graph = std::make_shared<ImageGraph>(_path, _timeline);
+                _graph = std::make_shared<ImageGraph>(_path, _timelineWrapper);
                 const IMATH_NAMESPACE::V2i& imageSize = _graph->getImageSize();
                 _aspect = imageSize.y > 0 ?
                     (imageSize.x / static_cast<float>(imageSize.y)) :

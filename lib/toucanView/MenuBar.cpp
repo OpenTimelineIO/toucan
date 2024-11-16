@@ -214,8 +214,7 @@ namespace toucan
             {
                 if (_document)
                 {
-                    _document->getSelectionModel()->selectAll(
-                        _document->getTimeline()->otio());
+                    _document->getSelectionModel()->selectAll(_document->getTimeline());
                 }
             });
         _menus["Select"]->addItem(_actions["Select/All"]);
@@ -242,8 +241,7 @@ namespace toucan
             {
                 if (_document)
                 {
-                    _document->getSelectionModel()->invertSelection(
-                        _document->getTimeline()->otio());
+                    _document->getSelectionModel()->invertSelection(_document->getTimeline());
                 }
             });
         _menus["Select"]->addItem(_actions["Select/Invert"]);

@@ -9,6 +9,7 @@
 #include "TimeWarp.h"
 #include "Util.h"
 
+#include <opentimelineio/clip.h>
 #include <opentimelineio/externalReference.h>
 #include <opentimelineio/gap.h>
 #include <opentimelineio/generatorReference.h>
@@ -24,17 +25,17 @@ namespace toucan
 
     ImageGraph::ImageGraph(
         const std::filesystem::path& path,
-        const std::shared_ptr<Timeline>& timeline,
+        const std::shared_ptr<TimelineWrapper>& timelineWrapper,
         const ImageGraphOptions& options) :
         _path(path),
-        _timeline(timeline),
-        _timeRange(timeline->getTimeRange()),
+        _timelineWrapper(timelineWrapper),
+        _timeRange(timelineWrapper->getTimeRange()),
         _options(options)
     {
         _loadCache.setMax(10);
 
         // Get the image size from the first video clip.
-        for (auto track : _timeline->otio()->find_children<OTIO_NS::Track>())
+        for (auto track : _timelineWrapper->getTimeline()->find_children<OTIO_NS::Track>())
         {
             if (OTIO_NS::Track::Kind::video == track->kind())
             {
@@ -42,9 +43,10 @@ namespace toucan
                 {
                     if (auto externalRef = dynamic_cast<OTIO_NS::ExternalReference*>(clip->media_reference()))
                     {
-                        const std::filesystem::path path = _timeline->getMediaPath(externalRef->target_url());
-                        const OIIO::ImageBuf buf(path.string());
-                        const auto& spec = buf.spec();
+                        auto read = std::make_shared<ReadNode>(
+                            _timelineWrapper->getMediaPath(externalRef->target_url()),
+                            _timelineWrapper->getMemoryReference(externalRef->target_url()));
+                        const auto& spec = read->getSpec();
                         if (spec.width > 0)
                         {
                             _imageSize.x = spec.width;
@@ -54,14 +56,16 @@ namespace toucan
                     }
                     else if (auto sequenceRef = dynamic_cast<OTIO_NS::ImageSequenceReference*>(clip->media_reference()))
                     {
-                        const std::filesystem::path path = getSequenceFrame(
-                            _timeline->getMediaPath(sequenceRef->target_url_base()),
+                        auto read = std::make_shared<SequenceReadNode>(
+                            _timelineWrapper->getMediaPath(sequenceRef->target_url_base()),
                             sequenceRef->name_prefix(),
+                            sequenceRef->name_suffix(),
                             sequenceRef->start_frame(),
+                            sequenceRef->frame_step(),
+                            sequenceRef->rate(),
                             sequenceRef->frame_zero_padding(),
-                            sequenceRef->name_suffix());
-                        const OIIO::ImageBuf buf(path.string());
-                        const auto& spec = buf.spec();
+                            _timelineWrapper->getMemoryReferences());
+                        const auto& spec = read->getSpec();
                         if (spec.width > 0)
                         {
                             _imageSize.x = spec.width;
@@ -102,7 +106,7 @@ namespace toucan
         std::shared_ptr<IImageNode> node = host->createNode("toucan:Fill", metaData);
 
         // Loop over the tracks.
-        auto stack = _timeline->otio()->tracks();
+        auto stack = _timelineWrapper->getTimeline()->tracks();
         for (const auto& i : stack->children())
         {
             if (auto track = OTIO_NS::dynamic_retainer_cast<OTIO_NS::Track>(i))
@@ -294,8 +298,9 @@ namespace toucan
                 std::shared_ptr<ReadNode> read;
                 if (!_loadCache.get(externalRef, read))
                 {
-                    const std::filesystem::path path = _timeline->getMediaPath(externalRef->target_url());
-                    read = std::make_shared<ReadNode>(path);
+                    read = std::make_shared<ReadNode>(
+                        _timelineWrapper->getMediaPath(externalRef->target_url()),
+                        _timelineWrapper->getMemoryReference(externalRef->target_url()));
                     _loadCache.add(externalRef, read);
                 }
                 out = read;
@@ -312,15 +317,15 @@ namespace toucan
             }
             else if (auto sequenceRef = dynamic_cast<OTIO_NS::ImageSequenceReference*>(clip->media_reference()))
             {
-                const std::filesystem::path path = _timeline->getMediaPath(sequenceRef->target_url_base());
                 auto read = std::make_shared<SequenceReadNode>(
-                    path,
+                    _timelineWrapper->getMediaPath(sequenceRef->target_url_base()),
                     sequenceRef->name_prefix(),
                     sequenceRef->name_suffix(),
                     sequenceRef->start_frame(),
                     sequenceRef->frame_step(),
                     sequenceRef->rate(),
-                    sequenceRef->frame_zero_padding());
+                    sequenceRef->frame_zero_padding(),
+                    _timelineWrapper->getMemoryReferences());
                 out = read;
             }
             else if (auto generatorRef = dynamic_cast<OTIO_NS::GeneratorReference*>(clip->media_reference()))

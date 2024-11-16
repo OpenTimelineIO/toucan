@@ -34,9 +34,9 @@ namespace toucan
     //! Split the URL protocol.
     std::pair<std::string, std::string> splitURLProtocol(const std::string&);
 
-    //! Get an image sequence frame path.
-    std::filesystem::path getSequenceFrame(
-        const std::filesystem::path&,
+    //! Get an image sequence file name.
+    std::string getSequenceFrame(
+        const std::string& base,
         const std::string& namePrefix,
         int frame,
         int padding,
