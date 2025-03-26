@@ -6,6 +6,7 @@
 #include "App.h"
 #include "FilesModel.h"
 #include "StackItem.h"
+#include "WindowModel.h"
 
 #include <dtk/ui/ScrollArea.h>
 
@@ -48,6 +49,15 @@ namespace toucan
             [this](const std::vector<SelectionItem>& selection)
             {
                 _select(shared_from_this(), selection);
+            });
+
+        _thumbnailsObserver = dtk::ValueObserver<bool>::create(
+            data.app->getWindowModel()->observeThumbnails(),
+            [this](bool value)
+            {
+                _thumbnails = value;
+                _setSizeUpdate();
+                _setDrawUpdate();
             });
     }
 
@@ -98,9 +108,14 @@ namespace toucan
         for (const auto& child : getChildren())
         {
             const dtk::Size2I& sizeHint = child->getSizeHint();
+            int h = timeHeight;
+            if (_thumbnails)
+            {
+                h += _size.thumbnailHeight;
+            }
             child->setGeometry(dtk::Box2I(
                 g.min.x,
-                g.min.y + timeHeight + _size.thumbnailHeight,
+                g.min.y + h,
                 sizeHint.w,
                 sizeHint.h));
         }
@@ -165,7 +180,10 @@ namespace toucan
         dtk::Size2I sizeHint(
             _timeRange.duration().rescaled_to(1.0).value() * _scale,
             _size.fontMetrics.lineHeight + _size.margin * 2);
-        sizeHint.h += _size.thumbnailHeight;
+        if (_thumbnails)
+        {
+            sizeHint.h += _size.thumbnailHeight;
+        }
         sizeHint.h += childSizeHint;
         _setSizeHint(sizeHint);
     }
@@ -177,35 +195,38 @@ namespace toucan
         const dtk::Box2I& g = getGeometry();
         const int thumbnailWidth = _size.thumbnailHeight * _thumbnailGenerator->getAspect();
         const int y = g.min.y + _size.fontMetrics.lineHeight + _size.margin * 2;
-        for (int x = g.min.x; x < g.max.x && thumbnailWidth > 0; x += thumbnailWidth)
+        if (_thumbnails)
         {
-            const dtk::Box2I g2(x, y, thumbnailWidth, _size.thumbnailHeight);
-            if (dtk::intersects(g2, drawRect))
+            for (int x = g.min.x; x < g.max.x && thumbnailWidth > 0; x += thumbnailWidth)
             {
-                const OTIO_NS::RationalTime t = posToTime(x);
-                std::shared_ptr<dtk::Image> image;
-                if (_thumbnailCache->get(getThumbnailCacheKey(nullptr, t, _size.thumbnailHeight), image))
+                const dtk::Box2I g2(x, y, thumbnailWidth, _size.thumbnailHeight);
+                if (dtk::intersects(g2, drawRect))
                 {
-                    if (image)
+                    const OTIO_NS::RationalTime t = posToTime(x);
+                    std::shared_ptr<dtk::Image> image;
+                    if (_thumbnailCache->get(getThumbnailCacheKey(nullptr, t, _size.thumbnailHeight), image))
                     {
-                        event.render->drawImage(
-                            image,
-                            dtk::Box2I(x, y, image->getWidth(), image->getHeight()));
-                    }
-                }
-                else
-                {
-                    const auto j = std::find_if(
-                        _thumbnailRequests.begin(),
-                        _thumbnailRequests.end(),
-                        [this, t](const ThumbnailRequest& request)
+                        if (image)
                         {
-                            return t == request.time && _size.thumbnailHeight == request.height;
-                        });
-                    if (j == _thumbnailRequests.end())
+                            event.render->drawImage(
+                                image,
+                                dtk::Box2I(x, y, image->getWidth(), image->getHeight()));
+                        }
+                    }
+                    else
                     {
-                        _thumbnailRequests.push_back(
-                            _thumbnailGenerator->getThumbnail(t, _size.thumbnailHeight));
+                        const auto j = std::find_if(
+                            _thumbnailRequests.begin(),
+                            _thumbnailRequests.end(),
+                            [this, t](const ThumbnailRequest& request)
+                            {
+                                return t == request.time && _size.thumbnailHeight == request.height;
+                            });
+                        if (j == _thumbnailRequests.end())
+                        {
+                            _thumbnailRequests.push_back(
+                                _thumbnailGenerator->getThumbnail(t, _size.thumbnailHeight));
+                        }
                     }
                 }
             }

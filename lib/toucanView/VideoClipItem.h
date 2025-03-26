@@ -63,6 +63,8 @@ namespace toucan
         std::shared_ptr<TimeLayout> _markerLayout;
         std::vector<std::shared_ptr<MarkerItem> > _markerItems;
 
+        std::shared_ptr<dtk::ValueObserver<bool> > _thumbnailsObserver;
+
         struct SizeData
         {
             bool init = true;

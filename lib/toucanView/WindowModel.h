@@ -46,6 +46,15 @@ namespace toucan
         //! Set a window component.
         void setComponent(WindowComponent, bool);
 
+        //! Get whether thumbnails are enabled.
+        bool getThumbnails() const;
+
+        //! Observe whether thumbnails are enabled.
+        std::shared_ptr<dtk::IObservableValue<bool> > observeThumbnails() const;
+
+        //! Set whether thumbnails are enabled.
+        void setThumbnails(bool);
+
         //! Get whether tooltips are enabled.
         bool getTooltips() const;
 
@@ -58,6 +67,7 @@ namespace toucan
     private:
         std::shared_ptr<dtk::Settings> _settings;
         std::shared_ptr<dtk::ObservableMap<WindowComponent, bool> > _components;
+        std::shared_ptr<dtk::ObservableValue<bool> > _thumbnails;
         std::shared_ptr<dtk::ObservableValue<bool> > _tooltips;
     };
 }

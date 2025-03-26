@@ -182,6 +182,17 @@ namespace toucan
             });
         _menus["Window/DisplayScale"]->addItem(_actions["Window/DisplayScale/3.0"]);
 
+        _actions["Window/Thumbnails"] = std::make_shared<dtk::Action>(
+            "Thumbnails",
+            [appWeak](bool value)
+            {
+                if (auto app = appWeak.lock())
+                {
+                    app->getWindowModel()->setThumbnails(value);
+                }
+            });
+        addItem(_actions["Window/Thumbnails"]);
+
         _actions["Window/Tooltips"] = std::make_shared<dtk::Action>(
             "Tooltips",
             [appWeak](bool value)
@@ -224,6 +235,13 @@ namespace toucan
                 _menus["Window/DisplayScale"]->setItemChecked(_actions["Window/DisplayScale/2.0"], 2.F == value);
                 _menus["Window/DisplayScale"]->setItemChecked(_actions["Window/DisplayScale/2.5"], 2.5F == value);
                 _menus["Window/DisplayScale"]->setItemChecked(_actions["Window/DisplayScale/3.0"], 3.F == value);
+            });
+
+        _thumbnailsObserver = dtk::ValueObserver<bool>::create(
+            app->getWindowModel()->observeThumbnails(),
+            [this](bool value)
+            {
+                setItemChecked(_actions["Window/Thumbnails"], value);
             });
 
         _tooltipsObserver = dtk::ValueObserver<bool>::create(

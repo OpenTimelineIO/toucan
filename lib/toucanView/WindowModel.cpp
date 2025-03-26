@@ -9,6 +9,7 @@
 
 #include <nlohmann/json.hpp>
 
+#include <iostream>
 #include <sstream>
 
 namespace toucan
@@ -30,6 +31,7 @@ namespace toucan
             { WindowComponent::Playback, true },
             { WindowComponent::InfoBar, true }
         };
+        bool thumbnails = true;
         bool tooltips = true;
         try
         {
@@ -44,7 +46,12 @@ namespace toucan
                     i.second = j->get<bool>();
                 }
             }
-            auto i = json.find("Tooltips");
+            auto i = json.find("Thumbnails");
+            if (i != json.end() && i->is_boolean())
+            {
+                thumbnails = i->get<bool>();
+            }
+            i = json.find("Tooltips");
             if (i != json.end() && i->is_boolean())
             {
                 tooltips = i->get<bool>();
@@ -54,6 +61,7 @@ namespace toucan
         {}
 
         _components = dtk::ObservableMap<WindowComponent, bool>::create(components);
+        _thumbnails = dtk::ObservableValue<bool>::create(thumbnails);
         _tooltips = dtk::ObservableValue<bool>::create(tooltips);
     }
 
@@ -66,6 +74,7 @@ namespace toucan
             ss << i.first;
             json[ss.str()] = i.second;
         }
+        json["Thumbnails"] = _thumbnails->get();
         json["Tooltips"] = _tooltips->get();
         _settings->set("WindowModel", json);
     }
@@ -93,6 +102,21 @@ namespace toucan
     void WindowModel::setComponent(WindowComponent component, bool value)
     {
         _components->setItemOnlyIfChanged(component, value);
+    }
+
+    bool WindowModel::getThumbnails() const
+    {
+        return _thumbnails->get();
+    }
+
+    std::shared_ptr<dtk::IObservableValue<bool> > WindowModel::observeThumbnails() const
+    {
+        return _thumbnails;
+    }
+
+    void WindowModel::setThumbnails(bool value)
+    {
+        _thumbnails->setIfChanged(value);
     }
 
     bool WindowModel::getTooltips() const

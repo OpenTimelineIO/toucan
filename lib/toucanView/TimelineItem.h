@@ -85,6 +85,7 @@ namespace toucan
         std::function<void(const OTIO_NS::RationalTime&)> _currentTimeCallback;
         OTIO_NS::TimeRange _inOutRange;
         std::shared_ptr<SelectionModel> _selectionModel;
+        bool _thumbnails = true;
         std::shared_ptr<ThumbnailGenerator> _thumbnailGenerator;
         std::list<ThumbnailRequest> _thumbnailRequests;
         std::shared_ptr<dtk::LRUCache<std::string, std::shared_ptr<dtk::Image> > > _thumbnailCache;
@@ -116,5 +117,6 @@ namespace toucan
         MouseData _mouse;
 
         std::shared_ptr<dtk::ListObserver<SelectionItem > > _selectionObserver;
+        std::shared_ptr<dtk::ValueObserver<bool> > _thumbnailsObserver;
     };
 }

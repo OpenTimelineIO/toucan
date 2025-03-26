@@ -6,6 +6,7 @@
 #include "App.h"
 #include "FilesModel.h"
 #include "TimelineItem.h"
+#include "WindowModel.h"
 
 namespace toucan
 {

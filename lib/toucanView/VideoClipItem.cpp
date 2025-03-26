@@ -5,6 +5,7 @@
 
 #include "App.h"
 #include "File.h"
+#include "WindowModel.h"
 
 #include <toucanRender/Util.h>
 
@@ -91,6 +92,13 @@ namespace toucan
         }
 
         _textUpdate();
+
+        _thumbnailsObserver = dtk::ValueObserver<bool>::create(
+            data.app->getWindowModel()->observeThumbnails(),
+            [this](bool value)
+            {
+                _thumbnailsWidget->setVisible(value);
+            });
     }
     
     VideoClipItem::~VideoClipItem()
@@ -139,7 +147,8 @@ namespace toucan
             _size.displayScale = event.displayScale;
             _size.border = event.style->getSizeRole(dtk::SizeRole::Border, event.displayScale);
         }
-        _setSizeHint(_layout->getSizeHint());
+        dtk::Size2I sizeHint = _layout->getSizeHint();
+        _setSizeHint(sizeHint);
     }
     
     void VideoClipItem::drawEvent(
@@ -148,7 +157,7 @@ namespace toucan
     {
         IItem::drawEvent(drawRect, event);
         dtk::Box2I g = _label->getGeometry();
-        if (_thumbnailsWidget)
+        if (_thumbnailsWidget->isVisible(true))
         {
             const dtk::Box2I& g2 = _thumbnailsWidget->getGeometry();
             g = dtk::Box2I(g.min, g2.max);

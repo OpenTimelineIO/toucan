@@ -119,7 +119,7 @@ namespace toucan
                     value.min.y,
                     std::max(t1 - t0, timeWidget->getMinWidth()),
                     childSizeHint.h));
-            };
+            }
         }
     }
 
