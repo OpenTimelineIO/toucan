@@ -14,6 +14,8 @@
 #include <toucanRenderTest/PropertySetTest.h>
 #include <toucanRenderTest/ReadTest.h>
 
+#include <toucanRender/Util.h>
+
 #if defined(toucan_VIEW)
 #include <dtk/ui/Init.h>
 #endif // toucan_VIEW
@@ -31,7 +33,6 @@ int main(int argc, char** argv)
         std::cout << "Usage: toucan-test (path to test data)" << std::endl;
         return 1;
     }
-    const std::filesystem::path parentPath = std::filesystem::path(argv[0]).parent_path();
     const std::filesystem::path path(argv[1]);
 
     auto context = dtk::Context::create();
@@ -40,14 +41,7 @@ int main(int argc, char** argv)
     dtk::uiInit(context);
 #endif // toucan_VIEW
 
-    std::vector<std::filesystem::path> searchPath;
-    searchPath.push_back(parentPath);
-#if defined(_WINDOWS)
-    searchPath.push_back(parentPath / ".." / ".." / "..");
-#else // _WINDOWS
-    searchPath.push_back(parentPath / ".." / "..");
-#endif // _WINDOWS
-    auto host = std::make_shared<ImageEffectHost>(context, searchPath);
+    auto host = std::make_shared<ImageEffectHost>(context, getOpenFXPluginPaths(argv[0]));
 
     compTest(path);
     propertySetTest();

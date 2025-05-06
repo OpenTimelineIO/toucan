@@ -185,4 +185,52 @@ namespace toucan
             out.w = std::any_cast<double>(any[3]);
         }
     }
+
+    std::vector<std::filesystem::path> getOpenFXPluginPaths(
+        const std::filesystem::path& executablePath)
+    {
+        const std::filesystem::path parentPath = executablePath.parent_path();
+        std::vector<std::filesystem::path> searchPath;
+
+        // Add executable directory and relative paths
+        searchPath.push_back(parentPath);
+#if defined(_WINDOWS)
+        searchPath.push_back(parentPath / ".." / ".." / "..");
+        // Add standard Windows OpenFX plugin path
+        searchPath.push_back("C:\\Program Files\\Common Files\\OFX\\Plugins");
+#else // _WINDOWS
+        searchPath.push_back(parentPath / ".." / "..");
+#if defined(__APPLE__)
+        // Add standard macOS OpenFX plugin path
+        searchPath.push_back("/Library/OFX/Plugins");
+#else
+        // Add standard Linux/Unix OpenFX plugin path
+        searchPath.push_back("/usr/OFX/Plugins");
+#endif // __APPLE__
+#endif // _WINDOWS
+
+        // Add paths from environment variable OFX_PLUGIN_PATH if it exists
+        if (const char* envPath = std::getenv("OFX_PLUGIN_PATH")) {
+#if defined(_WINDOWS)
+            const char delimiter = ';';
+#else
+            const char delimiter = ':';
+#endif
+            std::string envPathStr(envPath);
+            size_t pos = 0;
+            std::string token;
+            while ((pos = envPathStr.find(delimiter)) != std::string::npos) {
+                token = envPathStr.substr(0, pos);
+                if (!token.empty()) {
+                    searchPath.push_back(token);
+                }
+                envPathStr.erase(0, pos + 1);
+            }
+            if (!envPathStr.empty()) {
+                searchPath.push_back(envPathStr);
+            }
+        }
+
+        return searchPath;
+    }
 }

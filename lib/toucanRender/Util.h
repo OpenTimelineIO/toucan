@@ -48,4 +48,10 @@ namespace toucan
     //! Conversion from any vector.
     void anyToVec(const OTIO_NS::AnyVector&, IMATH_NAMESPACE::V2i&);
     void anyToVec(const OTIO_NS::AnyVector&, IMATH_NAMESPACE::V4f&);
+
+    //! Get standard OpenFX plugin search paths.
+    //! Includes executable directory, standard OS-specific plugin directories,
+    //! and paths from the OFX_PLUGIN_PATH environment variable.
+    std::vector<std::filesystem::path> getOpenFXPluginPaths(
+        const std::filesystem::path& executablePath);
 }

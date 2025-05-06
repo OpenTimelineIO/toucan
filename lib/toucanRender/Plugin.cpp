@@ -49,7 +49,6 @@ namespace toucan
         const std::filesystem::path& path,
         std::vector<std::filesystem::path>& out)
     {
-        _findPlugins(path, out, 0, 2);
+        _findPlugins(path, out, 0, 10);
     }
-
 }

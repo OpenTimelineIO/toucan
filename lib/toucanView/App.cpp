@@ -9,6 +9,8 @@
 #include "ViewModel.h"
 #include "WindowModel.h"
 
+#include <toucanRender/Util.h>
+
 #include <dtk/ui/DialogSystem.h>
 #include <dtk/ui/FileBrowser.h>
 #include <dtk/ui/MessageDialog.h>
@@ -41,15 +43,7 @@ namespace toucan
         
         _timeUnitsModel = std::make_shared<TimeUnitsModel>(context);
 
-        std::vector<std::filesystem::path> searchPath;
-        const std::filesystem::path parentPath = std::filesystem::path(argv[0]).parent_path();
-        searchPath.push_back(parentPath);
-#if defined(_WINDOWS)
-        searchPath.push_back(parentPath / ".." / ".." / "..");
-#else // _WINDOWS
-        searchPath.push_back(parentPath / ".." / "..");
-#endif // _WINDOWS
-        _host = std::make_shared<ImageEffectHost>(context, searchPath);
+        _host = std::make_shared<ImageEffectHost>(context, getOpenFXPluginPaths(getExeName()));
 
         auto fileBrowserSystem = context->getSystem<dtk::FileBrowserSystem>();
         fileBrowserSystem->setNativeFileDialog(false);

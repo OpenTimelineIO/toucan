@@ -199,14 +199,7 @@ namespace toucan
         }
 
         // Create the image host.
-        std::vector<std::filesystem::path> searchPath;
-        searchPath.push_back(parentPath);
-#if defined(_WINDOWS)
-        searchPath.push_back(parentPath / ".." / ".." / "..");
-#else // _WINDOWS
-        searchPath.push_back(parentPath / ".." / "..");
-#endif // _WINDOWS
-        _host = std::make_shared<ImageEffectHost>(_context, searchPath);
+        _host = std::make_shared<ImageEffectHost>(_context, getOpenFXPluginPaths(getExeName()));
 
         // Open the movie file.
         std::shared_ptr<ffmpeg::Write> ffWrite;
