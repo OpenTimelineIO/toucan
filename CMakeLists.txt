@@ -67,7 +67,7 @@ find_package(OpenEXR)
 find_package(minizip)
 find_package(OpenColorIO)
 find_package(OpenImageIO)
-find_package(OTIO)
+find_package(OpenTimelineIO)
 find_package(OpenFX)
 find_package(lunasvg)
 find_package(dtk)
@@ -84,9 +84,6 @@ add_subdirectory(tests)
 
 install(
     FILES cmake/FindOpenFX.cmake
-    DESTINATION lib/cmake/toucan)
-install(
-    FILES cmake/FindOTIO.cmake
     DESTINATION lib/cmake/toucan)
 include(CMakePackageConfigHelpers)
 set(INCLUDE_INSTALL_DIR include/toucan)
