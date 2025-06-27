@@ -1,9 +1,13 @@
 include(ExternalProject)
 
 set(feather_tk_GIT_REPOSITORY "https://github.com/darbyjohnston/feather-tk.git")
-set(feather_tk_GIT_TAG "f99db9721e850978c4ae66c5235466cd2ea649f0")
+set(feather_tk_GIT_TAG "f8103df2aa07a3722930c19ee9093817dd1af0c8")
 
-set(feather_tk_DEPS ZLIB nlohmann_json PNG Freetype lunasvg glfw3 nfd)
+set(feather_tk_DEPS ZLIB nlohmann_json PNG Freetype lunasvg glfw3)
+if(toucan_nfd)
+    list(APPEND feather_tk_DEPS nfd)
+endif()
+
 set(feather_tk_ARGS
     ${toucan_EXTERNAL_PROJECT_ARGS}
     -Dfeather_tk_UI_LIB=ON
