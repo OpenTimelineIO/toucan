@@ -3,7 +3,7 @@
 
 #include "ImageEffectHost.h"
 
-#include "ImageEffect_p.h"
+#include "ImageEffect.h"
 
 #include <feather-tk/core/LogSystem.h>
 

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 // Copyright Contributors to the toucan project.
 
-#include "ImageEffect_p.h"
+#include "ImageEffect.h"
 
 #include <toucanRender/Util.h>
 

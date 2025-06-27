@@ -15,8 +15,7 @@ set(HEADERS
     TimelineAlgo.h
     TimelineWrapper.h
     Util.h)
-set(HEADERS_PRIVATE
-    ImageEffect_p.h)
+set(HEADERS_PRIVATE)
 set(SOURCE
     Comp.cpp
     FFmpeg.cpp
