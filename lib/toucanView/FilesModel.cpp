@@ -5,9 +5,9 @@
 
 #include "PlaybackModel.h"
 
-#include <dtk/core/Error.h>
-#include <dtk/core/Math.h>
-#include <dtk/core/String.h>
+#include <feather-tk/core/Error.h>
+#include <feather-tk/core/Math.h>
+#include <feather-tk/core/String.h>
 
 #include <nlohmann/json.hpp>
 
@@ -15,7 +15,7 @@
 
 namespace toucan
 {
-    DTK_ENUM_IMPL(
+    FEATHER_TK_ENUM_IMPL(
         CompareMode,
         "A",
         "B",
@@ -38,58 +38,93 @@ namespace toucan
     }
 
     FilesModel::FilesModel(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<feather_tk::Settings>& settings,
         const std::shared_ptr<ImageEffectHost>& host) :
         _context(context),
-        _settings(context->getSystem<dtk::Settings>()),
+        _settings(settings),
         _host(host)
     {
         CompareOptions compareOptions;
-        try
+        size_t recentMax = 10;
+        std::vector<std::filesystem::path> recent;
+        if (_settings)
         {
-            const auto json = std::any_cast<nlohmann::json>(_settings->get("FilesModel"));
-            auto i = json.find("CompareMode");
-            if (i != json.end() && i->is_string())
+            try
             {
-                std::stringstream ss(i->get<std::string>());
-                ss >> compareOptions.mode;
+                nlohmann::json json;
+                _settings->get("/FilesModel", json);
+                auto i = json.find("CompareMode");
+                if (i != json.end() && i->is_string())
+                {
+                    std::stringstream ss(i->get<std::string>());
+                    ss >> compareOptions.mode;
+                }
+                i = json.find("StartTime");
+                if (i != json.end() && i->is_boolean())
+                {
+                    compareOptions.startTime = i->get<bool>();
+                }
+                i = json.find("Resize");
+                if (i != json.end() && i->is_boolean())
+                {
+                    compareOptions.resize = i->get<bool>();
+                }
+                i = json.find("RecentMax");
+                if (i != json.end() && i->is_number_unsigned())
+                {
+                    recentMax = i->get<size_t>();
+                }
+                i = json.find("Recent");
+                if (i != json.end() && i->is_array())
+                {
+                    for (auto j = i->begin(); j != i->end(); ++j)
+                    {
+                        if (j->is_string())
+                        {
+                            recent.push_back(std::filesystem::u8path(j->get<std::string>()));
+                        }
+                    }
+                }
             }
-            i = json.find("StartTime");
-            if (i != json.end() && i->is_boolean())
-            {
-                compareOptions.startTime = i->get<bool>();
-            }
-            i = json.find("Resize");
-            if (i != json.end() && i->is_boolean())
-            {
-                compareOptions.resize = i->get<bool>();
-            }
+            catch (const std::exception&)
+            {}
         }
-        catch (const std::exception&)
-        {}
 
-        _files = dtk::ObservableList< std::shared_ptr<File> >::create();
-        _add = dtk::ObservableValue<int>::create(-1);
-        _remove = dtk::ObservableValue<int>::create(-1);
-        _current = dtk::ObservableValue< std::shared_ptr<File> >::create(nullptr);
-        _currentIndex = dtk::ObservableValue<int>::create(-1);
-        _bFile = dtk::ObservableValue<std::shared_ptr<File> >::create();
-        _bIndex = dtk::ObservableValue<int>::create(-1);
-        _compareOptions = dtk::ObservableValue<CompareOptions>::create(compareOptions);
-        _recentFilesModel = dtk::RecentFilesModel::create(context);
+        _files = feather_tk::ObservableList< std::shared_ptr<File> >::create();
+        _add = feather_tk::ObservableValue<int>::create(-1);
+        _remove = feather_tk::ObservableValue<int>::create(-1);
+        _current = feather_tk::ObservableValue< std::shared_ptr<File> >::create(nullptr);
+        _currentIndex = feather_tk::ObservableValue<int>::create(-1);
+        _bFile = feather_tk::ObservableValue<std::shared_ptr<File> >::create();
+        _bIndex = feather_tk::ObservableValue<int>::create(-1);
+        _compareOptions = feather_tk::ObservableValue<CompareOptions>::create(compareOptions);
+        _recentFilesModel = feather_tk::RecentFilesModel::create(context);
+        _recentFilesModel->setRecentMax(recentMax);
+        _recentFilesModel->setRecent(recent);
     }
 
     FilesModel::~FilesModel()
     {
-        nlohmann::json json;
+        if (_settings)
         {
-            std::stringstream ss;
-            ss << _compareOptions->get().mode;
-            json["CompareMode"] = ss.str();
+            nlohmann::json json;
+            {
+                std::stringstream ss;
+                ss << _compareOptions->get().mode;
+                json["CompareMode"] = ss.str();
+            }
+            json["StartTime"] = _compareOptions->get().startTime;
+            json["Resize"] = _compareOptions->get().resize;
+            json["RecentMax"] = _recentFilesModel->getRecentMax();
+            nlohmann::json json2;
+            for (const auto& path : _recentFilesModel->getRecent())
+            {
+                json2.push_back(path.u8string());
+            }
+            json["Recent"] = json2;
+            _settings->set("/FilesModel", json);
         }
-        json["StartTime"] = _compareOptions->get().startTime;
-        json["Resize"] = _compareOptions->get().resize;
-        _settings->set("FilesModel", json);
     }
 
     void FilesModel::open(const std::filesystem::path& path)
@@ -163,27 +198,27 @@ namespace toucan
         _currentTimeObserver.reset();
     }
 
-    std::shared_ptr<dtk::IObservableList<std::shared_ptr<File> > > FilesModel::observeFiles() const
+    std::shared_ptr<feather_tk::IObservableList<std::shared_ptr<File> > > FilesModel::observeFiles() const
     {
         return _files;
     }
 
-    std::shared_ptr<dtk::IObservableValue<int> > FilesModel::observeAdd() const
+    std::shared_ptr<feather_tk::IObservableValue<int> > FilesModel::observeAdd() const
     {
         return _add;
     }
 
-    std::shared_ptr<dtk::IObservableValue<int> > FilesModel::observeRemove() const
+    std::shared_ptr<feather_tk::IObservableValue<int> > FilesModel::observeRemove() const
     {
         return _remove;
     }
 
-    std::shared_ptr<dtk::IObservableValue<std::shared_ptr<File> > > FilesModel::observeCurrent() const
+    std::shared_ptr<feather_tk::IObservableValue<std::shared_ptr<File> > > FilesModel::observeCurrent() const
     {
         return _current;
     }
 
-    std::shared_ptr<dtk::IObservableValue<int> > FilesModel::observeCurrentIndex() const
+    std::shared_ptr<feather_tk::IObservableValue<int> > FilesModel::observeCurrentIndex() const
     {
         return _currentIndex;
     }
@@ -191,7 +226,7 @@ namespace toucan
     void FilesModel::setCurrentIndex(int value)
     {
         const auto& files = _files->get();
-        const int index = dtk::clamp(value, 0, static_cast<int>(files.size()) - 1);
+        const int index = feather_tk::clamp(value, 0, static_cast<int>(files.size()) - 1);
         _current->setIfChanged(index >= 0 ? files[index] : nullptr);
         _currentIndex->setIfChanged(index);
         _fileUpdate();
@@ -230,7 +265,7 @@ namespace toucan
         return _bFile->get();
     }
 
-    std::shared_ptr<dtk::IObservableValue<std::shared_ptr<File> > > FilesModel::observeBFile() const
+    std::shared_ptr<feather_tk::IObservableValue<std::shared_ptr<File> > > FilesModel::observeBFile() const
     {
         return _bFile;
     }
@@ -240,7 +275,7 @@ namespace toucan
         return _bIndex->get();
     }
 
-    std::shared_ptr<dtk::IObservableValue<int> > FilesModel::observeBIndex() const
+    std::shared_ptr<feather_tk::IObservableValue<int> > FilesModel::observeBIndex() const
     {
         return _bIndex;
     }
@@ -248,7 +283,7 @@ namespace toucan
     void FilesModel::setBIndex(int value)
     {
         const auto& files = _files->get();
-        const int index = dtk::clamp(value, -1, static_cast<int>(files.size()) - 1);
+        const int index = feather_tk::clamp(value, -1, static_cast<int>(files.size()) - 1);
         if (_bIndex->setIfChanged(index))
         {
             auto file = _current->get();
@@ -270,7 +305,7 @@ namespace toucan
         return _compareOptions->get();
     }
 
-    std::shared_ptr<dtk::IObservableValue<CompareOptions> > FilesModel::observeCompareOptions() const
+    std::shared_ptr<feather_tk::IObservableValue<CompareOptions> > FilesModel::observeCompareOptions() const
     {
         return _compareOptions;
     }
@@ -286,7 +321,7 @@ namespace toucan
         }
     }
 
-    const std::shared_ptr<dtk::RecentFilesModel>& FilesModel::getRecentFilesModel() const
+    const std::shared_ptr<feather_tk::RecentFilesModel>& FilesModel::getRecentFilesModel() const
     {
         return _recentFilesModel;
     }
@@ -326,7 +361,7 @@ namespace toucan
     {
         if (auto file = _current->get())
         {
-            _currentTimeObserver = dtk::ValueObserver<OTIO_NS::RationalTime>::create(
+            _currentTimeObserver = feather_tk::ValueObserver<OTIO_NS::RationalTime>::create(
                 file->getPlaybackModel()->observeCurrentTime(),
                 [this](const OTIO_NS::RationalTime& value)
                 {

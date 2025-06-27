@@ -7,21 +7,21 @@
 #include "FilesModel.h"
 #include "PlaybackModel.h"
 
-#include <dtk/ui/Action.h>
+#include <feather-tk/ui/Action.h>
 
 namespace toucan
 {
     void TimeMenu::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
-        dtk::Menu::_init(context, parent);
+        feather_tk::Menu::_init(context, parent);
 
-        _actions["Time/FrameStart"] = std::make_shared<dtk::Action>(
+        _actions["Time/FrameStart"] = feather_tk::Action::create(
             "Start Frame",
             "FrameStart",
-            dtk::Key::Up,
+            feather_tk::Key::Up,
             0,
             [this]
             {
@@ -32,12 +32,12 @@ namespace toucan
                         _file->getTimeline());
                 }
             });
-        addItem(_actions["Time/FrameStart"]);
+        addAction(_actions["Time/FrameStart"]);
 
-        _actions["Time/FramePrev"] = std::make_shared<dtk::Action>(
+        _actions["Time/FramePrev"] = feather_tk::Action::create(
             "Previous Frame",
             "FramePrev",
-            dtk::Key::Left,
+            feather_tk::Key::Left,
             0,
             [this]
             {
@@ -48,12 +48,12 @@ namespace toucan
                         _file->getTimeline());
                 }
             });
-        addItem(_actions["Time/FramePrev"]);
+        addAction(_actions["Time/FramePrev"]);
 
-        _actions["Time/FramePrevX10"] = std::make_shared<dtk::Action>(
+        _actions["Time/FramePrevX10"] = feather_tk::Action::create(
             "Previous Frame X10",
-            dtk::Key::Left,
-            static_cast<int>(dtk::KeyModifier::Shift),
+            feather_tk::Key::Left,
+            static_cast<int>(feather_tk::KeyModifier::Shift),
             [this]
             {
                 if (_file)
@@ -63,12 +63,12 @@ namespace toucan
                         _file->getTimeline());
                 }
             });
-        addItem(_actions["Time/FramePrevX10"]);
+        addAction(_actions["Time/FramePrevX10"]);
 
-        _actions["Time/FramePrevX100"] = std::make_shared<dtk::Action>(
+        _actions["Time/FramePrevX100"] = feather_tk::Action::create(
             "Previous Frame X100",
-            dtk::Key::Left,
-            static_cast<int>(dtk::commandKeyModifier),
+            feather_tk::Key::Left,
+            static_cast<int>(feather_tk::commandKeyModifier),
             [this]
             {
                 if (_file)
@@ -78,12 +78,12 @@ namespace toucan
                         _file->getTimeline());
                 }
             });
-        addItem(_actions["Time/FramePrevX100"]);
+        addAction(_actions["Time/FramePrevX100"]);
 
-        _actions["Time/FrameNext"] = std::make_shared<dtk::Action>(
+        _actions["Time/FrameNext"] = feather_tk::Action::create(
             "Next Frame",
             "FrameNext",
-            dtk::Key::Right,
+            feather_tk::Key::Right,
             0,
             [this]
             {
@@ -94,12 +94,12 @@ namespace toucan
                         _file->getTimeline());
                 }
             });
-        addItem(_actions["Time/FrameNext"]);
+        addAction(_actions["Time/FrameNext"]);
 
-        _actions["Time/FrameNextX10"] = std::make_shared<dtk::Action>(
+        _actions["Time/FrameNextX10"] = feather_tk::Action::create(
             "Next Frame X10",
-            dtk::Key::Right,
-            static_cast<int>(dtk::KeyModifier::Shift),
+            feather_tk::Key::Right,
+            static_cast<int>(feather_tk::KeyModifier::Shift),
             [this]
             {
                 if (_file)
@@ -109,12 +109,12 @@ namespace toucan
                         _file->getTimeline());
                 }
             });
-        addItem(_actions["Time/FrameNextX10"]);
+        addAction(_actions["Time/FrameNextX10"]);
 
-        _actions["Time/FrameNextX100"] = std::make_shared<dtk::Action>(
+        _actions["Time/FrameNextX100"] = feather_tk::Action::create(
             "Next Frame X100",
-            dtk::Key::Right,
-            static_cast<int>(dtk::commandKeyModifier),
+            feather_tk::Key::Right,
+            static_cast<int>(feather_tk::commandKeyModifier),
             [this]
             {
                 if (_file)
@@ -124,12 +124,12 @@ namespace toucan
                         _file->getTimeline());
                 }
             });
-        addItem(_actions["Time/FrameNextX100"]);
+        addAction(_actions["Time/FrameNextX100"]);
 
-        _actions["Time/FrameEnd"] = std::make_shared<dtk::Action>(
+        _actions["Time/FrameEnd"] = feather_tk::Action::create(
             "End Frame",
             "FrameEnd",
-            dtk::Key::Down,
+            feather_tk::Key::Down,
             0,
             [this]
             {
@@ -140,14 +140,14 @@ namespace toucan
                         _file->getTimeline());
                 }
             });
-        addItem(_actions["Time/FrameEnd"]);
+        addAction(_actions["Time/FrameEnd"]);
 
         addDivider();
 
-        _actions["Time/ClipNext"] = std::make_shared<dtk::Action>(
+        _actions["Time/ClipNext"] = feather_tk::Action::create(
             "Next Clip",
-            dtk::Key::Right,
-            static_cast<int>(dtk::KeyModifier::Alt),
+            feather_tk::Key::Right,
+            static_cast<int>(feather_tk::KeyModifier::Alt),
             [this]
             {
                 if (_file)
@@ -157,12 +157,12 @@ namespace toucan
                         _file->getTimeline());
                 }
             });
-        addItem(_actions["Time/ClipNext"]);
+        addAction(_actions["Time/ClipNext"]);
 
-        _actions["Time/ClipPrev"] = std::make_shared<dtk::Action>(
+        _actions["Time/ClipPrev"] = feather_tk::Action::create(
             "Previous Clip",
-            dtk::Key::Left,
-            static_cast<int>(dtk::KeyModifier::Alt),
+            feather_tk::Key::Left,
+            static_cast<int>(feather_tk::KeyModifier::Alt),
             [this]
             {
                 if (_file)
@@ -172,13 +172,13 @@ namespace toucan
                         _file->getTimeline());
                 }
             });
-        addItem(_actions["Time/ClipPrev"]);
+        addAction(_actions["Time/ClipPrev"]);
 
         addDivider();
 
-        _actions["Time/InPointSet"] = std::make_shared<dtk::Action>(
+        _actions["Time/InPointSet"] = feather_tk::Action::create(
             "Set In Point",
-            dtk::Key::I,
+            feather_tk::Key::I,
             0,
             [this]
             {
@@ -188,12 +188,12 @@ namespace toucan
                         _file->getPlaybackModel()->getCurrentTime());
                 }
             });
-        addItem(_actions["Time/InPointSet"]);
+        addAction(_actions["Time/InPointSet"]);
 
-        _actions["Time/InPointReset"] = std::make_shared<dtk::Action>(
+        _actions["Time/InPointReset"] = feather_tk::Action::create(
             "Reset In Point",
-            dtk::Key::I,
-            static_cast<int>(dtk::KeyModifier::Shift),
+            feather_tk::Key::I,
+            static_cast<int>(feather_tk::KeyModifier::Shift),
             [this]
             {
                 if (_file)
@@ -201,11 +201,11 @@ namespace toucan
                     _file->getPlaybackModel()->resetInPoint();
                 }
             });
-        addItem(_actions["Time/InPointReset"]);
+        addAction(_actions["Time/InPointReset"]);
 
-        _actions["Time/OutPointSet"] = std::make_shared<dtk::Action>(
+        _actions["Time/OutPointSet"] = feather_tk::Action::create(
             "Set Out Point",
-            dtk::Key::O,
+            feather_tk::Key::O,
             0,
             [this]
             {
@@ -215,12 +215,12 @@ namespace toucan
                         _file->getPlaybackModel()->getCurrentTime());
                 }
             });
-        addItem(_actions["Time/OutPointSet"]);
+        addAction(_actions["Time/OutPointSet"]);
 
-        _actions["Time/OutPointReset"] = std::make_shared<dtk::Action>(
+        _actions["Time/OutPointReset"] = feather_tk::Action::create(
             "Reset Out Point",
-            dtk::Key::O,
-            static_cast<int>(dtk::KeyModifier::Shift),
+            feather_tk::Key::O,
+            static_cast<int>(feather_tk::KeyModifier::Shift),
             [this]
             {
                 if (_file)
@@ -228,12 +228,12 @@ namespace toucan
                     _file->getPlaybackModel()->resetOutPoint();
                 }
             });
-        addItem(_actions["Time/OutPointReset"]);
+        addAction(_actions["Time/OutPointReset"]);
 
-        _actions["Time/InOutPointReset"] = std::make_shared<dtk::Action>(
+        _actions["Time/InOutPointReset"] = feather_tk::Action::create(
             "Reset In/Out Points",
-            dtk::Key::P,
-            static_cast<int>(dtk::KeyModifier::Shift),
+            feather_tk::Key::P,
+            static_cast<int>(feather_tk::KeyModifier::Shift),
             [this]
             {
                 if (_file)
@@ -241,12 +241,12 @@ namespace toucan
                     _file->getPlaybackModel()->resetInOutPoints();
                 }
             });
-        addItem(_actions["Time/InOutPointReset"]);
+        addAction(_actions["Time/InOutPointReset"]);
 
-        _actions["Time/InOutPointSelection"] = std::make_shared<dtk::Action>(
+        _actions["Time/InOutPointSelection"] = feather_tk::Action::create(
             "Set In/Out Points To Selection",
-            dtk::Key::P,
-            static_cast<int>(dtk::KeyModifier::Shift) | static_cast<int>(dtk::commandKeyModifier),
+            feather_tk::Key::P,
+            static_cast<int>(feather_tk::KeyModifier::Shift) | static_cast<int>(feather_tk::commandKeyModifier),
             [this]
             {
                 if (_file)
@@ -268,30 +268,30 @@ namespace toucan
                     }
                 }
             });
-        addItem(_actions["Time/InOutPointSelection"]);
+        addAction(_actions["Time/InOutPointSelection"]);
 
-        _fileObserver = dtk::ValueObserver<std::shared_ptr<File> >::create(
+        _fileObserver = feather_tk::ValueObserver<std::shared_ptr<File> >::create(
             app->getFilesModel()->observeCurrent(),
             [this](const std::shared_ptr<File>& file)
             {
                 _file = file;
                 if (_file)
                 {
-                    _timeRangeObserver = dtk::ValueObserver<OTIO_NS::TimeRange>::create(
+                    _timeRangeObserver = feather_tk::ValueObserver<OTIO_NS::TimeRange>::create(
                         _file->getPlaybackModel()->observeTimeRange(),
                         [this](const OTIO_NS::TimeRange& value)
                         {
                             _timeRange = value;
                             _menuUpdate();
                         });
-                    _inOutRangeObserver = dtk::ValueObserver<OTIO_NS::TimeRange>::create(
+                    _inOutRangeObserver = feather_tk::ValueObserver<OTIO_NS::TimeRange>::create(
                         _file->getPlaybackModel()->observeInOutRange(),
                         [this](const OTIO_NS::TimeRange& value)
                         {
                             _inOutRange = value;
                             _menuUpdate();
                         });
-                    _selectionObserver = dtk::ListObserver<SelectionItem>::create(
+                    _selectionObserver = feather_tk::ListObserver<SelectionItem>::create(
                         _file->getSelectionModel()->observeSelection(),
                         [this](const std::vector<SelectionItem>& value)
                         {
@@ -312,16 +312,16 @@ namespace toucan
     {}
 
     std::shared_ptr<TimeMenu> TimeMenu::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
         auto out = std::shared_ptr<TimeMenu>(new TimeMenu);
         out->_init(context, app, parent);
         return out;
     }
 
-    const std::map<std::string, std::shared_ptr<dtk::Action> >& TimeMenu::getActions() const
+    const std::map<std::string, std::shared_ptr<feather_tk::Action> >& TimeMenu::getActions() const
     {
         return _actions;
     }
@@ -329,21 +329,21 @@ namespace toucan
     void TimeMenu::_menuUpdate()
     {
         const bool file = _file.get();
-        setItemEnabled(_actions["Time/FrameStart"], file);
-        setItemEnabled(_actions["Time/FramePrev"], file);
-        setItemEnabled(_actions["Time/FramePrevX10"], file);
-        setItemEnabled(_actions["Time/FramePrevX100"], file);
-        setItemEnabled(_actions["Time/FrameNext"], file);
-        setItemEnabled(_actions["Time/FrameNextX10"], file);
-        setItemEnabled(_actions["Time/FrameNextX100"], file);
-        setItemEnabled(_actions["Time/FrameEnd"], file);
-        setItemEnabled(_actions["Time/ClipPrev"], file);
-        setItemEnabled(_actions["Time/ClipNext"], file);
-        setItemEnabled(_actions["Time/InPointSet"], file);
-        setItemEnabled(_actions["Time/OutPointSet"], file);
-        setItemEnabled(_actions["Time/InPointReset"], file && _inOutRange != _timeRange);
-        setItemEnabled(_actions["Time/OutPointReset"], file && _inOutRange != _timeRange);
-        setItemEnabled(_actions["Time/InOutPointReset"], file && _inOutRange != _timeRange);
-        setItemEnabled(_actions["Time/InOutPointSelection"], file && _selection);
+        setEnabled(_actions["Time/FrameStart"], file);
+        setEnabled(_actions["Time/FramePrev"], file);
+        setEnabled(_actions["Time/FramePrevX10"], file);
+        setEnabled(_actions["Time/FramePrevX100"], file);
+        setEnabled(_actions["Time/FrameNext"], file);
+        setEnabled(_actions["Time/FrameNextX10"], file);
+        setEnabled(_actions["Time/FrameNextX100"], file);
+        setEnabled(_actions["Time/FrameEnd"], file);
+        setEnabled(_actions["Time/ClipPrev"], file);
+        setEnabled(_actions["Time/ClipNext"], file);
+        setEnabled(_actions["Time/InPointSet"], file);
+        setEnabled(_actions["Time/OutPointSet"], file);
+        setEnabled(_actions["Time/InPointReset"], file && _inOutRange != _timeRange);
+        setEnabled(_actions["Time/OutPointReset"], file && _inOutRange != _timeRange);
+        setEnabled(_actions["Time/InOutPointReset"], file && _inOutRange != _timeRange);
+        setEnabled(_actions["Time/InOutPointSelection"], file && _selection);
     }
 }

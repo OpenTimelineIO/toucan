@@ -19,30 +19,31 @@
 #include "TimelineWidget.h"
 #include "ToolBar.h"
 
-#include <dtk/ui/DialogSystem.h>
-#include <dtk/ui/MessageDialog.h>
-#include <dtk/ui/Settings.h>
-#include <dtk/core/String.h>
+#include <feather-tk/ui/DialogSystem.h>
+#include <feather-tk/ui/MessageDialog.h>
+#include <feather-tk/ui/Settings.h>
+#include <feather-tk/core/String.h>
 
 #include <nlohmann/json.hpp>
 
 namespace toucan
 {
     void MainWindow::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
         const std::string& name,
-        const dtk::Size2I& size)
+        const feather_tk::Size2I& size)
     {
-        dtk::Window::_init(context, name, size);
+        feather_tk::Window::_init(context, name, size);
 
         _app = app;
+        _settings = app->getSettings();
 
         float displayScale = 0.F;
         try
         {
-            auto settings = context->getSystem<dtk::Settings>();
-            const auto json = std::any_cast<nlohmann::json>(settings->get("MainWindow"));
+            nlohmann::json json;
+            _settings->get("/MainWindow", json);
             auto i = json.find("DisplayScale");
             if (i != json.end() && i->is_number())
             {
@@ -53,15 +54,15 @@ namespace toucan
         {}
         setDisplayScale(displayScale);
 
-        _layout = dtk::VerticalLayout::create(context, shared_from_this());
-        _layout->setSpacingRole(dtk::SizeRole::None);
+        _layout = feather_tk::VerticalLayout::create(context, shared_from_this());
+        _layout->setSpacingRole(feather_tk::SizeRole::None);
 
         _menuBar = MenuBar::create(
             context,
             app,
             std::dynamic_pointer_cast<MainWindow>(shared_from_this()),
             _layout);
-        dtk::Divider::create(context, dtk::Orientation::Vertical, _layout);
+        feather_tk::Divider::create(context, feather_tk::Orientation::Vertical, _layout);
 
         _toolBar = ToolBar::create(
             context,
@@ -69,19 +70,19 @@ namespace toucan
             std::dynamic_pointer_cast<MainWindow>(shared_from_this()),
             _menuBar->getActions(),
             _layout);
-        _toolBarDivider = dtk::Divider::create(context, dtk::Orientation::Vertical, _layout);
+        _toolBarDivider = feather_tk::Divider::create(context, feather_tk::Orientation::Vertical, _layout);
 
-        _vSplitter = dtk::Splitter::create(context, dtk::Orientation::Vertical, _layout);
-        _vSplitter->setSplit({ .7F, .3F });
-        _vSplitter->setStretch(dtk::Stretch::Expanding);
-        _hSplitter = dtk::Splitter::create(context, dtk::Orientation::Horizontal, _vSplitter);
-        _hSplitter->setSplit({ .75F, .25F });
+        _vSplitter = feather_tk::Splitter::create(context, feather_tk::Orientation::Vertical, _layout);
+        _vSplitter->setSplit({ .7F });
+        _vSplitter->setStretch(feather_tk::Stretch::Expanding);
+        _hSplitter = feather_tk::Splitter::create(context, feather_tk::Orientation::Horizontal, _vSplitter);
+        _hSplitter->setSplit({ .75F });
 
-        _tabWidget = dtk::TabWidget::create(context, _hSplitter);
+        _tabWidget = feather_tk::TabWidget::create(context, _hSplitter);
         _tabWidget->setTabsClosable(true);
-        _tabWidget->setVStretch(dtk::Stretch::Expanding);
+        _tabWidget->setVStretch(feather_tk::Stretch::Expanding);
 
-        _toolWidget = dtk::TabWidget::create(context, _hSplitter);
+        _toolWidget = feather_tk::TabWidget::create(context, _hSplitter);
         _toolWidgets.push_back(CompareTool::create(context, app));
         _toolWidgets.push_back(DetailsTool::create(context, app));
         _toolWidgets.push_back(JSONTool::create(context, app));
@@ -94,22 +95,22 @@ namespace toucan
             _toolWidget->addTab(toolWidget->getText(), toolWidget);
         }
 
-        _playbackLayout = dtk::VerticalLayout::create(context, _vSplitter);
-        _playbackLayout->setSpacingRole(dtk::SizeRole::None);
+        _playbackLayout = feather_tk::VerticalLayout::create(context, _vSplitter);
+        _playbackLayout->setSpacingRole(feather_tk::SizeRole::None);
 
         _playbackBar = PlaybackBar::create(context, app, _playbackLayout);
 
-        auto divider = dtk::Divider::create(context, dtk::Orientation::Vertical, _playbackLayout);
+        auto divider = feather_tk::Divider::create(context, feather_tk::Orientation::Vertical, _playbackLayout);
 
         _timelineWidget = TimelineWidget::create(context, app, _playbackLayout);
-        _timelineWidget->setVStretch(dtk::Stretch::Expanding);
+        _timelineWidget->setVStretch(feather_tk::Stretch::Expanding);
 
-        _infoBarDivider = dtk::Divider::create(context, dtk::Orientation::Vertical, _layout);
+        _infoBarDivider = feather_tk::Divider::create(context, feather_tk::Orientation::Vertical, _layout);
 
         _infoBar = InfoBar::create(context, app, _layout);
 
         std::weak_ptr<App> appWeak(app);
-        _tabWidget->setCallback(
+        _tabWidget->setTabCallback(
             [appWeak](int index)
             {
                 if (auto app = appWeak.lock())
@@ -126,14 +127,14 @@ namespace toucan
                 }
             });
 
-        _filesObserver = dtk::ListObserver<std::shared_ptr<File> >::create(
+        _filesObserver = feather_tk::ListObserver<std::shared_ptr<File> >::create(
             app->getFilesModel()->observeFiles(),
             [this](const std::vector<std::shared_ptr<File> >& files)
             {
                 _files = files;
             });
 
-        _addObserver = dtk::ValueObserver<int>::create(
+        _addObserver = feather_tk::ValueObserver<int>::create(
             app->getFilesModel()->observeAdd(),
             [this, appWeak](int index)
             {
@@ -144,14 +145,14 @@ namespace toucan
                     auto file = _files[index];
                     auto tab = FileTab::create(context, app, file);
                     _tabWidget->addTab(
-                        dtk::elide(file->getPath().filename().string()),
+                        feather_tk::elide(file->getPath().filename().string()),
                         tab,
                         file->getPath().string());
                     _fileTabs[file] = tab;
                 }
             });
 
-        _removeObserver = dtk::ValueObserver<int>::create(
+        _removeObserver = feather_tk::ValueObserver<int>::create(
             app->getFilesModel()->observeRemove(),
             [this, appWeak](int index)
             {
@@ -167,14 +168,14 @@ namespace toucan
                 }
             });
 
-        _fileObserver = dtk::ValueObserver<int>::create(
+        _fileObserver = feather_tk::ValueObserver<int>::create(
             app->getFilesModel()->observeCurrentIndex(),
             [this](int index)
             {
                 _tabWidget->setCurrentTab(index);
             });
 
-        _componentsObserver = dtk::MapObserver<WindowComponent, bool>::create(
+        _componentsObserver = feather_tk::MapObserver<WindowComponent, bool>::create(
             app->getWindowModel()->observeComponents(),
             [this](const std::map<WindowComponent, bool>& value)
             {
@@ -193,7 +194,7 @@ namespace toucan
                 _infoBar->setVisible(i->second);
             });
 
-        _tooltipsObserver = dtk::ValueObserver<bool>::create(
+        _tooltipsObserver = feather_tk::ValueObserver<bool>::create(
             app->getWindowModel()->observeTooltips(),
             [this](bool value)
             {
@@ -205,40 +206,38 @@ namespace toucan
     {
         nlohmann::json json;
         json["DisplayScale"] = getDisplayScale();
-        auto context = getContext();
-        auto settings = context->getSystem<dtk::Settings>();
-        settings->set("MainWindow", json);
+        _settings->set("/MainWindow", json);
     }
 
     std::shared_ptr<MainWindow> MainWindow::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
         const std::string& name,
-        const dtk::Size2I& size)
+        const feather_tk::Size2I& size)
     {
         auto out = std::shared_ptr<MainWindow>(new MainWindow);
         out->_init(context, app, name, size);
         return out;
     }
 
-    void MainWindow::setGeometry(const dtk::Box2I& value)
+    void MainWindow::setGeometry(const feather_tk::Box2I& value)
     {
-        dtk::Window::setGeometry(value);
+        feather_tk::Window::setGeometry(value);
         _layout->setGeometry(value);
     }
 
-    void MainWindow::sizeHintEvent(const dtk::SizeHintEvent& event)
+    void MainWindow::sizeHintEvent(const feather_tk::SizeHintEvent& event)
     {
-        dtk::Window::sizeHintEvent(event);
+        feather_tk::Window::sizeHintEvent(event);
         _setSizeHint(_layout->getSizeHint());
     }
 
-    void MainWindow::keyPressEvent(dtk::KeyEvent& event)
+    void MainWindow::keyPressEvent(feather_tk::KeyEvent& event)
     {
         event.accept = _menuBar->shortcut(event.key, event.modifiers);
     }
 
-    void MainWindow::keyReleaseEvent(dtk::KeyEvent& event)
+    void MainWindow::keyReleaseEvent(feather_tk::KeyEvent& event)
     {
         event.accept = true;
     }
@@ -263,9 +262,9 @@ namespace toucan
                 }
                 if (!errors.empty())
                 {
-                    context->getSystem<dtk::DialogSystem>()->message(
+                    context->getSystem<feather_tk::DialogSystem>()->message(
                         "ERROR",
-                        dtk::join(errors, '\n'),
+                        feather_tk::join(errors, '\n'),
                         getWindow());
                 }
             }

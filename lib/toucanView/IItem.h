@@ -7,9 +7,9 @@
 #include <toucanView/TimeLayout.h>
 #include <toucanView/TimeUnitsModel.h>
 
-#include <dtk/ui/IWidget.h>
-#include <dtk/ui/Menu.h>
-#include <dtk/core/LRUCache.h>
+#include <feather-tk/ui/IWidget.h>
+#include <feather-tk/ui/Menu.h>
+#include <feather-tk/core/LRUCache.h>
 
 #include <opentimelineio/timeline.h>
 
@@ -24,7 +24,7 @@ namespace toucan
         std::shared_ptr<App> app;
         std::shared_ptr<File> file;
         std::shared_ptr<ThumbnailGenerator> thumbnailGenerator;
-        std::shared_ptr<dtk::LRUCache<std::string, std::shared_ptr<dtk::Image> > > thumbnailCache;
+        std::shared_ptr<feather_tk::LRUCache<std::string, std::shared_ptr<feather_tk::Image> > > thumbnailCache;
     };
 
     //! Base class for timeline items.
@@ -32,7 +32,7 @@ namespace toucan
     {
     protected:
         void _init(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const ItemData&,
             const OTIO_NS::SerializableObject::Retainer<OTIO_NS::SerializableObjectWithMetadata>&,
             const OTIO_NS::TimeRange&,
@@ -46,7 +46,7 @@ namespace toucan
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::SerializableObjectWithMetadata>& getObject() const;
         
         //! Get the item selection rectangle.
-        const dtk::Box2I& getSelectionRect() const;
+        const feather_tk::Box2I& getSelectionRect() const;
 
         //! Get whether the item is selected.
         bool isSelected() const;
@@ -54,23 +54,23 @@ namespace toucan
         //! Set whether the item is selected.
         void setSelected(bool);
 
-        void setGeometry(const dtk::Box2I&) override;
-        void mousePressEvent(dtk::MouseClickEvent&) override;
-        void mouseReleaseEvent(dtk::MouseClickEvent&) override;
+        void setGeometry(const feather_tk::Box2I&) override;
+        void mousePressEvent(feather_tk::MouseClickEvent&) override;
+        void mouseReleaseEvent(feather_tk::MouseClickEvent&) override;
 
     protected:
         virtual void _timeUnitsUpdate();
-        virtual void _buildMenu(const std::shared_ptr<dtk::Menu>&);
+        virtual void _buildMenu(const std::shared_ptr<feather_tk::Menu>&);
 
         std::weak_ptr<App> _app;
         std::weak_ptr<File> _file;
         OTIO_NS::SerializableObject::Retainer<OTIO_NS::SerializableObjectWithMetadata> _object;
         TimeUnits _timeUnits = TimeUnits::First;
-        dtk::Box2I _selectionRect;
+        feather_tk::Box2I _selectionRect;
         bool _selected = false;
-        std::shared_ptr<dtk::Menu> _menu;
+        std::shared_ptr<feather_tk::Menu> _menu;
 
     private:
-        std::shared_ptr<dtk::ValueObserver<TimeUnits> > _timeUnitsObserver;
+        std::shared_ptr<feather_tk::ValueObserver<TimeUnits> > _timeUnitsObserver;
     };
 }

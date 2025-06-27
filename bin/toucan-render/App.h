@@ -7,7 +7,7 @@
 #include <toucanRender/ImageGraph.h>
 #include <toucanRender/TimelineWrapper.h>
 
-#include <dtk/core/IApp.h>
+#include <feather-tk/core/IApp.h>
 
 #include <OpenImageIO/imagebuf.h>
 
@@ -19,11 +19,11 @@ extern "C"
 
 namespace toucan
 {
-    class App : public dtk::IApp
+    class App : public feather_tk::IApp
     {
     protected:
         void _init(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             std::vector<std::string>&);
 
         App();
@@ -32,7 +32,7 @@ namespace toucan
         ~App();
         
         static std::shared_ptr<App> create(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             std::vector<std::string>&);
 
         void run() override;

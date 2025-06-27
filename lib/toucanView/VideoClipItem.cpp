@@ -9,7 +9,7 @@
 
 #include <toucanRender/Util.h>
 
-#include <dtk/ui/DrawUtil.h>
+#include <feather-tk/ui/DrawUtil.h>
 
 #include <opentimelineio/externalReference.h>
 #include <opentimelineio/imageSequenceReference.h>
@@ -17,11 +17,11 @@
 namespace toucan
 {
     void VideoClipItem::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const ItemData& data,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Clip>& clip,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>& timeline,
-        const dtk::Color4F& color,
+        const feather_tk::Color4F& color,
         const std::shared_ptr<IWidget>& parent)
     {
         OTIO_NS::TimeRange timeRange = clip->transformed_time_range(
@@ -50,8 +50,8 @@ namespace toucan
 
         setTooltip(clip->schema_name() + ": " + _text);
 
-        _layout = dtk::VerticalLayout::create(context, shared_from_this());
-        _layout->setSpacingRole(dtk::SizeRole::SpacingTool);
+        _layout = feather_tk::VerticalLayout::create(context, shared_from_this());
+        _layout->setSpacingRole(feather_tk::SizeRole::SpacingTool);
 
         _label = ItemLabel::create(context, _layout);
         _label->setName(_text);
@@ -93,7 +93,7 @@ namespace toucan
 
         _textUpdate();
 
-        _thumbnailsObserver = dtk::ValueObserver<bool>::create(
+        _thumbnailsObserver = feather_tk::ValueObserver<bool>::create(
             data.app->getWindowModel()->observeThumbnails(),
             [this](bool value)
             {
@@ -105,11 +105,11 @@ namespace toucan
     {}
 
     std::shared_ptr<VideoClipItem> VideoClipItem::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const ItemData& data,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Clip>& clip,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>& timeline,
-        const dtk::Color4F& color,
+        const feather_tk::Color4F& color,
         const std::shared_ptr<IWidget>& parent)
     {
         auto out = std::make_shared<VideoClipItem>();
@@ -126,18 +126,18 @@ namespace toucan
         }
     }
 
-    void VideoClipItem::setGeometry(const dtk::Box2I& value)
+    void VideoClipItem::setGeometry(const feather_tk::Box2I& value)
     {
         IItem::setGeometry(value);
         _layout->setGeometry(value);
     }
 
-    dtk::Box2I VideoClipItem::getChildrenClipRect() const
+    feather_tk::Box2I VideoClipItem::getChildrenClipRect() const
     {
-        return dtk::margin(getGeometry(), -_size.border, 0, -_size.border, 0);
+        return feather_tk::margin(getGeometry(), -_size.border, 0, -_size.border, 0);
     }
 
-    void VideoClipItem::sizeHintEvent(const dtk::SizeHintEvent& event)
+    void VideoClipItem::sizeHintEvent(const feather_tk::SizeHintEvent& event)
     {
         IItem::sizeHintEvent(event);
         const bool displayScaleChanged = event.displayScale != _size.displayScale;
@@ -145,26 +145,26 @@ namespace toucan
         {
             _size.init = false;
             _size.displayScale = event.displayScale;
-            _size.border = event.style->getSizeRole(dtk::SizeRole::Border, event.displayScale);
+            _size.border = event.style->getSizeRole(feather_tk::SizeRole::Border, event.displayScale);
         }
-        dtk::Size2I sizeHint = _layout->getSizeHint();
+        feather_tk::Size2I sizeHint = _layout->getSizeHint();
         _setSizeHint(sizeHint);
     }
     
     void VideoClipItem::drawEvent(
-        const dtk::Box2I& drawRect,
-        const dtk::DrawEvent& event)
+        const feather_tk::Box2I& drawRect,
+        const feather_tk::DrawEvent& event)
     {
         IItem::drawEvent(drawRect, event);
-        dtk::Box2I g = _label->getGeometry();
+        feather_tk::Box2I g = _label->getGeometry();
         if (_thumbnailsWidget->isVisible(true))
         {
-            const dtk::Box2I& g2 = _thumbnailsWidget->getGeometry();
-            g = dtk::Box2I(g.min, g2.max);
+            const feather_tk::Box2I& g2 = _thumbnailsWidget->getGeometry();
+            g = feather_tk::Box2I(g.min, g2.max);
         }
         event.render->drawRect(
-            dtk::margin(g, -_size.border, 0, -_size.border, 0),
-            _selected ? event.style->getColorRole(dtk::ColorRole::Yellow) : _color);
+            feather_tk::margin(g, -_size.border, 0, -_size.border, 0),
+            _selected ? event.style->getColorRole(feather_tk::ColorRole::Yellow) : _color);
     }
 
     void VideoClipItem::_timeUnitsUpdate()
@@ -172,11 +172,11 @@ namespace toucan
         _textUpdate();
     }
 
-    void VideoClipItem::_buildMenu(const std::shared_ptr<dtk::Menu>& menu)
+    void VideoClipItem::_buildMenu(const std::shared_ptr<feather_tk::Menu>& menu)
     {
         if (auto externalReference = dynamic_cast<OTIO_NS::ExternalReference*>(_clip->media_reference()))
         {
-            auto action = std::make_shared<dtk::Action>(
+            auto action = feather_tk::Action::create(
                 "Open Media",
                 [this, externalReference]
                 {
@@ -185,12 +185,12 @@ namespace toucan
                     auto app = _app.lock();
                     app->open(path);
                 });
-            menu->addItem(action);
+            menu->addAction(action);
             menu->addDivider();
         }
         else if (auto sequenceRef = dynamic_cast<OTIO_NS::ImageSequenceReference*>(_clip->media_reference()))
         {
-            auto action = std::make_shared<dtk::Action>(
+            auto action = feather_tk::Action::create(
                 "Open Image Sequence",
                 [this, sequenceRef]
                 {
@@ -204,7 +204,7 @@ namespace toucan
                     auto app = _app.lock();
                     app->open(path);
                 });
-            menu->addItem(action);
+            menu->addAction(action);
             menu->addDivider();
         }
         IItem::_buildMenu(menu);

@@ -3,18 +3,18 @@
 
 #pragma once
 
-#include <dtk/ui/IWidget.h>
+#include <feather-tk/ui/IWidget.h>
 
 #include <opentimelineio/version.h>
 
 namespace toucan
 {
     //! Base class for widgets in a time layout.
-    class ITimeWidget : public dtk::IWidget
+    class ITimeWidget : public feather_tk::IWidget
     {
     protected:
         void _init(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const OTIO_NS::TimeRange&,
             const std::string& objectName,
             const std::shared_ptr<IWidget>& parent);
@@ -51,7 +51,7 @@ namespace toucan
     {
     protected:
         void _init(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const OTIO_NS::TimeRange&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -60,12 +60,12 @@ namespace toucan
 
         //! Create a new layout.
         static std::shared_ptr<TimeLayout> create(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const OTIO_NS::TimeRange&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const dtk::Box2I&) override;
-        void sizeHintEvent(const dtk::SizeHintEvent&) override;
+        void setGeometry(const feather_tk::Box2I&) override;
+        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
     };
 
     //! Time stack layout.
@@ -73,7 +73,7 @@ namespace toucan
     {
     protected:
         void _init(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const OTIO_NS::TimeRange&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -82,12 +82,12 @@ namespace toucan
 
         //! Create a new layout.
         static std::shared_ptr<TimeStackLayout> create(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const OTIO_NS::TimeRange&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const dtk::Box2I&) override;
-        void sizeHintEvent(const dtk::SizeHintEvent&) override;
+        void setGeometry(const feather_tk::Box2I&) override;
+        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
 
     private:
         struct SizeData

@@ -10,7 +10,7 @@
 namespace toucan
 {
     void IItem::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const ItemData& data,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::SerializableObjectWithMetadata>& object,
         const OTIO_NS::TimeRange& timeRange,
@@ -23,7 +23,7 @@ namespace toucan
         _file = data.file;
         _object = object;
 
-        _timeUnitsObserver = dtk::ValueObserver<TimeUnits>::create(
+        _timeUnitsObserver = feather_tk::ValueObserver<TimeUnits>::create(
             data.app->getTimeUnitsModel()->observeTimeUnits(),
             [this](TimeUnits value)
             {
@@ -40,7 +40,7 @@ namespace toucan
         return _object;
     }
 
-    const dtk::Box2I& IItem::getSelectionRect() const
+    const feather_tk::Box2I& IItem::getSelectionRect() const
     {
         return _selectionRect;
     }
@@ -58,20 +58,20 @@ namespace toucan
         _setDrawUpdate();
     }
 
-    void IItem::setGeometry(const dtk::Box2I& value)
+    void IItem::setGeometry(const feather_tk::Box2I& value)
     {
         ITimeWidget::setGeometry(value);
         _selectionRect = value;
     }
 
-    void IItem::mousePressEvent(dtk::MouseClickEvent& event)
+    void IItem::mousePressEvent(feather_tk::MouseClickEvent& event)
     {
         ITimeWidget::mousePressEvent(event);
         if ((1 == event.button && 0 == event.modifiers) ||
-            (0 == event.button && static_cast<int>(dtk::KeyModifier::Super) == event.modifiers))
+            (0 == event.button && static_cast<int>(feather_tk::KeyModifier::Super) == event.modifiers))
         {
             event.accept = true;
-            _menu = dtk::Menu::create(getContext());
+            _menu = feather_tk::Menu::create(getContext());
             _buildMenu(_menu);
             auto weak = std::weak_ptr<IItem>(std::dynamic_pointer_cast<IItem>(shared_from_this()));
             _menu->setCloseCallback(
@@ -84,11 +84,11 @@ namespace toucan
                 });
             _menu->open(
                 getWindow(),
-                dtk::Box2I(event.pos.x, event.pos.y, 0, 0));
+                feather_tk::Box2I(event.pos.x, event.pos.y, 0, 0));
         }
     }
 
-    void IItem::mouseReleaseEvent(dtk::MouseClickEvent& event)
+    void IItem::mouseReleaseEvent(feather_tk::MouseClickEvent& event)
     {
         ITimeWidget::mouseReleaseEvent(event);
     }
@@ -96,9 +96,9 @@ namespace toucan
     void IItem::_timeUnitsUpdate()
     {}
 
-    void IItem::_buildMenu(const std::shared_ptr<dtk::Menu>& menu)
+    void IItem::_buildMenu(const std::shared_ptr<feather_tk::Menu>& menu)
     {
-        auto action = std::make_shared<dtk::Action>(
+        auto action = feather_tk::Action::create(
             "Go To Start",
             [this]
             {
@@ -107,13 +107,13 @@ namespace toucan
                     file->getPlaybackModel()->setCurrentTime(_timeRange.start_time());
                 }
             });
-        menu->addItem(action);
+        menu->addAction(action);
 
         menu->addDivider();
 
         if (_timeRange.duration().value() > 1.0)
         {
-            action = std::make_shared<dtk::Action>(
+            action = feather_tk::Action::create(
                 "Set In/Out Points",
                 [this]
                 {
@@ -122,10 +122,10 @@ namespace toucan
                         file->getPlaybackModel()->setInOutRange(_timeRange);
                     }
                 });
-            menu->addItem(action);
+            menu->addAction(action);
         }
 
-        action = std::make_shared<dtk::Action>(
+        action = feather_tk::Action::create(
             "Reset In/Out Points",
             [this]
             {
@@ -134,7 +134,7 @@ namespace toucan
                     file->getPlaybackModel()->resetInOutPoints();
                 }
             });
-        menu->addItem(action);
+        menu->addAction(action);
         bool enabled = true;
         if (auto file = _file.lock())
         {
@@ -142,6 +142,6 @@ namespace toucan
                 file->getPlaybackModel()->getInOutRange() !=
                 file->getPlaybackModel()->getTimeRange();
         }
-        menu->setItemEnabled(action, enabled);
+        menu->setEnabled(action, enabled);
     }
 }

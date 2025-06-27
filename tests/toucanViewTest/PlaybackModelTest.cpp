@@ -17,32 +17,32 @@ namespace toucan
         class Test
         {
         public:
-            Test(const std::shared_ptr<dtk::Context>& context)
+            Test(const std::shared_ptr<feather_tk::Context>& context)
             {
                 model = std::make_shared<PlaybackModel>(context);
 
-                timeRangeObserver = dtk::ValueObserver<OTIO_NS::TimeRange>::create(
+                timeRangeObserver = feather_tk::ValueObserver<OTIO_NS::TimeRange>::create(
                     model->observeTimeRange(),
                     [this](const OTIO_NS::TimeRange& value)
                     {
                         timeRange = value;
                     });
 
-                currentTimeObserver = dtk::ValueObserver<OTIO_NS::RationalTime>::create(
+                currentTimeObserver = feather_tk::ValueObserver<OTIO_NS::RationalTime>::create(
                     model->observeCurrentTime(),
                     [this](const OTIO_NS::RationalTime& value)
                     {
                         currentTime = value;
                     });
 
-                inOutRangeObserver = dtk::ValueObserver<OTIO_NS::TimeRange>::create(
+                inOutRangeObserver = feather_tk::ValueObserver<OTIO_NS::TimeRange>::create(
                     model->observeInOutRange(),
                     [this](const OTIO_NS::TimeRange& value)
                     {
                         inOutRange = value;
                     });
 
-                playbackObserver = dtk::ValueObserver<Playback>::create(
+                playbackObserver = feather_tk::ValueObserver<Playback>::create(
                     model->observePlayback(),
                     [this](Playback value)
                     {
@@ -56,15 +56,15 @@ namespace toucan
             OTIO_NS::TimeRange inOutRange;
             Playback playback = Playback::Stop;
 
-            std::shared_ptr<dtk::ValueObserver<OTIO_NS::TimeRange> > timeRangeObserver;
-            std::shared_ptr<dtk::ValueObserver<OTIO_NS::RationalTime> > currentTimeObserver;
-            std::shared_ptr<dtk::ValueObserver<OTIO_NS::TimeRange> > inOutRangeObserver;
-            std::shared_ptr<dtk::ValueObserver<Playback> > playbackObserver;
+            std::shared_ptr<feather_tk::ValueObserver<OTIO_NS::TimeRange> > timeRangeObserver;
+            std::shared_ptr<feather_tk::ValueObserver<OTIO_NS::RationalTime> > currentTimeObserver;
+            std::shared_ptr<feather_tk::ValueObserver<OTIO_NS::TimeRange> > inOutRangeObserver;
+            std::shared_ptr<feather_tk::ValueObserver<Playback> > playbackObserver;
         };
     }
 
     void playbackModelTest(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::filesystem::path& path)
     {
         std::cout << "playbackModelTest" << std::endl;

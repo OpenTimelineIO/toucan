@@ -5,7 +5,7 @@
 
 #include <toucanView/MarkerItem.h>
 
-#include <dtk/ui/RowLayout.h>
+#include <feather-tk/ui/RowLayout.h>
 
 #include <opentimelineio/stack.h>
 
@@ -16,7 +16,7 @@ namespace toucan
     {
     protected:
         void _init(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const ItemData&,
             const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Stack>&,
             const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>&,
@@ -27,7 +27,7 @@ namespace toucan
 
         //! Create a new item.
         static std::shared_ptr<StackItem> create(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const ItemData&,
             const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Stack>&,
             const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>&,
@@ -35,10 +35,10 @@ namespace toucan
 
         void setScale(double) override;
 
-        void setGeometry(const dtk::Box2I&) override;
-        dtk::Box2I getChildrenClipRect() const override;
-        void sizeHintEvent(const dtk::SizeHintEvent&) override;
-        void drawEvent(const dtk::Box2I&, const dtk::DrawEvent&) override;
+        void setGeometry(const feather_tk::Box2I&) override;
+        feather_tk::Box2I getChildrenClipRect() const override;
+        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
+        void drawEvent(const feather_tk::Box2I&, const feather_tk::DrawEvent&) override;
 
     protected:
         void _timeUnitsUpdate() override;
@@ -48,9 +48,9 @@ namespace toucan
 
         OTIO_NS::SerializableObject::Retainer<OTIO_NS::Stack> _stack;
         std::string _text;
-        dtk::Color4F _color;
+        feather_tk::Color4F _color;
 
-        std::shared_ptr<dtk::VerticalLayout> _layout;
+        std::shared_ptr<feather_tk::VerticalLayout> _layout;
         std::shared_ptr<ItemLabel> _label;
         std::shared_ptr<TimeLayout> _markerLayout;
         std::vector<std::shared_ptr<MarkerItem> > _markerItems;
@@ -66,8 +66,8 @@ namespace toucan
 
         struct GeomData
         {
-            dtk::Box2I g2;
-            dtk::Box2I g3;
+            feather_tk::Box2I g2;
+            feather_tk::Box2I g3;
         };
         GeomData _geom;
     };

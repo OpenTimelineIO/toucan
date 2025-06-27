@@ -7,45 +7,45 @@
 #include "FilesModel.h"
 #include "PlaybackModel.h"
 
-#include <dtk/ui/Divider.h>
-#include <dtk/ui/Spacer.h>
-#include <dtk/core/Format.h>
-#include <dtk/core/String.h>
+#include <feather-tk/ui/Divider.h>
+#include <feather-tk/ui/Spacer.h>
+#include <feather-tk/core/Format.h>
+#include <feather-tk/core/String.h>
 
 #include <opentimelineio/marker.h>
 
 namespace toucan
 {
     void DetailsWidget::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
         const std::shared_ptr<File>& file,
         const SelectionItem& item,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
         IWidget::_init(context, "toucan::DetailsWidget", parent);
 
         _file = file;
         _item = item;
 
-        _bellows = dtk::Bellows::create(context, item.object->name(), shared_from_this());
+        _bellows = feather_tk::Bellows::create(context, item.object->name(), shared_from_this());
         _bellows->setOpen(true);
-        auto hLayout = dtk::HorizontalLayout::create(context);
-        hLayout->setSpacingRole(dtk::SizeRole::None);
-        _startFrameButton = dtk::ToolButton::create(context, hLayout);
+        auto hLayout = feather_tk::HorizontalLayout::create(context);
+        hLayout->setSpacingRole(feather_tk::SizeRole::None);
+        _startFrameButton = feather_tk::ToolButton::create(context, hLayout);
         _startFrameButton->setIcon("ArrowRight");
         _startFrameButton->setTooltip("Go to the start frame");
         if (item.timeRange.duration().value() > 1.0)
         {
-            _inOutButton = dtk::ToolButton::create(context, hLayout);
+            _inOutButton = feather_tk::ToolButton::create(context, hLayout);
             _inOutButton->setIcon("FrameInOut");
             _inOutButton->setTooltip("Set the in/out points");
         }
         _bellows->setToolWidget(hLayout);
 
-        _layout = dtk::GridLayout::create(context);
-        _layout->setRowBackgroundRole(dtk::ColorRole::Base);
-        _layout->setSpacingRole(dtk::SizeRole::None);
+        _layout = feather_tk::GridLayout::create(context);
+        _layout->setRowBackgroundRole(feather_tk::ColorRole::Base);
+        _layout->setSpacingRole(feather_tk::SizeRole::None);
         _bellows->setWidget(_layout);
 
         OTIO_NS::TimeRange timeRange = item.timeRange;
@@ -71,7 +71,7 @@ namespace toucan
                 });
         }
 
-        _timeUnitsObserver = dtk::ValueObserver<TimeUnits>::create(
+        _timeUnitsObserver = feather_tk::ValueObserver<TimeUnits>::create(
             app->getTimeUnitsModel()->observeTimeUnits(),
             [this](TimeUnits value)
             {
@@ -85,11 +85,11 @@ namespace toucan
     {}
 
     std::shared_ptr<DetailsWidget> DetailsWidget::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
         const std::shared_ptr<File>& file,
         const SelectionItem& item,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
         auto out = std::shared_ptr<DetailsWidget>(new DetailsWidget);
         out->_init(context, app, file, item, parent);
@@ -109,16 +109,16 @@ namespace toucan
         _searchUpdate();
     }
 
-    void DetailsWidget::setGeometry(const dtk::Box2I& value)
+    void DetailsWidget::setGeometry(const feather_tk::Box2I& value)
     {
         IWidget::setGeometry(value);
         _bellows->setGeometry(value);
     }
 
-    void DetailsWidget::sizeHintEvent(const dtk::SizeHintEvent& event)
+    void DetailsWidget::sizeHintEvent(const feather_tk::SizeHintEvent& event)
     {
         IWidget::sizeHintEvent(event);
-        _setSizeHint(_bellows->isVisible(false) ? _bellows->getSizeHint() : dtk::Size2I());
+        _setSizeHint(_bellows->isVisible(false) ? _bellows->getSizeHint() : feather_tk::Size2I());
     }
 
     void DetailsWidget::_textUpdate()
@@ -141,7 +141,7 @@ namespace toucan
         {
             _text.push_back(std::make_pair(
                 "Enabled:",
-                dtk::Format("{0}").arg(item->enabled())));
+                feather_tk::Format("{0}").arg(item->enabled())));
             std::string text;
             if (item->source_range().has_value())
             {
@@ -174,14 +174,14 @@ namespace toucan
         for (const auto& text : _text)
         {
             auto context = getContext();
-            auto label = dtk::Label::create(context, text.first, _layout);
-            label->setMarginRole(dtk::SizeRole::MarginSmall);
+            auto label = feather_tk::Label::create(context, text.first, _layout);
+            label->setMarginRole(feather_tk::SizeRole::MarginSmall);
             _layout->setGridPos(label, row, 0);
-            std::shared_ptr<dtk::Label> label2;
+            std::shared_ptr<feather_tk::Label> label2;
             if (!text.second.empty())
             {
-                label2 = dtk::Label::create(context, text.second, _layout);
-                label2->setMarginRole(dtk::SizeRole::MarginSmall);
+                label2 = feather_tk::Label::create(context, text.second, _layout);
+                label2->setMarginRole(feather_tk::SizeRole::MarginSmall);
                 _layout->setGridPos(label2, row, 1);
             }
             _labels.push_back(std::make_pair(label, label2));
@@ -198,8 +198,8 @@ namespace toucan
             if (!_search.empty())
             {
                 visible &=
-                    dtk::contains(_text[i].first, _search, dtk::CaseCompare::Insensitive) ||
-                    dtk::contains(_text[i].second, _search, dtk::CaseCompare::Insensitive);
+                    feather_tk::contains(_text[i].first, _search, feather_tk::CaseCompare::Insensitive) ||
+                    feather_tk::contains(_text[i].second, _search, feather_tk::CaseCompare::Insensitive);
             }
             _labels[i].first->setVisible(visible);
             if (_labels[i].second)
@@ -215,41 +215,41 @@ namespace toucan
     }
 
     void DetailsTool::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
         IToolWidget::_init(context, app, "toucan::DetailsTool", "Details", parent);
 
         _app = app;
 
-        _layout = dtk::VerticalLayout::create(context, shared_from_this());
-        _layout->setSpacingRole(dtk::SizeRole::None);
+        _layout = feather_tk::VerticalLayout::create(context, shared_from_this());
+        _layout->setSpacingRole(feather_tk::SizeRole::None);
 
-        _scrollWidget = dtk::ScrollWidget::create(context, dtk::ScrollType::Both, _layout);
+        _scrollWidget = feather_tk::ScrollWidget::create(context, feather_tk::ScrollType::Both, _layout);
         _scrollWidget->setBorder(false);
-        _scrollWidget->setVStretch(dtk::Stretch::Expanding);
+        _scrollWidget->setVStretch(feather_tk::Stretch::Expanding);
 
-        _scrollLayout = dtk::VerticalLayout::create(context);
-        _scrollLayout->setSpacingRole(dtk::SizeRole::None);
+        _scrollLayout = feather_tk::VerticalLayout::create(context);
+        _scrollLayout->setSpacingRole(feather_tk::SizeRole::None);
         _scrollWidget->setWidget(_scrollLayout);
 
-        dtk::Divider::create(context, dtk::Orientation::Vertical, _layout);
+        feather_tk::Divider::create(context, feather_tk::Orientation::Vertical, _layout);
 
-        _bottomLayout = dtk::HorizontalLayout::create(context, _layout);
-        _bottomLayout->setMarginRole(dtk::SizeRole::MarginSmall);
-        _bottomLayout->setSpacingRole(dtk::SizeRole::SpacingSmall);
+        _bottomLayout = feather_tk::HorizontalLayout::create(context, _layout);
+        _bottomLayout->setMarginRole(feather_tk::SizeRole::MarginSmall);
+        _bottomLayout->setSpacingRole(feather_tk::SizeRole::SpacingSmall);
 
-        _searchBox = dtk::SearchBox::create(context, _bottomLayout);
-        _searchBox->setHStretch(dtk::Stretch::Expanding);
+        _searchBox = feather_tk::SearchBox::create(context, _bottomLayout);
+        _searchBox->setHStretch(feather_tk::Stretch::Expanding);
         _searchBox->setTooltip("Search the JSON text");
 
-        auto hLayout = dtk::HorizontalLayout::create(context, _bottomLayout);
-        hLayout->setSpacingRole(dtk::SizeRole::SpacingTool);
-        _openButton = dtk::ToolButton::create(context, hLayout);
+        auto hLayout = feather_tk::HorizontalLayout::create(context, _bottomLayout);
+        hLayout->setSpacingRole(feather_tk::SizeRole::SpacingTool);
+        _openButton = feather_tk::ToolButton::create(context, hLayout);
         _openButton->setIcon("BellowsOpen");
         _openButton->setTooltip("Open all");
-        _closeButton = dtk::ToolButton::create(context, hLayout);
+        _closeButton = feather_tk::ToolButton::create(context, hLayout);
         _closeButton->setIcon("BellowsClosed");
         _closeButton->setTooltip("Close all");
 
@@ -280,13 +280,13 @@ namespace toucan
                 }
             });
 
-        _fileObserver = dtk::ValueObserver<std::shared_ptr<File> >::create(
+        _fileObserver = feather_tk::ValueObserver<std::shared_ptr<File> >::create(
             app->getFilesModel()->observeCurrent(),
             [this](const std::shared_ptr<File>& file)
             {
                 if (file)
                 {
-                    _selectionObserver = dtk::ListObserver<SelectionItem>::create(
+                    _selectionObserver = feather_tk::ListObserver<SelectionItem>::create(
                         file->getSelectionModel()->observeSelection(),
                         [this, file](const std::vector<SelectionItem>& selection)
                         {
@@ -330,22 +330,22 @@ namespace toucan
     {}
 
     std::shared_ptr<DetailsTool> DetailsTool::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
         auto out = std::shared_ptr<DetailsTool>(new DetailsTool);
         out->_init(context, app, parent);
         return out;
     }
 
-    void DetailsTool::setGeometry(const dtk::Box2I& value)
+    void DetailsTool::setGeometry(const feather_tk::Box2I& value)
     {
         IToolWidget::setGeometry(value);
         _layout->setGeometry(value);
     }
 
-    void DetailsTool::sizeHintEvent(const dtk::SizeHintEvent& event)
+    void DetailsTool::sizeHintEvent(const feather_tk::SizeHintEvent& event)
     {
         IToolWidget::sizeHintEvent(event);
         _setSizeHint(_layout->getSizeHint());

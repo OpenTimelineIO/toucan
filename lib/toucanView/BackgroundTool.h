@@ -7,11 +7,11 @@
 #include <toucanView/ViewModel.h>
 #include <toucanView/IToolWidget.h>
 
-#include <dtk/ui/ColorWidget.h>
-#include <dtk/ui/ComboBox.h>
-#include <dtk/ui/IntEditSlider.h>
-#include <dtk/ui/RowLayout.h>
-#include <dtk/ui/ScrollWidget.h>
+#include <feather-tk/ui/ColorWidget.h>
+#include <feather-tk/ui/ComboBox.h>
+#include <feather-tk/ui/IntEditSlider.h>
+#include <feather-tk/ui/RowLayout.h>
+#include <feather-tk/ui/ScrollWidget.h>
 
 namespace toucan
 {
@@ -22,7 +22,7 @@ namespace toucan
     {
     protected:
         void _init(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -31,12 +31,12 @@ namespace toucan
 
         //! Create a new tool.
         static std::shared_ptr<BackgroundTool> create(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const dtk::Box2I&) override;
-        void sizeHintEvent(const dtk::SizeHintEvent&) override;
+        void setGeometry(const feather_tk::Box2I&) override;
+        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
 
     private:
         void _widgetUpdate();
@@ -44,15 +44,15 @@ namespace toucan
         std::shared_ptr<GlobalViewModel> _model;
         GlobalViewOptions _options;
 
-        std::shared_ptr<dtk::ScrollWidget> _scrollWidget;
-        std::shared_ptr<dtk::VerticalLayout> _layout;
-        std::shared_ptr<dtk::ComboBox> _comboBox;
-        std::shared_ptr<dtk::ColorWidget> _solidColorWidget;
-        std::shared_ptr<dtk::ColorWidget> _checkersColor0Widget;
-        std::shared_ptr<dtk::ColorWidget> _checkersColor1Widget;
-        std::shared_ptr<dtk::IntEditSlider> _checkersSizeSlider;
+        std::shared_ptr<feather_tk::ScrollWidget> _scrollWidget;
+        std::shared_ptr<feather_tk::VerticalLayout> _layout;
+        std::shared_ptr<feather_tk::ComboBox> _comboBox;
+        std::shared_ptr<feather_tk::ColorWidget> _solidColorWidget;
+        std::shared_ptr<feather_tk::ColorWidget> _checkersColor0Widget;
+        std::shared_ptr<feather_tk::ColorWidget> _checkersColor1Widget;
+        std::shared_ptr<feather_tk::IntEditSlider> _checkersSizeSlider;
 
-        std::shared_ptr<dtk::ValueObserver<GlobalViewOptions> > _optionsObserver;
+        std::shared_ptr<feather_tk::ValueObserver<GlobalViewOptions> > _optionsObserver;
     };
 }
 

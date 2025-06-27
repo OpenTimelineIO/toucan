@@ -6,30 +6,30 @@
 #include "App.h"
 #include "SelectionModel.h"
 
-#include <dtk/ui/Divider.h>
-#include <dtk/ui/Label.h>
-#include <dtk/ui/Spacer.h>
-#include <dtk/core/String.h>
+#include <feather-tk/ui/Divider.h>
+#include <feather-tk/ui/Label.h>
+#include <feather-tk/ui/Spacer.h>
+#include <feather-tk/core/String.h>
 
 namespace toucan
 {
     void CompareWidget::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<File>& file,
         const std::shared_ptr<IWidget>& parent)
     {
         IWidget::_init(context, "toucan::CompareWidget", parent);
 
-        _layout = dtk::HorizontalLayout::create(context, shared_from_this());
-        _layout->setSpacingRole(dtk::SizeRole::SpacingTool);
+        _layout = feather_tk::HorizontalLayout::create(context, shared_from_this());
+        _layout->setSpacingRole(feather_tk::SizeRole::SpacingTool);
 
-        _button = dtk::ToolButton::create(context, _layout);
+        _button = feather_tk::ToolButton::create(context, _layout);
         std::string text = file->getPath().filename().string();
-        _button->setText(dtk::elide(text));
-        _button->setHStretch(dtk::Stretch::Expanding);
+        _button->setText(feather_tk::elide(text));
+        _button->setHStretch(feather_tk::Stretch::Expanding);
         _button->setTooltip(text);
 
-        _bButton = dtk::ToolButton::create(context, _layout);
+        _bButton = feather_tk::ToolButton::create(context, _layout);
         _bButton->setText("B");
         _bButton->setCheckable(true);
         _bButton->setTooltip("Set the B file for comparison");
@@ -39,7 +39,7 @@ namespace toucan
     {}
 
     std::shared_ptr<CompareWidget> CompareWidget::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<File>& file,
         const std::shared_ptr<IWidget>& parent)
     {
@@ -50,7 +50,7 @@ namespace toucan
 
     void CompareWidget::setCurrent(bool value)
     {
-        _button->setButtonRole(value ? dtk::ColorRole::Checked : dtk::ColorRole::None);
+        _button->setButtonRole(value ? feather_tk::ColorRole::Checked : feather_tk::ColorRole::None);
     }
 
     void CompareWidget::setCurrentCallback(const std::function<void(void)>& callback)
@@ -72,62 +72,62 @@ namespace toucan
         _bButton->setCheckedCallback(value);
     }
 
-    void CompareWidget::setGeometry(const dtk::Box2I& value)
+    void CompareWidget::setGeometry(const feather_tk::Box2I& value)
     {
         IWidget::setGeometry(value);
         _layout->setGeometry(value);
     }
 
-    void CompareWidget::sizeHintEvent(const dtk::SizeHintEvent& event)
+    void CompareWidget::sizeHintEvent(const feather_tk::SizeHintEvent& event)
     {
         IWidget::sizeHintEvent(event);
         _setSizeHint(_layout->getSizeHint());
     }
 
     void CompareTool::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
         IToolWidget::_init(context, app, "toucan::CompareTool", "Compare", parent);
 
         _filesModel = app->getFilesModel();
 
-        _layout = dtk::VerticalLayout::create(context, shared_from_this());
-        _layout->setSpacingRole(dtk::SizeRole::None);
+        _layout = feather_tk::VerticalLayout::create(context, shared_from_this());
+        _layout->setSpacingRole(feather_tk::SizeRole::None);
 
-        _scrollWidget = dtk::ScrollWidget::create(context, dtk::ScrollType::Both, _layout);
+        _scrollWidget = feather_tk::ScrollWidget::create(context, feather_tk::ScrollType::Both, _layout);
         _scrollWidget->setBorder(false);
-        _scrollWidget->setVStretch(dtk::Stretch::Expanding);
+        _scrollWidget->setVStretch(feather_tk::Stretch::Expanding);
 
-        _widgetLayout = dtk::VerticalLayout::create(context);
-        _widgetLayout->setSpacingRole(dtk::SizeRole::SpacingTool);
+        _widgetLayout = feather_tk::VerticalLayout::create(context);
+        _widgetLayout->setSpacingRole(feather_tk::SizeRole::SpacingTool);
         _scrollWidget->setWidget(_widgetLayout);
 
-        dtk::Divider::create(context, dtk::Orientation::Vertical, _layout);
+        feather_tk::Divider::create(context, feather_tk::Orientation::Vertical, _layout);
 
-        _bottomLayout = dtk::GridLayout::create(context, _layout);
-        _bottomLayout->setMarginRole(dtk::SizeRole::MarginSmall);
-        _bottomLayout->setSpacingRole(dtk::SizeRole::SpacingSmall);
+        _bottomLayout = feather_tk::GridLayout::create(context, _layout);
+        _bottomLayout->setMarginRole(feather_tk::SizeRole::MarginSmall);
+        _bottomLayout->setSpacingRole(feather_tk::SizeRole::SpacingSmall);
 
-        auto label = dtk::Label::create(context, "Mode:", _bottomLayout);
+        auto label = feather_tk::Label::create(context, "Mode:", _bottomLayout);
         _bottomLayout->setGridPos(label, 0, 0);
-        _modeComboBox = dtk::ComboBox::create(context, getCompareModeLabels(), _bottomLayout);
-        _modeComboBox->setHStretch(dtk::Stretch::Expanding);
+        _modeComboBox = feather_tk::ComboBox::create(context, getCompareModeLabels(), _bottomLayout);
+        _modeComboBox->setHStretch(feather_tk::Stretch::Expanding);
         _modeComboBox->setTooltip("Set the comparison mode");
         _bottomLayout->setGridPos(_modeComboBox, 0, 1);
 
-        label = dtk::Label::create(context, "Start time:", _bottomLayout);
+        label = feather_tk::Label::create(context, "Start time:", _bottomLayout);
         _bottomLayout->setGridPos(label, 1, 0);
-        _startTimeCheckBox = dtk::CheckBox::create(context, _bottomLayout);
-        _startTimeCheckBox->setHStretch(dtk::Stretch::Expanding);
+        _startTimeCheckBox = feather_tk::CheckBox::create(context, _bottomLayout);
+        _startTimeCheckBox->setHStretch(feather_tk::Stretch::Expanding);
         _startTimeCheckBox->setTooltip("Match the A and B start times");
         _bottomLayout->setGridPos(_startTimeCheckBox, 1, 1);
 
-        label = dtk::Label::create(context, "Resize:", _bottomLayout);
+        label = feather_tk::Label::create(context, "Resize:", _bottomLayout);
         _bottomLayout->setGridPos(label, 2, 0);
-        _resizeCheckBox = dtk::CheckBox::create(context, _bottomLayout);
-        _resizeCheckBox->setHStretch(dtk::Stretch::Expanding);
+        _resizeCheckBox = feather_tk::CheckBox::create(context, _bottomLayout);
+        _resizeCheckBox->setHStretch(feather_tk::Stretch::Expanding);
         _resizeCheckBox->setTooltip("Resize the B image to match the A size");
         _bottomLayout->setGridPos(_resizeCheckBox, 2, 1);
 
@@ -155,7 +155,7 @@ namespace toucan
                 _filesModel->setCompareOptions(options);
             });
 
-        _filesObserver = dtk::ListObserver<std::shared_ptr<File> >::create(
+        _filesObserver = feather_tk::ListObserver<std::shared_ptr<File> >::create(
             _filesModel->observeFiles(),
             [this](const std::vector<std::shared_ptr<File> >& value)
             {
@@ -164,7 +164,7 @@ namespace toucan
                 _indexUpdate();
             });
 
-        _fileIndexObserver = dtk::ValueObserver<int>::create(
+        _fileIndexObserver = feather_tk::ValueObserver<int>::create(
             _filesModel->observeCurrentIndex(),
             [this](int value)
             {
@@ -172,7 +172,7 @@ namespace toucan
                 _indexUpdate();
             });
 
-        _bIndexObserver = dtk::ValueObserver<int>::create(
+        _bIndexObserver = feather_tk::ValueObserver<int>::create(
             _filesModel->observeBIndex(),
             [this](int value)
             {
@@ -180,7 +180,7 @@ namespace toucan
                 _indexUpdate();
             });
         
-        _compareOptionsObserver = dtk::ValueObserver<CompareOptions>::create(
+        _compareOptionsObserver = feather_tk::ValueObserver<CompareOptions>::create(
             _filesModel->observeCompareOptions(),
             [this](const CompareOptions& value)
             {
@@ -194,22 +194,22 @@ namespace toucan
     {}
 
     std::shared_ptr<CompareTool> CompareTool::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
         auto out = std::shared_ptr<CompareTool>(new CompareTool);
         out->_init(context, app, parent);
         return out;
     }
 
-    void CompareTool::setGeometry(const dtk::Box2I& value)
+    void CompareTool::setGeometry(const feather_tk::Box2I& value)
     {
         IToolWidget::setGeometry(value);
         _layout->setGeometry(value);
     }
 
-    void CompareTool::sizeHintEvent(const dtk::SizeHintEvent& event)
+    void CompareTool::sizeHintEvent(const feather_tk::SizeHintEvent& event)
     {
         IToolWidget::sizeHintEvent(event);
         _setSizeHint(_layout->getSizeHint());

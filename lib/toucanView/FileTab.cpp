@@ -11,18 +11,18 @@
 namespace toucan
 {
     void FileTab::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
         const std::shared_ptr<File>& file,
         const std::shared_ptr<IWidget>& parent)
     {
-        dtk::IWidget::_init(context, "toucan::FileTab", parent);
+        feather_tk::IWidget::_init(context, "toucan::FileTab", parent);
 
         _viewport = Viewport::create(context, app, file, shared_from_this());
 
         _hudWidget = HUDWidget::create(context, app, file, shared_from_this());
 
-        _viewOptionsObserver = dtk::ValueObserver<GlobalViewOptions>::create(
+        _viewOptionsObserver = feather_tk::ValueObserver<GlobalViewOptions>::create(
             app->getGlobalViewModel()->observeOptions(),
             [this](const GlobalViewOptions& value)
             {
@@ -34,7 +34,7 @@ namespace toucan
     {}
 
     std::shared_ptr<FileTab> FileTab::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
         const std::shared_ptr<File>& file,
         const std::shared_ptr<IWidget>& parent)
@@ -44,16 +44,16 @@ namespace toucan
         return out;
     }
 
-    void FileTab::setGeometry(const dtk::Box2I& value)
+    void FileTab::setGeometry(const feather_tk::Box2I& value)
     {
-        dtk::IWidget::setGeometry(value);
+        feather_tk::IWidget::setGeometry(value);
         _viewport->setGeometry(value);
         _hudWidget->setGeometry(value);
     }
 
-    void FileTab::sizeHintEvent(const dtk::SizeHintEvent& event)
+    void FileTab::sizeHintEvent(const feather_tk::SizeHintEvent& event)
     {
-        dtk::IWidget::sizeHintEvent(event);
+        feather_tk::IWidget::sizeHintEvent(event);
         _setSizeHint(_viewport->getSizeHint());
     }
 }

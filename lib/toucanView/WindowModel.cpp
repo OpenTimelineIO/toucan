@@ -3,9 +3,9 @@
 
 #include "WindowModel.h"
 
-#include <dtk/ui/Settings.h>
-#include <dtk/core/Error.h>
-#include <dtk/core/String.h>
+#include <feather-tk/ui/Settings.h>
+#include <feather-tk/core/Error.h>
+#include <feather-tk/core/String.h>
 
 #include <nlohmann/json.hpp>
 
@@ -14,16 +14,18 @@
 
 namespace toucan
 {
-    DTK_ENUM_IMPL(
+    FEATHER_TK_ENUM_IMPL(
         WindowComponent,
         "ToolBar",
         "Tools",
         "Playback",
         "InfoBar");
 
-    WindowModel::WindowModel(const std::shared_ptr<dtk::Context>& context)
+    WindowModel::WindowModel(
+        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<feather_tk::Settings>& settings) :
+        _settings(settings)
     {
-        _settings = context->getSystem<dtk::Settings>();
         std::map<WindowComponent, bool> components =
         {
             { WindowComponent::ToolBar, true },
@@ -33,50 +35,57 @@ namespace toucan
         };
         bool thumbnails = true;
         bool tooltips = true;
-        try
+        if (_settings)
         {
-            const auto json = std::any_cast<nlohmann::json>(_settings->get("WindowModel"));
-            for (auto& i : components)
+            try
             {
-                std::stringstream ss;
-                ss << i.first;
-                auto j = json.find(ss.str());
-                if (j != json.end() && j->is_boolean())
+                nlohmann::json json;
+                _settings->get("/WindowModel", json);
+                for (auto& i : components)
                 {
-                    i.second = j->get<bool>();
+                    std::stringstream ss;
+                    ss << i.first;
+                    auto j = json.find(ss.str());
+                    if (j != json.end() && j->is_boolean())
+                    {
+                        i.second = j->get<bool>();
+                    }
+                }
+                auto i = json.find("Thumbnails");
+                if (i != json.end() && i->is_boolean())
+                {
+                    thumbnails = i->get<bool>();
+                }
+                i = json.find("Tooltips");
+                if (i != json.end() && i->is_boolean())
+                {
+                    tooltips = i->get<bool>();
                 }
             }
-            auto i = json.find("Thumbnails");
-            if (i != json.end() && i->is_boolean())
-            {
-                thumbnails = i->get<bool>();
-            }
-            i = json.find("Tooltips");
-            if (i != json.end() && i->is_boolean())
-            {
-                tooltips = i->get<bool>();
-            }
+            catch (const std::exception&)
+            {}
         }
-        catch (const std::exception&)
-        {}
 
-        _components = dtk::ObservableMap<WindowComponent, bool>::create(components);
-        _thumbnails = dtk::ObservableValue<bool>::create(thumbnails);
-        _tooltips = dtk::ObservableValue<bool>::create(tooltips);
+        _components = feather_tk::ObservableMap<WindowComponent, bool>::create(components);
+        _thumbnails = feather_tk::ObservableValue<bool>::create(thumbnails);
+        _tooltips = feather_tk::ObservableValue<bool>::create(tooltips);
     }
 
     WindowModel::~WindowModel()
     {
-        nlohmann::json json;
-        for (const auto i : _components->get())
+        if (_settings)
         {
-            std::stringstream ss;
-            ss << i.first;
-            json[ss.str()] = i.second;
+            nlohmann::json json;
+            for (const auto i : _components->get())
+            {
+                std::stringstream ss;
+                ss << i.first;
+                json[ss.str()] = i.second;
+            }
+            json["Thumbnails"] = _thumbnails->get();
+            json["Tooltips"] = _tooltips->get();
+            _settings->set("/WindowModel", json);
         }
-        json["Thumbnails"] = _thumbnails->get();
-        json["Tooltips"] = _tooltips->get();
-        _settings->set("WindowModel", json);
     }
 
     const std::map<WindowComponent, bool> WindowModel::getComponents() const
@@ -84,7 +93,7 @@ namespace toucan
         return _components->get();
     }
 
-    std::shared_ptr<dtk::IObservableMap<WindowComponent, bool> > WindowModel::observeComponents() const
+    std::shared_ptr<feather_tk::IObservableMap<WindowComponent, bool> > WindowModel::observeComponents() const
     {
         return _components;
     }
@@ -109,7 +118,7 @@ namespace toucan
         return _thumbnails->get();
     }
 
-    std::shared_ptr<dtk::IObservableValue<bool> > WindowModel::observeThumbnails() const
+    std::shared_ptr<feather_tk::IObservableValue<bool> > WindowModel::observeThumbnails() const
     {
         return _thumbnails;
     }
@@ -124,7 +133,7 @@ namespace toucan
         return _tooltips->get();
     }
 
-    std::shared_ptr<dtk::IObservableValue<bool> > WindowModel::observeTooltips() const
+    std::shared_ptr<feather_tk::IObservableValue<bool> > WindowModel::observeTooltips() const
     {
         return _tooltips;
     }

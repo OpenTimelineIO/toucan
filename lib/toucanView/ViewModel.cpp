@@ -3,8 +3,8 @@
 
 #include "ViewModel.h"
 
-#include <dtk/core/Error.h>
-#include <dtk/core/String.h>
+#include <feather-tk/core/Error.h>
+#include <feather-tk/core/String.h>
 
 #include <nlohmann/json.hpp>
 
@@ -25,13 +25,13 @@ namespace toucan
         return !(*this == other);
     }
 
-    ViewModel::ViewModel(const std::shared_ptr<dtk::Context>& context)
+    ViewModel::ViewModel(const std::shared_ptr<feather_tk::Context>& context)
     {
-        _zoomIn = dtk::ObservableValue<bool>::create(false);
-        _zoomOut = dtk::ObservableValue<bool>::create(false);
-        _zoomReset = dtk::ObservableValue<bool>::create(false);
-        _frameView = dtk::ObservableValue<bool>::create(true);
-        _options = dtk::ObservableValue<ViewOptions>::create();
+        _zoomIn = feather_tk::ObservableValue<bool>::create(false);
+        _zoomOut = feather_tk::ObservableValue<bool>::create(false);
+        _zoomReset = feather_tk::ObservableValue<bool>::create(false);
+        _frameView = feather_tk::ObservableValue<bool>::create(true);
+        _options = feather_tk::ObservableValue<ViewOptions>::create();
     }
 
     ViewModel::~ViewModel()
@@ -52,17 +52,17 @@ namespace toucan
         _zoomReset->setAlways(true);
     }
 
-    std::shared_ptr<dtk::IObservableValue<bool> > ViewModel::observeZoomIn() const
+    std::shared_ptr<feather_tk::IObservableValue<bool> > ViewModel::observeZoomIn() const
     {
         return _zoomIn;
     }
 
-    std::shared_ptr<dtk::IObservableValue<bool> > ViewModel::observeZoomOut() const
+    std::shared_ptr<feather_tk::IObservableValue<bool> > ViewModel::observeZoomOut() const
     {
         return _zoomOut;
     }
 
-    std::shared_ptr<dtk::IObservableValue<bool> > ViewModel::observeZoomReset() const
+    std::shared_ptr<feather_tk::IObservableValue<bool> > ViewModel::observeZoomReset() const
     {
         return _zoomReset;
     }
@@ -72,7 +72,7 @@ namespace toucan
         return _frameView->get();
     }
 
-    std::shared_ptr<dtk::IObservableValue<bool> > ViewModel::observeFrameView() const
+    std::shared_ptr<feather_tk::IObservableValue<bool> > ViewModel::observeFrameView() const
     {
         return _frameView;
     }
@@ -87,7 +87,7 @@ namespace toucan
         return _options->get();
     }
 
-    std::shared_ptr<dtk::IObservableValue<ViewOptions> > ViewModel::observeOptions() const
+    std::shared_ptr<feather_tk::IObservableValue<ViewOptions> > ViewModel::observeOptions() const
     {
         return _options;
     }
@@ -97,7 +97,7 @@ namespace toucan
         _options->setIfChanged(value);
     }
 
-    DTK_ENUM_IMPL(
+    FEATHER_TK_ENUM_IMPL(
         ViewBackground,
         "Solid",
         "Checkers");
@@ -118,13 +118,16 @@ namespace toucan
         return !(*this == other);
     }
 
-    GlobalViewModel::GlobalViewModel(const std::shared_ptr<dtk::Context>& context)
+    GlobalViewModel::GlobalViewModel(
+        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<feather_tk::Settings>& settings) :
+        _settings(settings)
     {
-        _settings = context->getSystem<dtk::Settings>();
         GlobalViewOptions options;
         try
         {
-            const auto json = std::any_cast<nlohmann::json>(_settings->get("GlobalViewModel"));
+            nlohmann::json json;
+            _settings->get("/GlobalViewModel", json);
             auto i = json.find("HUD");
             if (i != json.end() && i->is_boolean())
             {
@@ -139,7 +142,7 @@ namespace toucan
             i = json.find("SolidColor");
             if (i != json.end() && i->is_array() && 4 == i->size())
             {
-                options.solidColor = dtk::Color4F(
+                options.solidColor = feather_tk::Color4F(
                     (*i)[0].get<float>(),
                     (*i)[1].get<float>(),
                     (*i)[2].get<float>(),
@@ -148,7 +151,7 @@ namespace toucan
             i = json.find("CheckersColor0");
             if (i != json.end() && i->is_array() && 4 == i->size())
             {
-                options.checkersColor0 = dtk::Color4F(
+                options.checkersColor0 = feather_tk::Color4F(
                     (*i)[0].get<float>(),
                     (*i)[1].get<float>(),
                     (*i)[2].get<float>(),
@@ -157,7 +160,7 @@ namespace toucan
             i = json.find("CheckersColor1");
             if (i != json.end() && i->is_array() && 4 == i->size())
             {
-                options.checkersColor1 = dtk::Color4F(
+                options.checkersColor1 = feather_tk::Color4F(
                     (*i)[0].get<float>(),
                     (*i)[1].get<float>(),
                     (*i)[2].get<float>(),
@@ -172,7 +175,7 @@ namespace toucan
         catch (const std::exception&)
         {}
 
-        _options = dtk::ObservableValue<GlobalViewOptions>::create(options);
+        _options = feather_tk::ObservableValue<GlobalViewOptions>::create(options);
     }
 
     GlobalViewModel::~GlobalViewModel()
@@ -206,7 +209,7 @@ namespace toucan
             _options->get().checkersColor1.a
         };
         json["CheckersSize"] = _options->get().checkersSize;
-        _settings->set("GlobalViewModel", json);
+        _settings->set("/GlobalViewModel", json);
     }
 
     const GlobalViewOptions& GlobalViewModel::getOptions() const
@@ -214,7 +217,7 @@ namespace toucan
         return _options->get();
     }
 
-    std::shared_ptr<dtk::IObservableValue<GlobalViewOptions> > GlobalViewModel::observeOptions() const
+    std::shared_ptr<feather_tk::IObservableValue<GlobalViewOptions> > GlobalViewModel::observeOptions() const
     {
         return _options;
     }

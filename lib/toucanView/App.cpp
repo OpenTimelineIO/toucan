@@ -11,52 +11,52 @@
 
 #include <toucanRender/Util.h>
 
-#include <dtk/ui/DialogSystem.h>
-#include <dtk/ui/FileBrowser.h>
-#include <dtk/ui/MessageDialog.h>
-#include <dtk/ui/Settings.h>
+#include <feather-tk/ui/DialogSystem.h>
+#include <feather-tk/ui/FileBrowser.h>
+#include <feather-tk/ui/MessageDialog.h>
+#include <feather-tk/ui/Settings.h>
 
-#include <dtk/core/CmdLine.h>
+#include <feather-tk/core/CmdLine.h>
 
 #include <nlohmann/json.hpp>
 
 namespace toucan
 {
     void App::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         std::vector<std::string>& argv)
     {
-        dtk::App::_init(
+        feather_tk::App::_init(
             context,
             argv,
             "toucan-view",
             "Toucan viewer",
             {
-                dtk::CmdLineValueArg<std::string>::create(
+                feather_tk::CmdLineValueArg<std::string>::create(
                     _path,
                     "input",
                     "Input timeline.",
                     true)
-            },
-            {},
-            dtk::getSettingsPath("toucan", "toucan-view.settings").string());
-        
-        _timeUnitsModel = std::make_shared<TimeUnitsModel>(context);
+            });
+
+        _settings = feather_tk::Settings::create(context, feather_tk::getSettingsPath("toucan", "toucan-view.settings"));
+
+        _timeUnitsModel = std::make_shared<TimeUnitsModel>(context, _settings);
 
         _host = std::make_shared<ImageEffectHost>(context, getOpenFXPluginPaths(getExeName()));
 
-        auto fileBrowserSystem = context->getSystem<dtk::FileBrowserSystem>();
+        auto fileBrowserSystem = context->getSystem<feather_tk::FileBrowserSystem>();
         fileBrowserSystem->setNativeFileDialog(false);
 
-        _filesModel = std::make_shared<FilesModel>(context, _host);
-        _globalViewModel = std::make_shared<GlobalViewModel>(context);
-        _windowModel = std::make_shared<WindowModel>(context);
+        _filesModel = std::make_shared<FilesModel>(context, _settings, _host);
+        _globalViewModel = std::make_shared<GlobalViewModel>(context, _settings);
+        _windowModel = std::make_shared<WindowModel>(context, _settings);
 
         _window = MainWindow::create(
             context,
             std::dynamic_pointer_cast<App>(shared_from_this()),
             "toucan-view",
-            dtk::Size2I(1920, 1080));
+            feather_tk::Size2I(1920, 1080));
         addWindow(_window);
         _window->show();
 
@@ -70,12 +70,17 @@ namespace toucan
     {}
 
     std::shared_ptr<App> App::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         std::vector<std::string>& argv)
     {
         auto out = std::shared_ptr<App>(new App);
         out->_init(context, argv);
         return out;
+    }
+
+    const std::shared_ptr<feather_tk::Settings>& App::getSettings() const
+    {
+        return _settings;
     }
 
     const std::shared_ptr<TimeUnitsModel>& App::getTimeUnitsModel() const
@@ -111,7 +116,7 @@ namespace toucan
         }
         catch (const std::exception& e)
         {
-            _context->getSystem<dtk::DialogSystem>()->message(
+            _context->getSystem<feather_tk::DialogSystem>()->message(
                 "ERROR",
                 e.what(),
                 _window);

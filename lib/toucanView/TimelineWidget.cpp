@@ -16,7 +16,7 @@ namespace toucan
     }
 
     void TimelineWidget::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
         const std::shared_ptr<IWidget>& parent)
     {
@@ -26,16 +26,16 @@ namespace toucan
         _setMousePressEnabled(
             true,
             0,
-            static_cast<int>(dtk::KeyModifier::Alt));
+            static_cast<int>(feather_tk::KeyModifier::Alt));
 
-        _frameView = dtk::ObservableValue<bool>::create(true);
+        _frameView = feather_tk::ObservableValue<bool>::create(true);
 
-        _scrollWidget = dtk::ScrollWidget::create(context, dtk::ScrollType::Both, shared_from_this());
+        _scrollWidget = feather_tk::ScrollWidget::create(context, feather_tk::ScrollType::Both, shared_from_this());
         _scrollWidget->setScrollEventsEnabled(false);
         _scrollWidget->setBorder(false);
 
         auto appWeak = std::weak_ptr<App>(app);
-        _fileObserver = dtk::ValueObserver<std::shared_ptr<File> >::create(
+        _fileObserver = feather_tk::ValueObserver<std::shared_ptr<File> >::create(
             app->getFilesModel()->observeCurrent(),
             [this, appWeak](const std::shared_ptr<File>& file)
             {
@@ -65,7 +65,7 @@ namespace toucan
                     data.app = appWeak.lock();
                     data.file = file;
                     data.thumbnailGenerator = file->getThumbnailGenerator();
-                    data.thumbnailCache = std::make_shared<dtk::LRUCache<std::string, std::shared_ptr<dtk::Image> > >();
+                    data.thumbnailCache = std::make_shared<feather_tk::LRUCache<std::string, std::shared_ptr<feather_tk::Image> > >();
                     data.thumbnailCache->setMax(1000);
                     _timelineItem = TimelineItem::create(getContext(), data);
                     _timelineItem->setScale(_scale);
@@ -79,7 +79,7 @@ namespace toucan
                         });
                     _scrollWidget->setWidget(_timelineItem);
 
-                    _currentTimeObserver = dtk::ValueObserver<OTIO_NS::RationalTime>::create(
+                    _currentTimeObserver = feather_tk::ValueObserver<OTIO_NS::RationalTime>::create(
                         file->getPlaybackModel()->observeCurrentTime(),
                         [this](const OTIO_NS::RationalTime& value)
                         {
@@ -91,7 +91,7 @@ namespace toucan
                             _scrollUpdate();
                         });
 
-                    _inOutRangeObserver = dtk::ValueObserver<OTIO_NS::TimeRange>::create(
+                    _inOutRangeObserver = feather_tk::ValueObserver<OTIO_NS::TimeRange>::create(
                         file->getPlaybackModel()->observeInOutRange(),
                         [this](const OTIO_NS::TimeRange& value)
                         {
@@ -119,7 +119,7 @@ namespace toucan
     {}
 
     std::shared_ptr<TimelineWidget> TimelineWidget::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
         const std::shared_ptr<IWidget>& parent)
     {
@@ -130,11 +130,11 @@ namespace toucan
 
     void TimelineWidget::setViewZoom(double value)
     {
-        const dtk::Box2I& g = getGeometry();
-        setViewZoom(value, dtk::V2I(g.w() / 2, g.h() / 2));
+        const feather_tk::Box2I& g = getGeometry();
+        setViewZoom(value, feather_tk::V2I(g.w() / 2, g.h() / 2));
     }
 
-    void TimelineWidget::setViewZoom(double zoom, const dtk::V2I& focus)
+    void TimelineWidget::setViewZoom(double zoom, const feather_tk::V2I& focus)
     {
         _setViewZoom(
             zoom,
@@ -148,7 +148,7 @@ namespace toucan
         return _frameView->get();
     }
 
-    std::shared_ptr<dtk::IObservableValue<bool> > TimelineWidget::observeFrameView() const
+    std::shared_ptr<feather_tk::IObservableValue<bool> > TimelineWidget::observeFrameView() const
     {
         return _frameView;
     }
@@ -166,7 +166,7 @@ namespace toucan
 
     void TimelineWidget::frameView()
     {
-        dtk::V2I pos = _scrollWidget->getScrollPos();
+        feather_tk::V2I pos = _scrollWidget->getScrollPos();
         pos.x = 0;
         _scrollWidget->setScrollPos(pos);
         _scale = _getTimelineScale();
@@ -178,9 +178,9 @@ namespace toucan
         _setDrawUpdate();
     }
 
-    void TimelineWidget::setGeometry(const dtk::Box2I& value)
+    void TimelineWidget::setGeometry(const feather_tk::Box2I& value)
     {
-        const dtk::Box2I viewportPrev = _scrollWidget->getViewport();
+        const feather_tk::Box2I viewportPrev = _scrollWidget->getViewport();
         IWidget::setGeometry(value);
         _scrollWidget->setGeometry(value);
         const bool changed = _scrollWidget->getViewport() != viewportPrev;
@@ -208,20 +208,20 @@ namespace toucan
         }
     }
 
-    void TimelineWidget::sizeHintEvent(const dtk::SizeHintEvent& event)
+    void TimelineWidget::sizeHintEvent(const feather_tk::SizeHintEvent& event)
     {
         IWidget::sizeHintEvent(event);
         _setSizeHint(_scrollWidget->getSizeHint());
     }
 
-    void TimelineWidget::mouseMoveEvent(dtk::MouseMoveEvent& event)
+    void TimelineWidget::mouseMoveEvent(feather_tk::MouseMoveEvent& event)
     {
         IWidget::mouseMoveEvent(event);
         switch (_mouse.mode)
         {
         case MouseMode::Scroll:
         {
-            const dtk::V2I d = event.pos - _getMousePressPos();
+            const feather_tk::V2I d = event.pos - _getMousePressPos();
             _scrollWidget->setScrollPos(_mouse.scrollPos - d);
             setFrameView(false);
             break;
@@ -230,11 +230,11 @@ namespace toucan
         }
     }
 
-    void TimelineWidget::mousePressEvent(dtk::MouseClickEvent& event)
+    void TimelineWidget::mousePressEvent(feather_tk::MouseClickEvent& event)
     {
         IWidget::mousePressEvent(event);
         if (0 == event.button &&
-            static_cast<int>(dtk::KeyModifier::Alt) == event.modifiers)
+            static_cast<int>(feather_tk::KeyModifier::Alt) == event.modifiers)
         {
             event.accept = true;
             takeKeyFocus();
@@ -247,12 +247,12 @@ namespace toucan
         }
     }
 
-    void TimelineWidget::mouseReleaseEvent(dtk::MouseClickEvent& event)
+    void TimelineWidget::mouseReleaseEvent(feather_tk::MouseClickEvent& event)
     {
         IWidget::mouseReleaseEvent(event);
     }
 
-    void TimelineWidget::scrollEvent(dtk::ScrollEvent& event)
+    void TimelineWidget::scrollEvent(feather_tk::ScrollEvent& event)
     {
         IWidget::scrollEvent(event);
         event.accept = true;
@@ -268,21 +268,21 @@ namespace toucan
         }
     }
 
-    void TimelineWidget::keyPressEvent(dtk::KeyEvent& event)
+    void TimelineWidget::keyPressEvent(feather_tk::KeyEvent& event)
     {
         if (0 == event.modifiers)
         {
             switch (event.key)
             {
-            case dtk::Key::Equal:
+            case feather_tk::Key::Equal:
                 event.accept = true;
                 setViewZoom(_scale * 2.0, event.pos);
                 break;
-            case dtk::Key::Minus:
+            case feather_tk::Key::Minus:
                 event.accept = true;
                 setViewZoom(_scale / 2.0, event.pos);
                 break;
-            case dtk::Key::Backspace:
+            case feather_tk::Key::Backspace:
                 event.accept = true;
                 setFrameView(true);
                 break;
@@ -291,7 +291,7 @@ namespace toucan
         }
     }
 
-    void TimelineWidget::keyReleaseEvent(dtk::KeyEvent& event)
+    void TimelineWidget::keyReleaseEvent(feather_tk::KeyEvent& event)
     {
         event.accept = true;
     }
@@ -299,13 +299,13 @@ namespace toucan
     void TimelineWidget::_setViewZoom(
         double zoomNew,
         double zoomPrev,
-        const dtk::V2I& focus,
-        const dtk::V2I& scrollPos)
+        const feather_tk::V2I& focus,
+        const feather_tk::V2I& scrollPos)
     {
         const int w = getGeometry().w();
         const double zoomMin = _getTimelineScale();
         const double zoomMax = _getTimelineScaleMax();
-        const double zoomClamped = dtk::clamp(zoomNew, zoomMin, zoomMax);
+        const double zoomClamped = feather_tk::clamp(zoomNew, zoomMin, zoomMax);
         if (zoomClamped != _scale)
         {
             _scale = zoomClamped;
@@ -314,7 +314,7 @@ namespace toucan
                 _timelineItem->setScale(_scale);
             }
             const double s = zoomClamped / zoomPrev;
-            const dtk::V2I scrollPosNew(
+            const feather_tk::V2I scrollPosNew(
                 (scrollPos.x + focus.x) * s - focus.x,
                 scrollPos.y);
             _scrollWidget->setScrollPos(scrollPosNew, false);
@@ -329,7 +329,7 @@ namespace toucan
         const double duration = _timeRange.duration().rescaled_to(1.0).value();
         if (duration > 0.0)
         {
-            const dtk::Box2I scrollViewport = _scrollWidget->getViewport();
+            const feather_tk::Box2I scrollViewport = _scrollWidget->getViewport();
             out = scrollViewport.w() / duration;
         }
         return out;
@@ -338,7 +338,7 @@ namespace toucan
     double TimelineWidget::_getTimelineScaleMax() const
     {
         double out = 1.0;
-        const dtk::Box2I scrollViewport = _scrollWidget->getViewport();
+        const feather_tk::Box2I scrollViewport = _scrollWidget->getViewport();
         const double duration = _timeRange.duration().rescaled_to(1.0).value();
         if (duration < 1.0)
         {
@@ -360,14 +360,14 @@ namespace toucan
             MouseMode::None == _mouse.mode)
         {
             const int pos = _timelineItem->timeToPos(_currentTime);
-            const dtk::Box2I vp = _scrollWidget->getViewport();
+            const feather_tk::Box2I vp = _scrollWidget->getViewport();
             const int margin = vp.w() * marginPercentage;
             if (pos < (vp.min.x + margin) || pos >(vp.max.x - margin))
             {
                 const int offset = pos < (vp.min.x + margin) ? (vp.min.x + margin) : (vp.max.x - margin);
                 const OTIO_NS::RationalTime t = _currentTime - _timeRange.start_time();
-                dtk::V2I scrollPos = _scrollWidget->getScrollPos();
-                const dtk::Box2I& g = getGeometry();
+                feather_tk::V2I scrollPos = _scrollWidget->getScrollPos();
+                const feather_tk::Box2I& g = getGeometry();
                 scrollPos.x = g.min.x - offset + t.rescaled_to(1.0).value() * _scale;
                 _scrollWidget->setScrollPos(scrollPos);
             }

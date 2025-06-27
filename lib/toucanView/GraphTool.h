@@ -7,21 +7,21 @@
 
 #include <toucanRender/ImageGraph.h>
 
-#include <dtk/ui/ButtonGroup.h>
-#include <dtk/ui/PushButton.h>
-#include <dtk/ui/RowLayout.h>
-#include <dtk/ui/ScrollWidget.h>
+#include <feather-tk/ui/ButtonGroup.h>
+#include <feather-tk/ui/PushButton.h>
+#include <feather-tk/ui/RowLayout.h>
+#include <feather-tk/ui/ScrollWidget.h>
 
 namespace toucan
 {
     class File;
 
     //! Image graph widget.
-    class GraphWidget : public dtk::IWidget
+    class GraphWidget : public feather_tk::IWidget
     {
     protected:
         void _init(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -30,27 +30,27 @@ namespace toucan
 
         //! Create a new widget.
         static std::shared_ptr<GraphWidget> create(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const dtk::Box2I&) override;
-        void sizeHintEvent(const dtk::SizeHintEvent&) override;
-        void drawEvent(const dtk::Box2I&, const dtk::DrawEvent&) override;
+        void setGeometry(const feather_tk::Box2I&) override;
+        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
+        void drawEvent(const feather_tk::Box2I&, const feather_tk::DrawEvent&) override;
 
     private:
         int _getDepth(const std::shared_ptr<IImageNode>&, int = 0) const;
 
         void _createNodes(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const std::shared_ptr<IImageNode>&,
             int = 0);
 
         void _drawInputs(
             const std::shared_ptr<IImageNode>&,
-            const dtk::Box2I& drawRect,
-            const dtk::DrawEvent&,
-            const dtk::LineOptions&);
+            const feather_tk::Box2I& drawRect,
+            const feather_tk::DrawEvent&,
+            const feather_tk::LineOptions&);
 
         void _graphUpdate();
 
@@ -59,12 +59,12 @@ namespace toucan
         int _depth = 0;
         std::shared_ptr<IImageNode> _currentNode;
 
-        std::shared_ptr<dtk::VerticalLayout> _layout;
-        std::vector<std::shared_ptr<dtk::HorizontalLayout> > _layouts;
-        std::shared_ptr<dtk::ButtonGroup> _buttonGroup;
-        std::vector<std::shared_ptr<dtk::PushButton> > _buttons;
-        std::map<std::shared_ptr<IImageNode>, std::shared_ptr<dtk::PushButton> > _nodeToButton;
-        std::map<std::shared_ptr<dtk::PushButton>, std::shared_ptr<IImageNode> > _buttonToNode;
+        std::shared_ptr<feather_tk::VerticalLayout> _layout;
+        std::vector<std::shared_ptr<feather_tk::HorizontalLayout> > _layouts;
+        std::shared_ptr<feather_tk::ButtonGroup> _buttonGroup;
+        std::vector<std::shared_ptr<feather_tk::PushButton> > _buttons;
+        std::map<std::shared_ptr<IImageNode>, std::shared_ptr<feather_tk::PushButton> > _nodeToButton;
+        std::map<std::shared_ptr<feather_tk::PushButton>, std::shared_ptr<IImageNode> > _buttonToNode;
 
         struct SizeData
         {
@@ -74,9 +74,9 @@ namespace toucan
         };
         SizeData _size;
 
-        std::shared_ptr<dtk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
-        std::shared_ptr<dtk::ValueObserver<std::shared_ptr<IImageNode> > > _rootNodeObserver;
-        std::shared_ptr<dtk::ValueObserver<std::shared_ptr<IImageNode> > > _currentNodeObserver;
+        std::shared_ptr<feather_tk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
+        std::shared_ptr<feather_tk::ValueObserver<std::shared_ptr<IImageNode> > > _rootNodeObserver;
+        std::shared_ptr<feather_tk::ValueObserver<std::shared_ptr<IImageNode> > > _currentNodeObserver;
     };
 
     //! Image graph tool.
@@ -84,7 +84,7 @@ namespace toucan
     {
     protected:
         void _init(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -93,15 +93,15 @@ namespace toucan
 
         //! Create a new tool.
         static std::shared_ptr<GraphTool> create(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const dtk::Box2I&) override;
-        void sizeHintEvent(const dtk::SizeHintEvent&) override;
+        void setGeometry(const feather_tk::Box2I&) override;
+        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
 
     private:
-        std::shared_ptr<dtk::ScrollWidget> _scrollWidget;
+        std::shared_ptr<feather_tk::ScrollWidget> _scrollWidget;
         std::shared_ptr<GraphWidget> _widget;
     };
 }

@@ -5,9 +5,9 @@
 
 #include <opentimelineio/timeline.h>
 
-#include <dtk/core/ObservableValue.h>
-#include <dtk/core/Timer.h>
-#include <dtk/core/Vector.h>
+#include <feather-tk/core/ObservableValue.h>
+#include <feather-tk/core/Timer.h>
+#include <feather-tk/core/Vector.h>
 
 #include <optional>
 
@@ -47,7 +47,7 @@ namespace toucan
     //! Timeline view state.
     struct TimelineViewState
     {
-        dtk::V2I pos;
+        feather_tk::V2I pos;
         double scale = 1.0;
         bool frameView = true;
     };
@@ -56,7 +56,7 @@ namespace toucan
     class PlaybackModel : public std::enable_shared_from_this<PlaybackModel>
     {
     public:
-        PlaybackModel(const std::shared_ptr<dtk::Context>&);
+        PlaybackModel(const std::shared_ptr<feather_tk::Context>&);
 
         virtual ~PlaybackModel();
 
@@ -64,7 +64,7 @@ namespace toucan
         const OTIO_NS::TimeRange& getTimeRange() const;
 
         //! Observe the time range.
-        std::shared_ptr<dtk::IObservableValue<OTIO_NS::TimeRange> > observeTimeRange() const;
+        std::shared_ptr<feather_tk::IObservableValue<OTIO_NS::TimeRange> > observeTimeRange() const;
 
         //! Set the time range.
         void setTimeRange(const OTIO_NS::TimeRange&);
@@ -73,7 +73,7 @@ namespace toucan
         const OTIO_NS::RationalTime& getCurrentTime() const;
 
         //! Observe the current time.
-        std::shared_ptr<dtk::IObservableValue<OTIO_NS::RationalTime> > observeCurrentTime() const;
+        std::shared_ptr<feather_tk::IObservableValue<OTIO_NS::RationalTime> > observeCurrentTime() const;
 
         //! Set the current time.
         void setCurrentTime(
@@ -89,7 +89,7 @@ namespace toucan
         const OTIO_NS::TimeRange& getInOutRange() const;
 
         //! Observe the in/out range.
-        std::shared_ptr<dtk::IObservableValue<OTIO_NS::TimeRange> > observeInOutRange() const;
+        std::shared_ptr<feather_tk::IObservableValue<OTIO_NS::TimeRange> > observeInOutRange() const;
 
         //! Set the in/out range.
         void setInOutRange(const OTIO_NS::TimeRange&);
@@ -113,7 +113,7 @@ namespace toucan
         Playback getPlayback() const;
 
         //! Observe the playback.
-        std::shared_ptr<dtk::IObservableValue<Playback> > observePlayback() const;
+        std::shared_ptr<feather_tk::IObservableValue<Playback> > observePlayback() const;
 
         //! Set the playback.
         void setPlayback(Playback);
@@ -130,12 +130,12 @@ namespace toucan
     private:
         void _timeUpdate();
 
-        std::shared_ptr<dtk::ObservableValue<OTIO_NS::TimeRange> > _timeRange;
-        std::shared_ptr<dtk::ObservableValue<OTIO_NS::RationalTime> > _currentTime;
-        std::shared_ptr<dtk::ObservableValue<OTIO_NS::TimeRange> > _inOutRange;
-        std::shared_ptr<dtk::ObservableValue<Playback> > _playback;
+        std::shared_ptr<feather_tk::ObservableValue<OTIO_NS::TimeRange> > _timeRange;
+        std::shared_ptr<feather_tk::ObservableValue<OTIO_NS::RationalTime> > _currentTime;
+        std::shared_ptr<feather_tk::ObservableValue<OTIO_NS::TimeRange> > _inOutRange;
+        std::shared_ptr<feather_tk::ObservableValue<Playback> > _playback;
         Playback _playbackPrev = Playback::Forward;
         std::optional<TimelineViewState> _viewState;
-        std::shared_ptr<dtk::Timer> _timer;
+        std::shared_ptr<feather_tk::Timer> _timer;
     };
 }

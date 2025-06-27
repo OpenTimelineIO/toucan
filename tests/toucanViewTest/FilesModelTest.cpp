@@ -16,61 +16,61 @@ namespace toucan
         {
         public:
             Test(
-                const std::shared_ptr<dtk::Context>& context,
+                const std::shared_ptr<feather_tk::Context>& context,
                 const std::shared_ptr<ImageEffectHost>& host)
             {
-                model = std::make_shared<FilesModel>(context, host);
+                model = std::make_shared<FilesModel>(context, nullptr, host);
 
-                filesObserver = dtk::ListObserver<std::shared_ptr<File> >::create(
+                filesObserver = feather_tk::ListObserver<std::shared_ptr<File> >::create(
                     model->observeFiles(),
                     [this](const std::vector<std::shared_ptr<File> >& value)
                     {
                         files = value;
                     });
 
-                addObserver = dtk::ValueObserver<int>::create(
+                addObserver = feather_tk::ValueObserver<int>::create(
                     model->observeAdd(),
                     [this](int value)
                     {
                         add = value;
                     });
 
-                removeObserver = dtk::ValueObserver<int>::create(
+                removeObserver = feather_tk::ValueObserver<int>::create(
                     model->observeRemove(),
                     [this](int value)
                     {
                         remove = value;
                     });
 
-                currentObserver = dtk::ValueObserver<std::shared_ptr<File>>::create(
+                currentObserver = feather_tk::ValueObserver<std::shared_ptr<File>>::create(
                     model->observeCurrent(),
                     [this](const std::shared_ptr<File>& value)
                     {
                         current = value;
                     });
 
-                currentIndexObserver = dtk::ValueObserver<int>::create(
+                currentIndexObserver = feather_tk::ValueObserver<int>::create(
                     model->observeCurrentIndex(),
                     [this](int value)
                     {
                         currentIndex = value;
                     });
 
-                bFileObserver = dtk::ValueObserver<std::shared_ptr<File> >::create(
+                bFileObserver = feather_tk::ValueObserver<std::shared_ptr<File> >::create(
                     model->observeBFile(),
                     [this](const std::shared_ptr<File>& value)
                     {
                         bFile = value;
                     });
 
-                bIndexObserver = dtk::ValueObserver<int>::create(
+                bIndexObserver = feather_tk::ValueObserver<int>::create(
                     model->observeBIndex(),
                     [this](int value)
                     {
                         bIndex = value;
                     });
 
-                compareOptionsObserver = dtk::ValueObserver<CompareOptions>::create(
+                compareOptionsObserver = feather_tk::ValueObserver<CompareOptions>::create(
                     model->observeCompareOptions(),
                     [this](const CompareOptions& value)
                     {
@@ -88,19 +88,19 @@ namespace toucan
             int bIndex = -1;
             CompareOptions compareOptions;
 
-            std::shared_ptr<dtk::ListObserver<std::shared_ptr<File> > > filesObserver;
-            std::shared_ptr<dtk::ValueObserver<int> > addObserver;
-            std::shared_ptr<dtk::ValueObserver<int> > removeObserver;
-            std::shared_ptr<dtk::ValueObserver<std::shared_ptr<File> > > currentObserver;
-            std::shared_ptr<dtk::ValueObserver<int> > currentIndexObserver;
-            std::shared_ptr<dtk::ValueObserver<std::shared_ptr<File> > > bFileObserver;
-            std::shared_ptr<dtk::ValueObserver<int> > bIndexObserver;
-            std::shared_ptr<dtk::ValueObserver<CompareOptions> > compareOptionsObserver;
+            std::shared_ptr<feather_tk::ListObserver<std::shared_ptr<File> > > filesObserver;
+            std::shared_ptr<feather_tk::ValueObserver<int> > addObserver;
+            std::shared_ptr<feather_tk::ValueObserver<int> > removeObserver;
+            std::shared_ptr<feather_tk::ValueObserver<std::shared_ptr<File> > > currentObserver;
+            std::shared_ptr<feather_tk::ValueObserver<int> > currentIndexObserver;
+            std::shared_ptr<feather_tk::ValueObserver<std::shared_ptr<File> > > bFileObserver;
+            std::shared_ptr<feather_tk::ValueObserver<int> > bIndexObserver;
+            std::shared_ptr<feather_tk::ValueObserver<CompareOptions> > compareOptionsObserver;
         };
     }
 
     void filesModelTest(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<ImageEffectHost>& host,
         const std::filesystem::path& path)
     {

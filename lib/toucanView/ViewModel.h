@@ -3,10 +3,10 @@
 
 #pragma once
 
-#include <dtk/ui/Settings.h>
-#include <dtk/core/Context.h>
-#include <dtk/core/ObservableValue.h>
-#include <dtk/core/RenderOptions.h>
+#include <feather-tk/ui/Settings.h>
+#include <feather-tk/core/Context.h>
+#include <feather-tk/core/ObservableValue.h>
+#include <feather-tk/core/RenderOptions.h>
 
 #include <opentimelineio/timeline.h>
 
@@ -17,7 +17,7 @@ namespace toucan
     {
         bool flip = false;
         bool flop = false;
-        dtk::ChannelDisplay channelDisplay = dtk::ChannelDisplay::Color;
+        feather_tk::ChannelDisplay channelDisplay = feather_tk::ChannelDisplay::Color;
 
         bool operator == (const ViewOptions&) const;
         bool operator != (const ViewOptions&) const;
@@ -27,7 +27,7 @@ namespace toucan
     class ViewModel : public std::enable_shared_from_this<ViewModel>
     {
     public:
-        ViewModel(const std::shared_ptr<dtk::Context>&);
+        ViewModel(const std::shared_ptr<feather_tk::Context>&);
 
         virtual ~ViewModel();
 
@@ -41,19 +41,19 @@ namespace toucan
         void zoomReset();
 
         //! Observe the zoom in.
-        std::shared_ptr<dtk::IObservableValue<bool> > observeZoomIn() const;
+        std::shared_ptr<feather_tk::IObservableValue<bool> > observeZoomIn() const;
 
         //! Observe the zoom out.
-        std::shared_ptr<dtk::IObservableValue<bool> > observeZoomOut() const;
+        std::shared_ptr<feather_tk::IObservableValue<bool> > observeZoomOut() const;
 
         //! Observe the zoom reset.
-        std::shared_ptr<dtk::IObservableValue<bool> > observeZoomReset() const;
+        std::shared_ptr<feather_tk::IObservableValue<bool> > observeZoomReset() const;
 
         //! Get whether frame view is enabled.
         bool getFrameView() const;
 
         //! Observe whether frame view is enabled.
-        std::shared_ptr<dtk::IObservableValue<bool> > observeFrameView() const;
+        std::shared_ptr<feather_tk::IObservableValue<bool> > observeFrameView() const;
 
         //! Set whether frame view is enabled.
         void setFrameView(bool);
@@ -62,17 +62,17 @@ namespace toucan
         const ViewOptions& getOptions() const;
 
         //! Observe the view options.
-        std::shared_ptr<dtk::IObservableValue<ViewOptions> > observeOptions() const;
+        std::shared_ptr<feather_tk::IObservableValue<ViewOptions> > observeOptions() const;
 
         //! Set the view options.
         void setOptions(const ViewOptions&);
 
     private:
-        std::shared_ptr<dtk::ObservableValue<bool> > _zoomIn;
-        std::shared_ptr<dtk::ObservableValue<bool> > _zoomOut;
-        std::shared_ptr<dtk::ObservableValue<bool> > _zoomReset;
-        std::shared_ptr<dtk::ObservableValue<bool> > _frameView;
-        std::shared_ptr<dtk::ObservableValue<ViewOptions> > _options;
+        std::shared_ptr<feather_tk::ObservableValue<bool> > _zoomIn;
+        std::shared_ptr<feather_tk::ObservableValue<bool> > _zoomOut;
+        std::shared_ptr<feather_tk::ObservableValue<bool> > _zoomReset;
+        std::shared_ptr<feather_tk::ObservableValue<bool> > _frameView;
+        std::shared_ptr<feather_tk::ObservableValue<ViewOptions> > _options;
     };
 
     //! View background options.
@@ -84,16 +84,16 @@ namespace toucan
         Count,
         First = Solid
     };
-    DTK_ENUM(ViewBackground);
+    FEATHER_TK_ENUM(ViewBackground);
 
     //! Global view options.
     struct GlobalViewOptions
     {
         bool hud = false;
         ViewBackground background = ViewBackground::Solid;
-        dtk::Color4F solidColor = dtk::Color4F(0.F, 0.F, 0.F, 1.F);
-        dtk::Color4F checkersColor0 = dtk::Color4F(0.F, 0.F, 0.F, 1.F);
-        dtk::Color4F checkersColor1 = dtk::Color4F(1.F, 1.F, 1.F, 1.F);
+        feather_tk::Color4F solidColor = feather_tk::Color4F(0.F, 0.F, 0.F, 1.F);
+        feather_tk::Color4F checkersColor0 = feather_tk::Color4F(0.F, 0.F, 0.F, 1.F);
+        feather_tk::Color4F checkersColor1 = feather_tk::Color4F(1.F, 1.F, 1.F, 1.F);
         int checkersSize = 50;
 
         bool operator == (const GlobalViewOptions&) const;
@@ -104,7 +104,9 @@ namespace toucan
     class GlobalViewModel : public std::enable_shared_from_this<GlobalViewModel>
     {
     public:
-        GlobalViewModel(const std::shared_ptr<dtk::Context>&);
+        GlobalViewModel(
+            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<feather_tk::Settings>&);
 
         virtual ~GlobalViewModel();
 
@@ -112,13 +114,13 @@ namespace toucan
         const GlobalViewOptions& getOptions() const;
 
         //! Observe the view options.
-        std::shared_ptr<dtk::IObservableValue<GlobalViewOptions> > observeOptions() const;
+        std::shared_ptr<feather_tk::IObservableValue<GlobalViewOptions> > observeOptions() const;
 
         //! Set the view options.
         void setOptions(const GlobalViewOptions&);
 
     private:
-        std::shared_ptr<dtk::Settings> _settings;
-        std::shared_ptr<dtk::ObservableValue<GlobalViewOptions> > _options;
+        std::shared_ptr<feather_tk::Settings> _settings;
+        std::shared_ptr<feather_tk::ObservableValue<GlobalViewOptions> > _options;
     };
 }

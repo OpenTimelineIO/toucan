@@ -10,12 +10,12 @@
 
 #include <toucanRender/TimelineWrapper.h>
 
-#include <dtk/core/Math.h>
+#include <feather-tk/core/Math.h>
 
 namespace toucan
 {
     File::File(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<ImageEffectHost>& host,
         const std::filesystem::path& path) :
         _host(host),
@@ -38,17 +38,17 @@ namespace toucan
             _timelineWrapper,
             _host);
 
-        _currentImage = dtk::ObservableValue<std::shared_ptr<dtk::Image> >::create();
+        _currentImage = feather_tk::ObservableValue<std::shared_ptr<feather_tk::Image> >::create();
 
-        _rootNode = dtk::ObservableValue<std::shared_ptr<IImageNode> >::create();
-        _currentNode = dtk::ObservableValue<std::shared_ptr<IImageNode> >::create();
+        _rootNode = feather_tk::ObservableValue<std::shared_ptr<IImageNode> >::create();
+        _currentNode = feather_tk::ObservableValue<std::shared_ptr<IImageNode> >::create();
 
         _graph = std::make_shared<ImageGraph>(
             context,
             path.parent_path(),
             _timelineWrapper);
 
-        _currentTimeObserver = dtk::ValueObserver<OTIO_NS::RationalTime>::create(
+        _currentTimeObserver = feather_tk::ValueObserver<OTIO_NS::RationalTime>::create(
             _playbackModel->observeCurrentTime(),
             [this](const OTIO_NS::RationalTime& value)
             {
@@ -113,17 +113,17 @@ namespace toucan
         return _graph->getImageDataType();
     }
 
-    std::shared_ptr<dtk::IObservableValue<std::shared_ptr<dtk::Image> > > File::observeCurrentImage() const
+    std::shared_ptr<feather_tk::IObservableValue<std::shared_ptr<feather_tk::Image> > > File::observeCurrentImage() const
     {
         return _currentImage;
     }
 
-    std::shared_ptr<dtk::IObservableValue<std::shared_ptr<IImageNode> > > File::observeRootNode() const
+    std::shared_ptr<feather_tk::IObservableValue<std::shared_ptr<IImageNode> > > File::observeRootNode() const
     {
         return _rootNode;
     }
 
-    std::shared_ptr<dtk::IObservableValue<std::shared_ptr<IImageNode> > > File::observeCurrentNode() const
+    std::shared_ptr<feather_tk::IObservableValue<std::shared_ptr<IImageNode> > > File::observeCurrentNode() const
     {
         return _currentNode;
     }
@@ -138,7 +138,7 @@ namespace toucan
 
     void File::_render()
     {
-        std::shared_ptr<dtk::Image> image;
+        std::shared_ptr<feather_tk::Image> image;
         if (_currentNode->get())
         {
             const OTIO_NS::TimeRange& timeRange = _playbackModel->getTimeRange();
@@ -146,15 +146,15 @@ namespace toucan
             _imageBuf = _currentNode->get()->exec();
 
             const auto& spec = _imageBuf.spec();
-            dtk::ImageType imageType = dtk::ImageType::None;
+            feather_tk::ImageType imageType = feather_tk::ImageType::None;
             if (OIIO::TypeDesc::UINT8 == spec.format)
             {
                 switch (spec.nchannels)
                 {
-                case 1: imageType = dtk::ImageType::L_U8; break;
-                case 2: imageType = dtk::ImageType::LA_U8; break;
-                case 3: imageType = dtk::ImageType::RGB_U8; break;
-                case 4: imageType = dtk::ImageType::RGBA_U8; break;
+                case 1: imageType = feather_tk::ImageType::L_U8; break;
+                case 2: imageType = feather_tk::ImageType::LA_U8; break;
+                case 3: imageType = feather_tk::ImageType::RGB_U8; break;
+                case 4: imageType = feather_tk::ImageType::RGBA_U8; break;
                 default: break;
                 }
             }
@@ -162,10 +162,10 @@ namespace toucan
             {
                 switch (spec.nchannels)
                 {
-                case 1: imageType = dtk::ImageType::L_U16; break;
-                case 2: imageType = dtk::ImageType::LA_U16; break;
-                case 3: imageType = dtk::ImageType::RGB_U16; break;
-                case 4: imageType = dtk::ImageType::RGBA_U16; break;
+                case 1: imageType = feather_tk::ImageType::L_U16; break;
+                case 2: imageType = feather_tk::ImageType::LA_U16; break;
+                case 3: imageType = feather_tk::ImageType::RGB_U16; break;
+                case 4: imageType = feather_tk::ImageType::RGBA_U16; break;
                 default: break;
                 }
             }
@@ -173,10 +173,10 @@ namespace toucan
             {
                 switch (spec.nchannels)
                 {
-                case 1: imageType = dtk::ImageType::L_F16; break;
-                case 2: imageType = dtk::ImageType::LA_F16; break;
-                case 3: imageType = dtk::ImageType::RGB_F16; break;
-                case 4: imageType = dtk::ImageType::RGBA_F16; break;
+                case 1: imageType = feather_tk::ImageType::L_F16; break;
+                case 2: imageType = feather_tk::ImageType::LA_F16; break;
+                case 3: imageType = feather_tk::ImageType::RGB_F16; break;
+                case 4: imageType = feather_tk::ImageType::RGBA_F16; break;
                 default: break;
                 }
             }
@@ -184,16 +184,16 @@ namespace toucan
             {
                 switch (spec.nchannels)
                 {
-                case 1: imageType = dtk::ImageType::L_F32; break;
-                case 2: imageType = dtk::ImageType::LA_F32; break;
-                case 3: imageType = dtk::ImageType::RGB_F32; break;
-                case 4: imageType = dtk::ImageType::RGBA_F32; break;
+                case 1: imageType = feather_tk::ImageType::L_F32; break;
+                case 2: imageType = feather_tk::ImageType::LA_F32; break;
+                case 3: imageType = feather_tk::ImageType::RGB_F32; break;
+                case 4: imageType = feather_tk::ImageType::RGBA_F32; break;
                 default: break;
                 }
             }
-            dtk::ImageInfo info(spec.width, spec.height, imageType);
+            feather_tk::ImageInfo info(spec.width, spec.height, imageType);
             info.layout.mirror.y = true;
-            image = dtk::Image::create(info, reinterpret_cast<uint8_t*>(_imageBuf.localpixels()));
+            image = feather_tk::Image::create(info, reinterpret_cast<uint8_t*>(_imageBuf.localpixels()));
         }
         _currentImage->setIfChanged(image);
     }

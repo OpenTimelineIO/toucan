@@ -3,8 +3,7 @@
 
 #include "App.h"
 
-#include <dtk/core/Context.h>
-#include <dtk/core/Init.h>
+#include <feather-tk/core/Context.h>
 
 #include <iostream>
 
@@ -20,8 +19,7 @@ int main(int argc, char** argv)
     }
     try
     {
-        auto context = dtk::Context::create();
-        dtk::coreInit(context);
+        auto context = feather_tk::Context::create();
         auto app = App::create(context, args);
         app->run();
         out = app->getExit();

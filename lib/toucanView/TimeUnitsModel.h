@@ -3,8 +3,9 @@
 
 #pragma once
 
-#include <dtk/core/Context.h>
-#include <dtk/core/ObservableValue.h>
+#include <feather-tk/ui/Settings.h>
+#include <feather-tk/core/Context.h>
+#include <feather-tk/core/ObservableValue.h>
 
 #include <opentimelineio/version.h>
 
@@ -20,7 +21,7 @@ namespace toucan
         Count,
         First = Timecode
     };
-    DTK_ENUM(TimeUnits);
+    FEATHER_TK_ENUM(TimeUnits);
 
     //! Convert a time to a string.
     std::string toString(const OTIO_NS::RationalTime&, TimeUnits);
@@ -35,7 +36,9 @@ namespace toucan
     class TimeUnitsModel : public std::enable_shared_from_this<TimeUnitsModel>
     {
     public:
-        TimeUnitsModel(const std::shared_ptr<dtk::Context>&);
+        TimeUnitsModel(
+            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<feather_tk::Settings>&);
 
         virtual ~TimeUnitsModel();
 
@@ -43,13 +46,13 @@ namespace toucan
         TimeUnits getTimeUnits() const;
 
         //! Observe the time units.
-        std::shared_ptr<dtk::IObservableValue<TimeUnits> > observeTimeUnits() const;
+        std::shared_ptr<feather_tk::IObservableValue<TimeUnits> > observeTimeUnits() const;
 
         //! Set the time units.
         void setTimeUnits(TimeUnits);
 
     private:
-        std::weak_ptr<dtk::Context> _context;
-        std::shared_ptr<dtk::ObservableValue<TimeUnits> > _timeUnits;
+        std::shared_ptr<feather_tk::Settings> _settings;
+        std::shared_ptr<feather_tk::ObservableValue<TimeUnits> > _timeUnits;
     };
 }

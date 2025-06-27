@@ -3,62 +3,62 @@
 
 #include "MarkerItem.h"
 
-#include <dtk/ui/DrawUtil.h>
+#include <feather-tk/ui/DrawUtil.h>
 
 namespace toucan
 {
-    dtk::Color4F getMarkerColor(const std::string& color)
+    feather_tk::Color4F getMarkerColor(const std::string& color)
     {
-        dtk::Color4F out(1.F, 0.F, 0.F);
+        feather_tk::Color4F out(1.F, 0.F, 0.F);
         if (color == OTIO_NS::Marker::Color::pink)
         {
-            out = dtk::Color4F(1.F, 0.F, .5F);
+            out = feather_tk::Color4F(1.F, 0.F, .5F);
         }
         else if (color == OTIO_NS::Marker::Color::red)
         {
-            out = dtk::Color4F(1.F, 0.F, 0.F);
+            out = feather_tk::Color4F(1.F, 0.F, 0.F);
         }
         else if (color == OTIO_NS::Marker::Color::orange)
         {
-            out = dtk::Color4F(1.F, .6F, 0.F);
+            out = feather_tk::Color4F(1.F, .6F, 0.F);
         }
         else if (color == OTIO_NS::Marker::Color::yellow)
         {
-            out = dtk::Color4F(1.F, 1.F, 0.F);
+            out = feather_tk::Color4F(1.F, 1.F, 0.F);
         }
         else if (color == OTIO_NS::Marker::Color::green)
         {
-            out = dtk::Color4F(0.F, 1.F, 0.F);
+            out = feather_tk::Color4F(0.F, 1.F, 0.F);
         }
         else if (color == OTIO_NS::Marker::Color::cyan)
         {
-            out = dtk::Color4F(0.F, 1.F, 1.F);
+            out = feather_tk::Color4F(0.F, 1.F, 1.F);
         }
         else if (color == OTIO_NS::Marker::Color::blue)
         {
-            out = dtk::Color4F(0.F, 0.F, 1.F);
+            out = feather_tk::Color4F(0.F, 0.F, 1.F);
         }
         else if (color == OTIO_NS::Marker::Color::purple)
         {
-            out = dtk::Color4F(.5F, 0.F, 1.F);
+            out = feather_tk::Color4F(.5F, 0.F, 1.F);
         }
         else if (color == OTIO_NS::Marker::Color::magenta)
         {
-            out = dtk::Color4F(1.F, 0.F, 1.F);
+            out = feather_tk::Color4F(1.F, 0.F, 1.F);
         }
         else if (color == OTIO_NS::Marker::Color::black)
         {
-            out = dtk::Color4F(0.F, 0.F, 0.F);
+            out = feather_tk::Color4F(0.F, 0.F, 0.F);
         }
         else if (color == OTIO_NS::Marker::Color::white)
         {
-            out = dtk::Color4F(1.F, 1.F, 1.F);
+            out = feather_tk::Color4F(1.F, 1.F, 1.F);
         }
         return out;
     }
 
     void MarkerItem::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const ItemData& data,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Marker>& marker,
         const OTIO_NS::TimeRange& timeRange,
@@ -88,7 +88,7 @@ namespace toucan
     {}
 
     std::shared_ptr<MarkerItem> MarkerItem::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const ItemData& data,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Marker>& marker,
         const OTIO_NS::TimeRange& timeRange,
@@ -99,10 +99,10 @@ namespace toucan
         return out;
     }
 
-    void MarkerItem::setGeometry(const dtk::Box2I& value)
+    void MarkerItem::setGeometry(const feather_tk::Box2I& value)
     {
         IItem::setGeometry(value);
-        const dtk::Box2I g(
+        const feather_tk::Box2I g(
             value.min.x + value.h(),
             value.min.y,
             value.w() - value.h(),
@@ -110,7 +110,7 @@ namespace toucan
         _label->setGeometry(g);
     }
 
-    void MarkerItem::sizeHintEvent(const dtk::SizeHintEvent& event)
+    void MarkerItem::sizeHintEvent(const feather_tk::SizeHintEvent& event)
     {
         IItem::sizeHintEvent(event);
         const bool displayScaleChanged = event.displayScale != _size.displayScale;
@@ -118,28 +118,28 @@ namespace toucan
         {
             _size.init = false;
             _size.displayScale = event.displayScale;
-            _size.margin = event.style->getSizeRole(dtk::SizeRole::MarginInside, event.displayScale);
-            _size.border = event.style->getSizeRole(dtk::SizeRole::Border, event.displayScale);
+            _size.margin = event.style->getSizeRole(feather_tk::SizeRole::MarginInside, event.displayScale);
+            _size.border = event.style->getSizeRole(feather_tk::SizeRole::Border, event.displayScale);
         }
-        dtk::Size2I sizeHint = _label->getSizeHint();
+        feather_tk::Size2I sizeHint = _label->getSizeHint();
         sizeHint.h += _size.border * 2;
         _setSizeHint(sizeHint);
         _minWidth = sizeHint.h;
     }
 
     void MarkerItem::drawEvent(
-        const dtk::Box2I& drawRect,
-        const dtk::DrawEvent& event)
+        const feather_tk::Box2I& drawRect,
+        const feather_tk::DrawEvent& event)
     {
         IItem::drawEvent(drawRect, event);
-        const dtk::Box2I& g = getGeometry();
-        const dtk::Box2I g2 = dtk::margin(g, -_size.border, 0, -_size.border, 0);
+        const feather_tk::Box2I& g = getGeometry();
+        const feather_tk::Box2I g2 = feather_tk::margin(g, -_size.border, 0, -_size.border, 0);
         event.render->drawRect(
             g2,
-            _selected ? event.style->getColorRole(dtk::ColorRole::Yellow) : dtk::Color4F(.3F, .3F, .3F));
+            _selected ? event.style->getColorRole(feather_tk::ColorRole::Yellow) : feather_tk::Color4F(.3F, .3F, .3F));
 
-        const dtk::Box2I g3(g.min.x, g.min.y, g.h(), g.h());
-        event.render->drawMesh(dtk::circle(dtk::center(g3), g3.h() / 4), _color);
+        const feather_tk::Box2I g3(g.min.x, g.min.y, g.h(), g.h());
+        event.render->drawMesh(feather_tk::circle(feather_tk::center(g3), g3.h() / 4), _color);
     }
 
     void MarkerItem::_timeUnitsUpdate()

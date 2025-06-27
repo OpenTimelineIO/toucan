@@ -3,40 +3,40 @@
 
 #include "TimeWidgets.h"
 
-#include <dtk/ui/ToolButton.h>
+#include <feather-tk/ui/ToolButton.h>
 
 #include <sstream>
 
 namespace toucan
 {
     void FrameButtons::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<IWidget>& parent)
     {
         IWidget::_init(context, "toucan::FrameButtons", parent);
 
-        _layout = dtk::HorizontalLayout::create(context, shared_from_this());
-        _layout->setSpacingRole(dtk::SizeRole::SpacingTool);
+        _layout = feather_tk::HorizontalLayout::create(context, shared_from_this());
+        _layout->setSpacingRole(feather_tk::SizeRole::SpacingTool);
 
-        auto startButton = dtk::ToolButton::create(context, _layout);
+        auto startButton = feather_tk::ToolButton::create(context, _layout);
         startButton->setIcon("FrameStart");
         startButton->setTooltip("Go to the start frame");
 
-        auto prevButton = dtk::ToolButton::create(context, _layout);
+        auto prevButton = feather_tk::ToolButton::create(context, _layout);
         prevButton->setIcon("FramePrev");
         prevButton->setRepeatClick(true);
         prevButton->setTooltip("Go to the previous frame");
 
-        auto nextButton = dtk::ToolButton::create(context, _layout);
+        auto nextButton = feather_tk::ToolButton::create(context, _layout);
         nextButton->setIcon("FrameNext");
         nextButton->setRepeatClick(true);
         nextButton->setTooltip("Go to the next frame");
 
-        auto endButton = dtk::ToolButton::create(context, _layout);
+        auto endButton = feather_tk::ToolButton::create(context, _layout);
         endButton->setIcon("FrameEnd");
         endButton->setTooltip("Go to the end frame");
 
-        _buttonGroup = dtk::ButtonGroup::create(context, dtk::ButtonGroupType::Click);
+        _buttonGroup = feather_tk::ButtonGroup::create(context, feather_tk::ButtonGroupType::Click);
         _buttonGroup->addButton(startButton);
         _buttonGroup->addButton(prevButton);
         _buttonGroup->addButton(nextButton);
@@ -56,7 +56,7 @@ namespace toucan
     {}
 
     std::shared_ptr<FrameButtons> FrameButtons::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<IWidget>& parent)
     {
         auto out = std::shared_ptr<FrameButtons>(new FrameButtons);
@@ -69,40 +69,40 @@ namespace toucan
         _callback = value;
     }
 
-    void FrameButtons::setGeometry(const dtk::Box2I& value)
+    void FrameButtons::setGeometry(const feather_tk::Box2I& value)
     {
         IWidget::setGeometry(value);
         _layout->setGeometry(value);
     }
 
-    void FrameButtons::sizeHintEvent(const dtk::SizeHintEvent& value)
+    void FrameButtons::sizeHintEvent(const feather_tk::SizeHintEvent& value)
     {
         IWidget::sizeHintEvent(value);
         _setSizeHint(_layout->getSizeHint());
     }
 
     void PlaybackButtons::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<IWidget>& parent)
     {
         IWidget::_init(context, "toucan::PlaybackButtons", parent);
 
-        _layout = dtk::HorizontalLayout::create(context, shared_from_this());
-        _layout->setSpacingRole(dtk::SizeRole::SpacingTool);
+        _layout = feather_tk::HorizontalLayout::create(context, shared_from_this());
+        _layout->setSpacingRole(feather_tk::SizeRole::SpacingTool);
 
-        auto reverseButton = dtk::ToolButton::create(context, _layout);
+        auto reverseButton = feather_tk::ToolButton::create(context, _layout);
         reverseButton->setIcon("PlaybackReverse");
         reverseButton->setTooltip("Reverse playback");
 
-        auto stopButton = dtk::ToolButton::create(context, _layout);
+        auto stopButton = feather_tk::ToolButton::create(context, _layout);
         stopButton->setIcon("PlaybackStop");
         stopButton->setTooltip("Stop playback");
 
-        auto forwardButton = dtk::ToolButton::create(context, _layout);
+        auto forwardButton = feather_tk::ToolButton::create(context, _layout);
         forwardButton->setIcon("PlaybackForward");
         forwardButton->setTooltip("Forward playback");
 
-        _buttonGroup = dtk::ButtonGroup::create(context, dtk::ButtonGroupType::Radio);
+        _buttonGroup = feather_tk::ButtonGroup::create(context, feather_tk::ButtonGroupType::Radio);
         _buttonGroup->addButton(stopButton);
         _buttonGroup->addButton(forwardButton);
         _buttonGroup->addButton(reverseButton);
@@ -126,7 +126,7 @@ namespace toucan
     {}
 
     std::shared_ptr<PlaybackButtons> PlaybackButtons::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<IWidget>& parent)
     {
         auto out = std::shared_ptr<PlaybackButtons>(new PlaybackButtons);
@@ -147,13 +147,13 @@ namespace toucan
         _callback = value;
     }
 
-    void PlaybackButtons::setGeometry(const dtk::Box2I& value)
+    void PlaybackButtons::setGeometry(const feather_tk::Box2I& value)
     {
         IWidget::setGeometry(value);
         _layout->setGeometry(value);
     }
 
-    void PlaybackButtons::sizeHintEvent(const dtk::SizeHintEvent& value)
+    void PlaybackButtons::sizeHintEvent(const feather_tk::SizeHintEvent& value)
     {
         IWidget::sizeHintEvent(value);
         _setSizeHint(_layout->getSizeHint());
@@ -165,20 +165,20 @@ namespace toucan
     }
 
     void TimeEdit::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<TimeUnitsModel>& timeUnitsModel,
         const std::shared_ptr<IWidget>& parent)
     {
         IWidget::_init(context, "toucan::TimeEdit", parent);
 
-        _layout = dtk::HorizontalLayout::create(context, shared_from_this());
-        _layout->setSpacingRole(dtk::SizeRole::SpacingTool);
+        _layout = feather_tk::HorizontalLayout::create(context, shared_from_this());
+        _layout->setSpacingRole(feather_tk::SizeRole::SpacingTool);
 
-        _lineEdit = dtk::LineEdit::create(context, _layout);
-        _lineEdit->setFontRole(dtk::FontRole::Mono);
+        _lineEdit = feather_tk::LineEdit::create(context, _layout);
+        _lineEdit->setFontRole(feather_tk::FontRole::Mono);
         _lineEdit->setFormat("00:00:00:00");
 
-        _incButtons = dtk::IncButtons::create(context, _layout);
+        _incButtons = feather_tk::IncButtons::create(context, _layout);
 
         _timeUpdate();
 
@@ -202,7 +202,7 @@ namespace toucan
                 _timeDec();
             });
 
-        _timeUnitsObserver = dtk::ValueObserver<TimeUnits>::create(
+        _timeUnitsObserver = feather_tk::ValueObserver<TimeUnits>::create(
             timeUnitsModel->observeTimeUnits(),
             [this](TimeUnits value)
             {
@@ -215,9 +215,9 @@ namespace toucan
     {}
 
     std::shared_ptr<TimeEdit> TimeEdit::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<TimeUnitsModel>& timeUnitsModel,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
         auto out = std::shared_ptr<TimeEdit>(new TimeEdit);
         out->_init(context, timeUnitsModel, parent);
@@ -246,19 +246,19 @@ namespace toucan
         _callback = value;
     }
 
-    void TimeEdit::setGeometry(const dtk::Box2I& value)
+    void TimeEdit::setGeometry(const feather_tk::Box2I& value)
     {
         IWidget::setGeometry(value);
         _layout->setGeometry(value);
     }
 
-    void TimeEdit::sizeHintEvent(const dtk::SizeHintEvent& value)
+    void TimeEdit::sizeHintEvent(const feather_tk::SizeHintEvent& value)
     {
         IWidget::sizeHintEvent(value);
         _setSizeHint(_layout->getSizeHint());
     }
 
-    void TimeEdit::keyPressEvent(dtk::KeyEvent& event)
+    void TimeEdit::keyPressEvent(feather_tk::KeyEvent& event)
     {
         if (_lineEdit->hasKeyFocus())
         {
@@ -266,21 +266,21 @@ namespace toucan
             {
                 switch (event.key)
                 {
-                case dtk::Key::Up:
-                case dtk::Key::Right:
+                case feather_tk::Key::Up:
+                case feather_tk::Key::Right:
                     event.accept = true;
                     _timeInc();
                     break;
-                case dtk::Key::Down:
-                case dtk::Key::Left:
+                case feather_tk::Key::Down:
+                case feather_tk::Key::Left:
                     event.accept = true;
                     _timeDec();
                     break;
-                case dtk::Key::PageUp:
+                case feather_tk::Key::PageUp:
                     event.accept = true;
                     _timeInc(_time.rate());
                     break;
-                case dtk::Key::PageDown:
+                case feather_tk::Key::PageDown:
                     event.accept = true;
                     _timeInc(-_time.rate());
                     break;
@@ -294,7 +294,7 @@ namespace toucan
         }
     }
 
-    void TimeEdit::keyReleaseEvent(dtk::KeyEvent& event)
+    void TimeEdit::keyReleaseEvent(feather_tk::KeyEvent& event)
     {
         IWidget::keyReleaseEvent(event);
         event.accept = true;
@@ -324,19 +324,19 @@ namespace toucan
     }
 
     void TimeLabel::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<TimeUnitsModel>& timeUnitsModel,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
         IWidget::_init(context, "toucan::TimeLabel", parent);
 
-        _label = dtk::Label::create(context, shared_from_this());
-        _label->setFontRole(dtk::FontRole::Mono);
-        _label->setMarginRole(dtk::SizeRole::MarginInside);
+        _label = feather_tk::Label::create(context, shared_from_this());
+        _label->setFontRole(feather_tk::FontRole::Mono);
+        _label->setMarginRole(feather_tk::SizeRole::MarginInside);
 
         _timeUpdate();
 
-        _timeUnitsObserver = dtk::ValueObserver<TimeUnits>::create(
+        _timeUnitsObserver = feather_tk::ValueObserver<TimeUnits>::create(
             timeUnitsModel->observeTimeUnits(),
             [this](TimeUnits value)
             {
@@ -349,9 +349,9 @@ namespace toucan
     {}
 
     std::shared_ptr<TimeLabel> TimeLabel::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<TimeUnitsModel>& timeUnitsModel,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
         auto out = std::shared_ptr<TimeLabel>(new TimeLabel);
         out->_init(context, timeUnitsModel, parent);
@@ -366,18 +366,18 @@ namespace toucan
         _timeUpdate();
     }
 
-    void TimeLabel::setMarginRole(dtk::SizeRole value)
+    void TimeLabel::setMarginRole(feather_tk::SizeRole value)
     {
         _label->setMarginRole(value);
     }
 
-    void TimeLabel::setGeometry(const dtk::Box2I& value)
+    void TimeLabel::setGeometry(const feather_tk::Box2I& value)
     {
         IWidget::setGeometry(value);
         _label->setGeometry(value);
     }
 
-    void TimeLabel::sizeHintEvent(const dtk::SizeHintEvent& value)
+    void TimeLabel::sizeHintEvent(const feather_tk::SizeHintEvent& value)
     {
         IWidget::sizeHintEvent(value);
         _setSizeHint(_label->getSizeHint());

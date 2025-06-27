@@ -6,11 +6,11 @@
 namespace toucan
 {
     void IToolWidget::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
         const std::string& objectName,
         const std::string& text,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
         IWidget::_init(context, objectName, parent);
         _app = app;

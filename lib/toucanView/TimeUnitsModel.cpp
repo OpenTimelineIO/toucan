@@ -3,10 +3,10 @@
 
 #include "TimeUnitsModel.h"
 
-#include <dtk/ui/Settings.h>
-#include <dtk/core/Error.h>
-#include <dtk/core/Format.h>
-#include <dtk/core/String.h>
+#include <feather-tk/ui/Settings.h>
+#include <feather-tk/core/Error.h>
+#include <feather-tk/core/Format.h>
+#include <feather-tk/core/String.h>
 
 #include <nlohmann/json.hpp>
 
@@ -15,7 +15,7 @@
 
 namespace toucan
 {
-    DTK_ENUM_IMPL(
+    FEATHER_TK_ENUM_IMPL(
         TimeUnits,
         "Timecode",
         "Frames",
@@ -70,22 +70,23 @@ namespace toucan
 
     std::string toString(const OTIO_NS::TimeRange& timeRange, TimeUnits units)
     {
-        return dtk::Format("{0} - {1} : {2} @ {3}").
+        return feather_tk::Format("{0} - {1} : {2} @ {3}").
             arg(toString(timeRange.start_time(), units)).
             arg(toString(timeRange.end_time_inclusive(), units)).
             arg(toString(timeRange.duration(), units)).
             arg(timeRange.duration().rate());
     }
 
-    TimeUnitsModel::TimeUnitsModel(const std::shared_ptr<dtk::Context>& context)
+    TimeUnitsModel::TimeUnitsModel(
+        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<feather_tk::Settings>& settings) :
+        _settings(settings)
     {
-        _context = context;
-
         TimeUnits value = TimeUnits::Timecode;
         try
         {
-            auto settings = context->getSystem<dtk::Settings>();
-            const auto json = std::any_cast<nlohmann::json>(settings->get("TimeUnits"));
+            nlohmann::json json;
+            settings->get("/TimeUnits", json);
             auto i = json.find("Units");
             if (i != json.end() && i->is_string())
             {
@@ -96,7 +97,7 @@ namespace toucan
         catch (const std::exception&)
         {}
 
-        _timeUnits = dtk::ObservableValue<TimeUnits>::create(value);
+        _timeUnits = feather_tk::ObservableValue<TimeUnits>::create(value);
     }
 
     TimeUnitsModel::~TimeUnitsModel()
@@ -105,9 +106,7 @@ namespace toucan
         std::stringstream ss;
         ss << _timeUnits->get();
         json["Units"] = ss.str();
-        auto context = _context.lock();
-        auto settings = context->getSystem<dtk::Settings>();
-        settings->set("TimeUnits", json);
+        _settings->set("/TimeUnits", json);
     }
 
     TimeUnits TimeUnitsModel::getTimeUnits() const
@@ -115,7 +114,7 @@ namespace toucan
         return _timeUnits->get();
     }
 
-    std::shared_ptr<dtk::IObservableValue<TimeUnits> > TimeUnitsModel::observeTimeUnits() const
+    std::shared_ptr<feather_tk::IObservableValue<TimeUnits> > TimeUnitsModel::observeTimeUnits() const
     {
         return _timeUnits;
     }

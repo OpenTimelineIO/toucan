@@ -7,8 +7,8 @@
 #include <toucanRender/Read.h>
 #include <toucanRender/Util.h>
 
-#include <dtk/core/CmdLine.h>
-#include <dtk/core/Time.h>
+#include <feather-tk/core/CmdLine.h>
+#include <feather-tk/core/Time.h>
 
 #include <OpenImageIO/imagebufalgo.h>
 
@@ -45,21 +45,21 @@ namespace toucan
     }
     
     void App::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         std::vector<std::string>& argv)
     {
-        std::vector<std::shared_ptr<dtk::ICmdLineArg> > args;
-        args.push_back(dtk::CmdLineValueArg<std::string>::create(
+        std::vector<std::shared_ptr<feather_tk::ICmdLineArg> > args;
+        args.push_back(feather_tk::CmdLineValueArg<std::string>::create(
             _args.input,
             "input",
             "Input .otio file."));
-        auto outArg = dtk::CmdLineValueArg<std::string>::create(
+        auto outArg = feather_tk::CmdLineValueArg<std::string>::create(
             _args.output,
             "output",
             "Output image or movie file. Use a dash ('-') to write raw frames or y4m to stdout.");
         args.push_back(outArg);
 
-        std::vector<std::shared_ptr<dtk::ICmdLineOption> > options;
+        std::vector<std::shared_ptr<feather_tk::ICmdLineOption> > options;
         std::vector<std::string> rawList;
         for (const auto& spec : rawSpecs)
         {
@@ -70,41 +70,41 @@ namespace toucan
         {
             y4mList.push_back(spec.first);
         }
-        options.push_back(dtk::CmdLineValueOption<std::string>::create(
+        options.push_back(feather_tk::CmdLineValueOption<std::string>::create(
             _options.videoCodec,
             std::vector<std::string>{ "-vcodec" },
             "Set the video codec.",
             _options.videoCodec,
-            dtk::join(ffmpeg::getVideoCodecStrings(), ", ")));
-        options.push_back(dtk::CmdLineFlagOption::create(
+            feather_tk::join(ffmpeg::getVideoCodecStrings(), ", ")));
+        options.push_back(feather_tk::CmdLineFlagOption::create(
             _options.printStart,
             std::vector<std::string>{ "-print_start" },
             "Print the timeline start time and exit."));
-        options.push_back(dtk::CmdLineFlagOption::create(
+        options.push_back(feather_tk::CmdLineFlagOption::create(
             _options.printDuration,
             std::vector<std::string>{ "-print_duration" },
             "Print the timeline duration and exit."));
-        options.push_back(dtk::CmdLineFlagOption::create(
+        options.push_back(feather_tk::CmdLineFlagOption::create(
             _options.printRate,
             std::vector<std::string>{ "-print_rate" },
             "Print the timeline frame rate and exit."));
-        options.push_back(dtk::CmdLineFlagOption::create(
+        options.push_back(feather_tk::CmdLineFlagOption::create(
             _options.printSize,
             std::vector<std::string>{ "-print_size" },
             "Print the timeline image size."));
-        options.push_back(dtk::CmdLineValueOption<std::string>::create(
+        options.push_back(feather_tk::CmdLineValueOption<std::string>::create(
             _options.raw,
             std::vector<std::string>{ "-raw" },
             "Raw pixel format to send to stdout.",
             _options.raw,
-            dtk::join(rawList, ", ")));
-        options.push_back(dtk::CmdLineValueOption<std::string>::create(
+            feather_tk::join(rawList, ", ")));
+        options.push_back(feather_tk::CmdLineValueOption<std::string>::create(
             _options.y4m,
             std::vector<std::string>{ "-y4m" },
             "y4m format to send to stdout.",
             _options.y4m,
-            dtk::join(y4mList, ", ")));
-        options.push_back(dtk::CmdLineFlagOption::create(
+            feather_tk::join(y4mList, ", ")));
+        options.push_back(feather_tk::CmdLineFlagOption::create(
             _options.verbose,
             std::vector<std::string>{ "-v" },
             "Print verbose output."));
@@ -144,7 +144,7 @@ namespace toucan
     }
 
     std::shared_ptr<App> App::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         std::vector<std::string>& argv)
     {
         auto out = std::shared_ptr<App>(new App);
@@ -320,7 +320,7 @@ namespace toucan
 
         {
             const OTIO_NS::TimeRange timeRange = _timelineWrapper->getTimeRange();
-            const auto r = dtk::toRational(timeRange.duration().rate());
+            const auto r = feather_tk::toRational(timeRange.duration().rate());
             std::stringstream ss;
             ss << " F" << r.first << ":" << r.second;
             s = ss.str();

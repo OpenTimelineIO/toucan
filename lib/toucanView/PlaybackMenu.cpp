@@ -6,21 +6,21 @@
 #include "App.h"
 #include "FilesModel.h"
 
-#include <dtk/ui/Action.h>
+#include <feather-tk/ui/Action.h>
 
 namespace toucan
 {
     void PlaybackMenu::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
-        dtk::Menu::_init(context, parent);
+        feather_tk::Menu::_init(context, parent);
 
-        _actions["Playback/Stop"] = std::make_shared<dtk::Action>(
+        _actions["Playback/Stop"] = feather_tk::Action::create(
             "Stop",
             "PlaybackStop",
-            dtk::Key::K,
+            feather_tk::Key::K,
             0,
             [this]
             {
@@ -29,12 +29,12 @@ namespace toucan
                     _file->getPlaybackModel()->setPlayback(Playback::Stop);
                 }
             });
-        addItem(_actions["Playback/Stop"]);
+        addAction(_actions["Playback/Stop"]);
 
-        _actions["Playback/Forward"] = std::make_shared<dtk::Action>(
+        _actions["Playback/Forward"] = feather_tk::Action::create(
             "Forward",
             "PlaybackForward",
-            dtk::Key::L,
+            feather_tk::Key::L,
             0,
             [this]
             {
@@ -43,12 +43,12 @@ namespace toucan
                     _file->getPlaybackModel()->setPlayback(Playback::Forward);
                 }
             });
-        addItem(_actions["Playback/Forward"]);
+        addAction(_actions["Playback/Forward"]);
 
-        _actions["Playback/Reverse"] = std::make_shared<dtk::Action>(
+        _actions["Playback/Reverse"] = feather_tk::Action::create(
             "Reverse",
             "PlaybackReverse",
-            dtk::Key::J,
+            feather_tk::Key::J,
             0,
             [this]
             {
@@ -57,13 +57,13 @@ namespace toucan
                     _file->getPlaybackModel()->setPlayback(Playback::Reverse);
                 }
             });
-        addItem(_actions["Playback/Reverse"]);
+        addAction(_actions["Playback/Reverse"]);
 
         addDivider();
 
-        _actions["Playback/Toggle"] = std::make_shared<dtk::Action>(
+        _actions["Playback/Toggle"] = feather_tk::Action::create(
             "Toggle Playback",
-            dtk::Key::Space,
+            feather_tk::Key::Space,
             0,
             [this]
             {
@@ -72,9 +72,9 @@ namespace toucan
                     _file->getPlaybackModel()->togglePlayback();
                 }
             });
-        addItem(_actions["Playback/Toggle"]);
+        addAction(_actions["Playback/Toggle"]);
 
-        _fileObserver = dtk::ValueObserver<std::shared_ptr<File> >::create(
+        _fileObserver = feather_tk::ValueObserver<std::shared_ptr<File> >::create(
             app->getFilesModel()->observeCurrent(),
             [this](const std::shared_ptr<File>& file)
             {
@@ -87,16 +87,16 @@ namespace toucan
     {}
 
     std::shared_ptr<PlaybackMenu> PlaybackMenu::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
         auto out = std::shared_ptr<PlaybackMenu>(new PlaybackMenu);
         out->_init(context, app, parent);
         return out;
     }
 
-    const std::map<std::string, std::shared_ptr<dtk::Action> >& PlaybackMenu::getActions() const
+    const std::map<std::string, std::shared_ptr<feather_tk::Action> >& PlaybackMenu::getActions() const
     {
         return _actions;
     }
@@ -106,13 +106,13 @@ namespace toucan
         const bool file = _file.get();
         if (file)
         {
-            _playbackObserver = dtk::ValueObserver<Playback>::create(
+            _playbackObserver = feather_tk::ValueObserver<Playback>::create(
                 _file->getPlaybackModel()->observePlayback(),
                 [this](Playback value)
                 {
-                    setItemChecked(_actions["Playback/Stop"], Playback::Stop == value);
-                    setItemChecked(_actions["Playback/Forward"], Playback::Forward == value);
-                    setItemChecked(_actions["Playback/Reverse"], Playback::Reverse == value);
+                    setChecked(_actions["Playback/Stop"], Playback::Stop == value);
+                    setChecked(_actions["Playback/Forward"], Playback::Forward == value);
+                    setChecked(_actions["Playback/Reverse"], Playback::Reverse == value);
                 });
         }
         else
@@ -120,9 +120,9 @@ namespace toucan
             _playbackObserver.reset();
         }
 
-        setItemEnabled(_actions["Playback/Stop"], file);
-        setItemEnabled(_actions["Playback/Forward"], file);
-        setItemEnabled(_actions["Playback/Reverse"], file);
-        setItemEnabled(_actions["Playback/Toggle"], file);
+        setEnabled(_actions["Playback/Stop"], file);
+        setEnabled(_actions["Playback/Forward"], file);
+        setEnabled(_actions["Playback/Reverse"], file);
+        setEnabled(_actions["Playback/Toggle"], file);
     }
 }

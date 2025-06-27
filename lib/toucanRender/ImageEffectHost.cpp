@@ -5,7 +5,7 @@
 
 #include "ImageEffect_p.h"
 
-#include <dtk/core/LogSystem.h>
+#include <feather-tk/core/LogSystem.h>
 
 #include <cstdarg>
 #include <cstring>
@@ -20,7 +20,7 @@ namespace toucan
     }
 
     ImageEffectHost::ImageEffectHost(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::vector<std::filesystem::path>& searchPath) :
         _context(context)
     {
@@ -100,7 +100,7 @@ namespace toucan
     void ImageEffectHost::_pluginInit(const std::vector<std::filesystem::path>& searchPath)
     {
         // Find the plugins.
-        auto logSystem = _context.lock()->getSystem<dtk::LogSystem>();
+        auto logSystem = _context.lock()->getSystem<feather_tk::LogSystem>();
         logSystem->print(logPrefix, "Searching for plugins...");
         std::vector<std::filesystem::path> pluginPaths;
         for (const auto& path : searchPath)

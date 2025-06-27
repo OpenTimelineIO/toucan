@@ -6,24 +6,24 @@
 #include <toucanView/FilesModel.h>
 #include <toucanView/IToolWidget.h>
 
-#include <dtk/ui/CheckBox.h>
-#include <dtk/ui/ComboBox.h>
-#include <dtk/ui/GridLayout.h>
-#include <dtk/ui/RowLayout.h>
-#include <dtk/ui/ScrollWidget.h>
-#include <dtk/ui/ToolButton.h>
-#include <dtk/core/ObservableList.h>
+#include <feather-tk/ui/CheckBox.h>
+#include <feather-tk/ui/ComboBox.h>
+#include <feather-tk/ui/GridLayout.h>
+#include <feather-tk/ui/RowLayout.h>
+#include <feather-tk/ui/ScrollWidget.h>
+#include <feather-tk/ui/ToolButton.h>
+#include <feather-tk/core/ObservableList.h>
 
 namespace toucan
 {
     class File;
 
     //! Compare widget.
-    class CompareWidget : public dtk::IWidget
+    class CompareWidget : public feather_tk::IWidget
     {
     protected:
         void _init(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const std::shared_ptr<File>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -32,7 +32,7 @@ namespace toucan
 
         //! Create a new widget.
         static std::shared_ptr<CompareWidget> create(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const std::shared_ptr<File>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
@@ -42,16 +42,16 @@ namespace toucan
         void setB(bool);
         void setBCallback(const std::function<void(bool)>&);
 
-        void setGeometry(const dtk::Box2I&) override;
-        void sizeHintEvent(const dtk::SizeHintEvent&) override;
+        void setGeometry(const feather_tk::Box2I&) override;
+        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
 
     private:
         bool _current = false;
         bool _b = false;
 
-        std::shared_ptr<dtk::HorizontalLayout> _layout;
-        std::shared_ptr<dtk::ToolButton> _button;
-        std::shared_ptr<dtk::ToolButton> _bButton;
+        std::shared_ptr<feather_tk::HorizontalLayout> _layout;
+        std::shared_ptr<feather_tk::ToolButton> _button;
+        std::shared_ptr<feather_tk::ToolButton> _bButton;
     };
 
     //! Compare tool.
@@ -59,7 +59,7 @@ namespace toucan
     {
     protected:
         void _init(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -68,12 +68,12 @@ namespace toucan
 
         //! Create a new tool.
         static std::shared_ptr<CompareTool> create(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const dtk::Box2I&) override;
-        void sizeHintEvent(const dtk::SizeHintEvent&) override;
+        void setGeometry(const feather_tk::Box2I&) override;
+        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
 
     private:
         void _widgetUpdate();
@@ -84,19 +84,19 @@ namespace toucan
         int _currentIndex = -1;
         int _bIndex = -1;
 
-        std::shared_ptr<dtk::VerticalLayout> _layout;
-        std::shared_ptr<dtk::ScrollWidget> _scrollWidget;
-        std::shared_ptr<dtk::VerticalLayout> _widgetLayout;
+        std::shared_ptr<feather_tk::VerticalLayout> _layout;
+        std::shared_ptr<feather_tk::ScrollWidget> _scrollWidget;
+        std::shared_ptr<feather_tk::VerticalLayout> _widgetLayout;
         std::vector<std::shared_ptr<CompareWidget> > _widgets;
-        std::shared_ptr<dtk::GridLayout> _bottomLayout;
-        std::shared_ptr<dtk::ComboBox> _modeComboBox;
-        std::shared_ptr<dtk::CheckBox> _startTimeCheckBox;
-        std::shared_ptr<dtk::CheckBox> _resizeCheckBox;
+        std::shared_ptr<feather_tk::GridLayout> _bottomLayout;
+        std::shared_ptr<feather_tk::ComboBox> _modeComboBox;
+        std::shared_ptr<feather_tk::CheckBox> _startTimeCheckBox;
+        std::shared_ptr<feather_tk::CheckBox> _resizeCheckBox;
 
-        std::shared_ptr<dtk::ListObserver<std::shared_ptr<File> > > _filesObserver;
-        std::shared_ptr<dtk::ValueObserver<int> > _fileIndexObserver;
-        std::shared_ptr<dtk::ValueObserver<int> > _bIndexObserver;
-        std::shared_ptr<dtk::ValueObserver<CompareOptions> > _compareOptionsObserver;
+        std::shared_ptr<feather_tk::ListObserver<std::shared_ptr<File> > > _filesObserver;
+        std::shared_ptr<feather_tk::ValueObserver<int> > _fileIndexObserver;
+        std::shared_ptr<feather_tk::ValueObserver<int> > _bIndexObserver;
+        std::shared_ptr<feather_tk::ValueObserver<CompareOptions> > _compareOptionsObserver;
     };
 }
 

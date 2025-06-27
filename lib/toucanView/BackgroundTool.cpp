@@ -5,42 +5,42 @@
 
 #include "App.h"
 
-#include <dtk/ui/Divider.h>
-#include <dtk/ui/Label.h>
-#include <dtk/ui/Spacer.h>
-#include <dtk/core/String.h>
+#include <feather-tk/ui/Divider.h>
+#include <feather-tk/ui/Label.h>
+#include <feather-tk/ui/Spacer.h>
+#include <feather-tk/core/String.h>
 
 namespace toucan
 {
     void BackgroundTool::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
         IToolWidget::_init(context, app, "toucan::BackgroundTool", "Background", parent);
 
         _model = app->getGlobalViewModel();
 
-        _scrollWidget = dtk::ScrollWidget::create(context, dtk::ScrollType::Both, shared_from_this());
+        _scrollWidget = feather_tk::ScrollWidget::create(context, feather_tk::ScrollType::Both, shared_from_this());
         _scrollWidget->setBorder(false);
 
-        _layout = dtk::VerticalLayout::create(context);
-        _layout->setMarginRole(dtk::SizeRole::MarginSmall);
-        _layout->setSpacingRole(dtk::SizeRole::SpacingSmall);
+        _layout = feather_tk::VerticalLayout::create(context);
+        _layout->setMarginRole(feather_tk::SizeRole::MarginSmall);
+        _layout->setSpacingRole(feather_tk::SizeRole::SpacingSmall);
         _scrollWidget->setWidget(_layout);
 
-        _comboBox = dtk::ComboBox::create(context, getViewBackgroundLabels(), _layout);
+        _comboBox = feather_tk::ComboBox::create(context, getViewBackgroundLabels(), _layout);
         
-        dtk::Divider::create(context, dtk::Orientation::Vertical, _layout);
+        feather_tk::Divider::create(context, feather_tk::Orientation::Vertical, _layout);
 
-        _solidColorWidget = dtk::ColorWidget::create(context, _layout);
+        _solidColorWidget = feather_tk::ColorWidget::create(context, _layout);
 
-        _checkersColor0Widget = dtk::ColorWidget::create(context, _layout);
+        _checkersColor0Widget = feather_tk::ColorWidget::create(context, _layout);
 
-        _checkersColor1Widget = dtk::ColorWidget::create(context, _layout);
+        _checkersColor1Widget = feather_tk::ColorWidget::create(context, _layout);
 
-        _checkersSizeSlider = dtk::IntEditSlider::create(context, _layout);
-        _checkersSizeSlider->setRange(dtk::RangeI(10, 100));
+        _checkersSizeSlider = feather_tk::IntEditSlider::create(context, _layout);
+        _checkersSizeSlider->setRange(feather_tk::RangeI(10, 100));
 
         _comboBox->setIndexCallback(
             [this](int value)
@@ -54,7 +54,7 @@ namespace toucan
             });
 
         _solidColorWidget->setCallback(
-            [this](const dtk::Color4F& value)
+            [this](const feather_tk::Color4F& value)
             {
                 if (_model)
                 {
@@ -65,7 +65,7 @@ namespace toucan
             });
 
         _checkersColor0Widget->setCallback(
-            [this](const dtk::Color4F& value)
+            [this](const feather_tk::Color4F& value)
             {
                 if (_model)
                 {
@@ -76,7 +76,7 @@ namespace toucan
             });
 
         _checkersColor1Widget->setCallback(
-            [this](const dtk::Color4F& value)
+            [this](const feather_tk::Color4F& value)
             {
                 if (_model)
                 {
@@ -97,7 +97,7 @@ namespace toucan
                 }
             });
 
-        _optionsObserver = dtk::ValueObserver<GlobalViewOptions>::create(
+        _optionsObserver = feather_tk::ValueObserver<GlobalViewOptions>::create(
             _model->observeOptions(),
             [this](const GlobalViewOptions& value)
             {
@@ -110,22 +110,22 @@ namespace toucan
     {}
 
     std::shared_ptr<BackgroundTool> BackgroundTool::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
         auto out = std::shared_ptr<BackgroundTool>(new BackgroundTool);
         out->_init(context, app, parent);
         return out;
     }
 
-    void BackgroundTool::setGeometry(const dtk::Box2I& value)
+    void BackgroundTool::setGeometry(const feather_tk::Box2I& value)
     {
         IToolWidget::setGeometry(value);
         _scrollWidget->setGeometry(value);
     }
 
-    void BackgroundTool::sizeHintEvent(const dtk::SizeHintEvent& event)
+    void BackgroundTool::sizeHintEvent(const feather_tk::SizeHintEvent& event)
     {
         IToolWidget::sizeHintEvent(event);
         _setSizeHint(_scrollWidget->getSizeHint());

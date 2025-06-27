@@ -3,10 +3,10 @@
 
 #pragma once
 
-#include <dtk/ui/Settings.h>
-#include <dtk/core/Context.h>
-#include <dtk/core/ObservableMap.h>
-#include <dtk/core/ObservableValue.h>
+#include <feather-tk/ui/Settings.h>
+#include <feather-tk/core/Context.h>
+#include <feather-tk/core/ObservableMap.h>
+#include <feather-tk/core/ObservableValue.h>
 
 namespace toucan
 {
@@ -21,13 +21,15 @@ namespace toucan
         Count,
         First = ToolBar
     };
-    DTK_ENUM(WindowComponent);
+    FEATHER_TK_ENUM(WindowComponent);
 
     //! Window model.
     class WindowModel : public std::enable_shared_from_this<WindowModel>
     {
     public:
-        WindowModel(const std::shared_ptr<dtk::Context>&);
+        WindowModel(
+            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<feather_tk::Settings>&);
 
         virtual ~WindowModel();
 
@@ -35,7 +37,7 @@ namespace toucan
         const std::map<WindowComponent, bool> getComponents() const;
 
         //! Observe the window components.
-        std::shared_ptr<dtk::IObservableMap<WindowComponent, bool> > observeComponents() const;
+        std::shared_ptr<feather_tk::IObservableMap<WindowComponent, bool> > observeComponents() const;
 
         //! Set the window components.
         void setComponents(const std::map<WindowComponent, bool>&);
@@ -50,7 +52,7 @@ namespace toucan
         bool getThumbnails() const;
 
         //! Observe whether thumbnails are enabled.
-        std::shared_ptr<dtk::IObservableValue<bool> > observeThumbnails() const;
+        std::shared_ptr<feather_tk::IObservableValue<bool> > observeThumbnails() const;
 
         //! Set whether thumbnails are enabled.
         void setThumbnails(bool);
@@ -59,15 +61,15 @@ namespace toucan
         bool getTooltips() const;
 
         //! Observe whether tooltips are enabled.
-        std::shared_ptr<dtk::IObservableValue<bool> > observeTooltips() const;
+        std::shared_ptr<feather_tk::IObservableValue<bool> > observeTooltips() const;
 
         //! Set whether tooltips are enabled.
         void setTooltips(bool);
 
     private:
-        std::shared_ptr<dtk::Settings> _settings;
-        std::shared_ptr<dtk::ObservableMap<WindowComponent, bool> > _components;
-        std::shared_ptr<dtk::ObservableValue<bool> > _thumbnails;
-        std::shared_ptr<dtk::ObservableValue<bool> > _tooltips;
+        std::shared_ptr<feather_tk::Settings> _settings;
+        std::shared_ptr<feather_tk::ObservableMap<WindowComponent, bool> > _components;
+        std::shared_ptr<feather_tk::ObservableValue<bool> > _thumbnails;
+        std::shared_ptr<feather_tk::ObservableValue<bool> > _tooltips;
     };
 }

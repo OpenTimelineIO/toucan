@@ -57,20 +57,18 @@ set(TOUCAN_PLUGINS
 
 enable_testing()
 
-find_package(Imath)
-find_package(Freetype)
 find_package(ZLIB)
+find_package(minizip)
+find_package(Imath)
 find_package(PNG)
 find_package(JPEG)
 find_package(TIFF)
 find_package(OpenEXR)
-find_package(minizip)
 find_package(OpenColorIO)
 find_package(OpenImageIO)
 find_package(OpenFX)
 find_package(OpenTimelineIO)
-find_package(lunasvg)
-find_package(dtk)
+find_package(feather-tk)
 
 include_directories(lib)
 include_directories(tests)

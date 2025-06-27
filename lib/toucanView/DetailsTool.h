@@ -9,16 +9,16 @@
 
 #include <toucanRender/ImageGraph.h>
 
-#include <dtk/ui/Bellows.h>
-#include <dtk/ui/ButtonGroup.h>
-#include <dtk/ui/GridLayout.h>
-#include <dtk/ui/Label.h>
-#include <dtk/ui/PushButton.h>
-#include <dtk/ui/RowLayout.h>
-#include <dtk/ui/ScrollWidget.h>
-#include <dtk/ui/SearchBox.h>
-#include <dtk/ui/ToolButton.h>
-#include <dtk/core/ObservableList.h>
+#include <feather-tk/ui/Bellows.h>
+#include <feather-tk/ui/ButtonGroup.h>
+#include <feather-tk/ui/GridLayout.h>
+#include <feather-tk/ui/Label.h>
+#include <feather-tk/ui/PushButton.h>
+#include <feather-tk/ui/RowLayout.h>
+#include <feather-tk/ui/ScrollWidget.h>
+#include <feather-tk/ui/SearchBox.h>
+#include <feather-tk/ui/ToolButton.h>
+#include <feather-tk/core/ObservableList.h>
 
 #include <utility>
 
@@ -27,11 +27,11 @@ namespace toucan
     class File;
 
     //! Details widget.
-    class DetailsWidget : public dtk::IWidget
+    class DetailsWidget : public feather_tk::IWidget
     {
     protected:
         void _init(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<File>&,
             const SelectionItem&,
@@ -42,7 +42,7 @@ namespace toucan
 
         //! Create a new widget.
         static std::shared_ptr<DetailsWidget> create(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<File>&,
             const SelectionItem&,
@@ -54,8 +54,8 @@ namespace toucan
         //! Set the search.
         void setSearch(const std::string&);
 
-        void setGeometry(const dtk::Box2I&) override;
-        void sizeHintEvent(const dtk::SizeHintEvent&) override;
+        void setGeometry(const feather_tk::Box2I&) override;
+        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
 
     private:
         void _textUpdate();
@@ -68,13 +68,13 @@ namespace toucan
         std::vector<std::pair<std::string, std::string> > _text;
         std::string _search;
 
-        std::shared_ptr<dtk::Bellows> _bellows;
-        std::shared_ptr<dtk::GridLayout> _layout;
-        std::shared_ptr<dtk::ToolButton> _startFrameButton;
-        std::shared_ptr<dtk::ToolButton> _inOutButton;
-        std::vector<std::pair<std::shared_ptr<dtk::Label>, std::shared_ptr<dtk::Label> > > _labels;
+        std::shared_ptr<feather_tk::Bellows> _bellows;
+        std::shared_ptr<feather_tk::GridLayout> _layout;
+        std::shared_ptr<feather_tk::ToolButton> _startFrameButton;
+        std::shared_ptr<feather_tk::ToolButton> _inOutButton;
+        std::vector<std::pair<std::shared_ptr<feather_tk::Label>, std::shared_ptr<feather_tk::Label> > > _labels;
 
-        std::shared_ptr<dtk::ValueObserver<TimeUnits> > _timeUnitsObserver;
+        std::shared_ptr<feather_tk::ValueObserver<TimeUnits> > _timeUnitsObserver;
     };
 
     //! Details tool.
@@ -82,7 +82,7 @@ namespace toucan
     {
     protected:
         void _init(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -91,25 +91,25 @@ namespace toucan
 
         //! Create a new tool.
         static std::shared_ptr<DetailsTool> create(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const dtk::Box2I&) override;
-        void sizeHintEvent(const dtk::SizeHintEvent&) override;
+        void setGeometry(const feather_tk::Box2I&) override;
+        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
 
     private:
-        std::shared_ptr<dtk::VerticalLayout> _layout;
-        std::shared_ptr<dtk::ScrollWidget> _scrollWidget;
-        std::shared_ptr<dtk::VerticalLayout> _scrollLayout;
+        std::shared_ptr<feather_tk::VerticalLayout> _layout;
+        std::shared_ptr<feather_tk::ScrollWidget> _scrollWidget;
+        std::shared_ptr<feather_tk::VerticalLayout> _scrollLayout;
         std::vector<std::shared_ptr<DetailsWidget> > _widgets;
-        std::shared_ptr<dtk::HorizontalLayout> _bottomLayout;
-        std::shared_ptr<dtk::SearchBox> _searchBox;
-        std::shared_ptr<dtk::ToolButton> _openButton;
-        std::shared_ptr<dtk::ToolButton> _closeButton;
+        std::shared_ptr<feather_tk::HorizontalLayout> _bottomLayout;
+        std::shared_ptr<feather_tk::SearchBox> _searchBox;
+        std::shared_ptr<feather_tk::ToolButton> _openButton;
+        std::shared_ptr<feather_tk::ToolButton> _closeButton;
 
-        std::shared_ptr<dtk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
-        std::shared_ptr<dtk::ListObserver<SelectionItem> > _selectionObserver;
+        std::shared_ptr<feather_tk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
+        std::shared_ptr<feather_tk::ListObserver<SelectionItem> > _selectionObserver;
     };
 }
 

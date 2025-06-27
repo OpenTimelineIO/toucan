@@ -6,7 +6,7 @@
 #include <toucanView/IItem.h>
 #include <toucanView/SelectionModel.h>
 
-#include <dtk/core/ObservableList.h>
+#include <feather-tk/core/ObservableList.h>
 
 namespace toucan
 {
@@ -17,7 +17,7 @@ namespace toucan
     {
     protected:
         void _init(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const ItemData&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -26,7 +26,7 @@ namespace toucan
 
         //! Create a new item.
         static std::shared_ptr<TimelineItem> create(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const ItemData&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
@@ -42,41 +42,41 @@ namespace toucan
         //! Set the in/out range.
         void setInOutRange(const OTIO_NS::TimeRange&);
 
-        void setGeometry(const dtk::Box2I&) override;
+        void setGeometry(const feather_tk::Box2I&) override;
         void tickEvent(
             bool parentsVisible,
             bool parentsEnabled,
-            const dtk::TickEvent&) override;
-        void sizeHintEvent(const dtk::SizeHintEvent&) override;
-        void drawEvent(const dtk::Box2I&, const dtk::DrawEvent&) override;
-        void drawOverlayEvent(const dtk::Box2I&, const dtk::DrawEvent&) override;
-        void mouseMoveEvent(dtk::MouseMoveEvent&) override;
-        void mousePressEvent(dtk::MouseClickEvent&) override;
-        void mouseReleaseEvent(dtk::MouseClickEvent&) override;
+            const feather_tk::TickEvent&) override;
+        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
+        void drawEvent(const feather_tk::Box2I&, const feather_tk::DrawEvent&) override;
+        void drawOverlayEvent(const feather_tk::Box2I&, const feather_tk::DrawEvent&) override;
+        void mouseMoveEvent(feather_tk::MouseMoveEvent&) override;
+        void mousePressEvent(feather_tk::MouseClickEvent&) override;
+        void mouseReleaseEvent(feather_tk::MouseClickEvent&) override;
 
     protected:
         void _timeUnitsUpdate() override;
 
     private:
-        dtk::Size2I _getLabelMaxSize(
-            const std::shared_ptr<dtk::FontSystem>&) const;
+        feather_tk::Size2I _getLabelMaxSize(
+            const std::shared_ptr<feather_tk::FontSystem>&) const;
         void _getTimeTicks(
-            const std::shared_ptr<dtk::FontSystem>&,
+            const std::shared_ptr<feather_tk::FontSystem>&,
             double& seconds,
             int& tick);
         void _drawTimeTicks(
-            const dtk::Box2I&,
-            const dtk::DrawEvent&);
+            const feather_tk::Box2I&,
+            const feather_tk::DrawEvent&);
         void _drawTimeLabels(
-            const dtk::Box2I&,
-            const dtk::DrawEvent&);
+            const feather_tk::Box2I&,
+            const feather_tk::DrawEvent&);
 
         void _select(
-            const std::shared_ptr<dtk::IWidget>&,
-            const dtk::V2I&,
+            const std::shared_ptr<feather_tk::IWidget>&,
+            const feather_tk::V2I&,
             std::shared_ptr<IItem>&);
         void _select(
-            const std::shared_ptr<dtk::IWidget>&,
+            const std::shared_ptr<feather_tk::IWidget>&,
             const std::vector<SelectionItem>&);
 
         OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline> _timeline;
@@ -88,7 +88,7 @@ namespace toucan
         bool _thumbnails = true;
         std::shared_ptr<ThumbnailGenerator> _thumbnailGenerator;
         std::list<ThumbnailRequest> _thumbnailRequests;
-        std::shared_ptr<dtk::LRUCache<std::string, std::shared_ptr<dtk::Image> > > _thumbnailCache;
+        std::shared_ptr<feather_tk::LRUCache<std::string, std::shared_ptr<feather_tk::Image> > > _thumbnailCache;
 
         struct SizeData
         {
@@ -98,9 +98,9 @@ namespace toucan
             int border = 0;
             int handle = 0;
             int thumbnailHeight = 0;
-            dtk::FontInfo fontInfo;
-            dtk::FontMetrics fontMetrics;
-            dtk::V2I scrollPos;
+            feather_tk::FontInfo fontInfo;
+            feather_tk::FontMetrics fontMetrics;
+            feather_tk::V2I scrollPos;
         };
         SizeData _size;
 
@@ -116,7 +116,7 @@ namespace toucan
         };
         MouseData _mouse;
 
-        std::shared_ptr<dtk::ListObserver<SelectionItem > > _selectionObserver;
-        std::shared_ptr<dtk::ValueObserver<bool> > _thumbnailsObserver;
+        std::shared_ptr<feather_tk::ListObserver<SelectionItem > > _selectionObserver;
+        std::shared_ptr<feather_tk::ValueObserver<bool> > _thumbnailsObserver;
     };
 }

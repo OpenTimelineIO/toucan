@@ -15,32 +15,32 @@ namespace toucan
         class Test
         {
         public:
-            Test(const std::shared_ptr<dtk::Context>& context)
+            Test(const std::shared_ptr<feather_tk::Context>& context)
             {
                 model = std::make_shared<ViewModel>(context);
 
-                zoomInObserver = dtk::ValueObserver<bool>::create(
+                zoomInObserver = feather_tk::ValueObserver<bool>::create(
                     model->observeZoomIn(),
                     [this](bool value)
                     {
                         zoomIn = value;
                     });
 
-                zoomOutObserver = dtk::ValueObserver<bool>::create(
+                zoomOutObserver = feather_tk::ValueObserver<bool>::create(
                     model->observeZoomOut(),
                     [this](bool value)
                     {
                         zoomOut = value;
                     });
 
-                zoomResetObserver = dtk::ValueObserver<bool>::create(
+                zoomResetObserver = feather_tk::ValueObserver<bool>::create(
                     model->observeZoomReset(),
                     [this](bool value)
                     {
                         zoomReset = value;
                     });
 
-                frameViewObserver = dtk::ValueObserver<bool>::create(
+                frameViewObserver = feather_tk::ValueObserver<bool>::create(
                     model->observeFrameView(),
                     [this](bool value)
                     {
@@ -54,14 +54,14 @@ namespace toucan
             bool zoomReset = false;
             bool frameView = false;
 
-            std::shared_ptr<dtk::ValueObserver<bool> > zoomInObserver;
-            std::shared_ptr<dtk::ValueObserver<bool> > zoomOutObserver;
-            std::shared_ptr<dtk::ValueObserver<bool> > zoomResetObserver;
-            std::shared_ptr<dtk::ValueObserver<bool> > frameViewObserver;
+            std::shared_ptr<feather_tk::ValueObserver<bool> > zoomInObserver;
+            std::shared_ptr<feather_tk::ValueObserver<bool> > zoomOutObserver;
+            std::shared_ptr<feather_tk::ValueObserver<bool> > zoomResetObserver;
+            std::shared_ptr<feather_tk::ValueObserver<bool> > frameViewObserver;
         };
     }
 
-    void viewModelTest(const std::shared_ptr<dtk::Context>& context)
+    void viewModelTest(const std::shared_ptr<feather_tk::Context>& context)
     {
         std::cout << "viewModelTest" << std::endl;
         {

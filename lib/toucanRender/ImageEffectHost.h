@@ -5,7 +5,7 @@
 
 #include <toucanRender/ImageEffect.h>
 
-#include <dtk/core/Context.h>
+#include <feather-tk/core/Context.h>
 
 #include <OpenImageIO/imagebuf.h>
 
@@ -18,7 +18,7 @@ namespace toucan
     {
     public:
         ImageEffectHost(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const std::vector<std::filesystem::path>& searchPath);
 
         ~ImageEffectHost();
@@ -44,7 +44,7 @@ namespace toucan
         static OfxStatus _clipGetImage(OfxImageClipHandle, OfxTime, const OfxRectD*, OfxPropertySetHandle*);
         static OfxStatus _clipReleaseImage(OfxPropertySetHandle);
 
-        std::weak_ptr<dtk::Context> _context;
+        std::weak_ptr<feather_tk::Context> _context;
         PropertySet _propSet;
         OfxHost _host;
         OfxPropertySuiteV1 _propertySuite;

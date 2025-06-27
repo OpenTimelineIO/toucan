@@ -15,18 +15,18 @@ namespace toucan
         class Test
         {
         public:
-            Test(const std::shared_ptr<dtk::Context>& context)
+            Test(const std::shared_ptr<feather_tk::Context>& context)
             {
-                model = std::make_shared<WindowModel>(context);
+                model = std::make_shared<WindowModel>(context, nullptr);
 
-                componentsObserver = dtk::MapObserver<WindowComponent, bool>::create(
+                componentsObserver = feather_tk::MapObserver<WindowComponent, bool>::create(
                     model->observeComponents(),
                     [this](const std::map<WindowComponent, bool>& value)
                     {
                         components = value;
                     });
 
-                tooltipsObserver = dtk::ValueObserver<bool>::create(
+                tooltipsObserver = feather_tk::ValueObserver<bool>::create(
                     model->observeTooltips(),
                     [this](bool value)
                     {
@@ -38,12 +38,12 @@ namespace toucan
             std::map<WindowComponent, bool> components;
             bool tooltips = false;
 
-            std::shared_ptr<dtk::MapObserver<WindowComponent, bool> > componentsObserver;
-            std::shared_ptr<dtk::ValueObserver<bool> > tooltipsObserver;
+            std::shared_ptr<feather_tk::MapObserver<WindowComponent, bool> > componentsObserver;
+            std::shared_ptr<feather_tk::ValueObserver<bool> > tooltipsObserver;
         };
     }
 
-    void windowModelTest(const std::shared_ptr<dtk::Context>& context)
+    void windowModelTest(const std::shared_ptr<feather_tk::Context>& context)
     {
         std::cout << "windowModelTest" << std::endl;
         {

@@ -6,8 +6,8 @@
 #include <toucanRender/ImageNode.h>
 #include <toucanRender/TimelineWrapper.h>
 
-#include <dtk/core/Context.h>
-#include <dtk/core/LRUCache.h>
+#include <feather-tk/core/Context.h>
+#include <feather-tk/core/LRUCache.h>
 
 #include <opentimelineio/mediaReference.h>
 #include <opentimelineio/track.h>
@@ -25,7 +25,7 @@ namespace toucan
     {
     public:
         ImageGraph(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const std::filesystem::path&,
             const std::shared_ptr<TimelineWrapper>&);
 
@@ -63,13 +63,13 @@ namespace toucan
             const std::vector<OTIO_NS::SerializableObject::Retainer<OTIO_NS::Effect> >&,
             const std::shared_ptr<IImageNode>&);
 
-        std::weak_ptr<dtk::Context> _context;
+        std::weak_ptr<feather_tk::Context> _context;
         std::filesystem::path _path;
         std::shared_ptr<TimelineWrapper> _timelineWrapper;
         OTIO_NS::TimeRange _timeRange;
         IMATH_NAMESPACE::V2i _imageSize = IMATH_NAMESPACE::V2i(0, 0);
         int _imageChannels = 0;
         std::string _imageDataType;
-        dtk::LRUCache<OTIO_NS::MediaReference*, std::shared_ptr<IReadNode> > _loadCache;
+        feather_tk::LRUCache<OTIO_NS::MediaReference*, std::shared_ptr<IReadNode> > _loadCache;
     };
 }

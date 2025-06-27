@@ -3,16 +3,16 @@
 
 #include "toucanView/App.h"
 
-#include <dtk/core/Context.h>
+#include <feather-tk/core/Context.h>
 
 #include <iostream>
 
-DTK_MAIN()
+FEATHER_TK_MAIN()
 {
     try
     {
-        auto context = dtk::Context::create();
-        auto args = dtk::convert(argc, argv);
+        auto context = feather_tk::Context::create();
+        auto args = feather_tk::convert(argc, argv);
         auto app = toucan::App::create(context, args);
         if (app->getExit() != 0)
             return app->getExit();

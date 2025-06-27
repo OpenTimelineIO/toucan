@@ -9,18 +9,18 @@
 namespace toucan
 {
     void FileToolBar::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::map<std::string, std::shared_ptr<dtk::Action> >& actions,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::map<std::string, std::shared_ptr<feather_tk::Action> >& actions,
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
-        dtk::IWidget::_init(context, "toucan::FileToolBar", parent);
+        feather_tk::IWidget::_init(context, "toucan::FileToolBar", parent);
 
-        _layout = dtk::HorizontalLayout::create(context, shared_from_this());
-        _layout->setSpacingRole(dtk::SizeRole::SpacingSmall);
+        _layout = feather_tk::HorizontalLayout::create(context, shared_from_this());
+        _layout->setSpacingRole(feather_tk::SizeRole::SpacingSmall);
 
-        auto hLayout = dtk::HorizontalLayout::create(context, _layout);
-        hLayout->setSpacingRole(dtk::SizeRole::SpacingTool);
+        auto hLayout = feather_tk::HorizontalLayout::create(context, _layout);
+        hLayout->setSpacingRole(feather_tk::SizeRole::SpacingTool);
         std::vector<std::string> actionNames =
         {
             "File/Open",
@@ -30,23 +30,13 @@ namespace toucan
         for (const auto& name : actionNames)
         {
             auto i = actions.find(name);
-            auto button = dtk::ToolButton::create(context, hLayout);
-            button->setIcon(i->second->icon);
-            button->setTooltip(i->second->toolTip);
-            button->setClickedCallback(
-                [i]
-                {
-                    if (i->second->callback)
-                    {
-                        i->second->callback();
-                    }
-                });
+            auto button = feather_tk::ToolButton::create(context, i->second, hLayout);
             _buttons[name] = button;
         }
 
         _widgetUpdate();
 
-        _filesObserver = dtk::ListObserver<std::shared_ptr<File> >::create(
+        _filesObserver = feather_tk::ListObserver<std::shared_ptr<File> >::create(
             app->getFilesModel()->observeFiles(),
             [this](const std::vector<std::shared_ptr<File> >& files)
             {
@@ -59,23 +49,23 @@ namespace toucan
     {}
 
     std::shared_ptr<FileToolBar> FileToolBar::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::map<std::string, std::shared_ptr<dtk::Action> >& actions,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::map<std::string, std::shared_ptr<feather_tk::Action> >& actions,
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
         auto out = std::shared_ptr<FileToolBar>(new FileToolBar);
         out->_init(context, app, actions, parent);
         return out;
     }
 
-    void FileToolBar::setGeometry(const dtk::Box2I& value)
+    void FileToolBar::setGeometry(const feather_tk::Box2I& value)
     {
         IWidget::setGeometry(value);
         _layout->setGeometry(value);
     }
 
-    void FileToolBar::sizeHintEvent(const dtk::SizeHintEvent& event)
+    void FileToolBar::sizeHintEvent(const feather_tk::SizeHintEvent& event)
     {
         IWidget::sizeHintEvent(event);
         _setSizeHint(_layout->getSizeHint());

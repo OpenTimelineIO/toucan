@@ -3,7 +3,7 @@
 
 #include "FFmpegRead.h"
 
-#include <dtk/core/String.h>
+#include <feather-tk/core/String.h>
 
 #include <iostream>
 #include <sstream>
@@ -146,7 +146,7 @@ namespace toucan
                     tag,
                     AV_DICT_IGNORE_SUFFIX)))
                 {
-                    if ("timecode" == dtk::toLower(tag->key))
+                    if ("timecode" == feather_tk::toLower(tag->key))
                     {
                         timecode = tag->value;
                         break;
@@ -296,7 +296,7 @@ namespace toucan
                 {
                     const std::string key(tag->key);
                     const std::string value(tag->value);
-                    if ("timecode" == dtk::toLower(key))
+                    if ("timecode" == feather_tk::toLower(key))
                     {
                         timecode = value;
                     }

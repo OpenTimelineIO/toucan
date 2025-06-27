@@ -7,21 +7,21 @@
 #include "FilesModel.h"
 #include "SelectionModel.h"
 
-#include <dtk/ui/Action.h>
+#include <feather-tk/ui/Action.h>
 
 namespace toucan
 {
     void SelectMenu::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
-        dtk::Menu::_init(context, parent);
+        feather_tk::Menu::_init(context, parent);
 
-        _actions["Select/All"] = std::make_shared<dtk::Action>(
+        _actions["Select/All"] = feather_tk::Action::create(
             "All",
-            dtk::Key::A,
-            static_cast<int>(dtk::commandKeyModifier),
+            feather_tk::Key::A,
+            static_cast<int>(feather_tk::commandKeyModifier),
             [this]
             {
                 if (_file)
@@ -29,9 +29,9 @@ namespace toucan
                     _file->getSelectionModel()->selectAll(_file->getTimeline());
                 }
             });
-        addItem(_actions["Select/All"]);
+        addAction(_actions["Select/All"]);
 
-        _actions["Select/AllTracks"] = std::make_shared<dtk::Action>(
+        _actions["Select/AllTracks"] = feather_tk::Action::create(
             "All Tracks",
             [this]
             {
@@ -42,9 +42,9 @@ namespace toucan
                         SelectionType::Tracks);
                 }
             });
-        addItem(_actions["Select/AllTracks"]);
+        addAction(_actions["Select/AllTracks"]);
 
-        _actions["Select/AllClips"] = std::make_shared<dtk::Action>(
+        _actions["Select/AllClips"] = feather_tk::Action::create(
             "All Clips",
             [this]
             {
@@ -55,9 +55,9 @@ namespace toucan
                         SelectionType::Clips);
                 }
             });
-        addItem(_actions["Select/AllClips"]);
+        addAction(_actions["Select/AllClips"]);
 
-        _actions["Select/AllMarkers"] = std::make_shared<dtk::Action>(
+        _actions["Select/AllMarkers"] = feather_tk::Action::create(
             "All Markers",
             [this]
             {
@@ -68,13 +68,13 @@ namespace toucan
                         SelectionType::Markers);
                 }
             });
-        addItem(_actions["Select/AllMarkers"]);
+        addAction(_actions["Select/AllMarkers"]);
 
-        _actions["Select/None"] = std::make_shared<dtk::Action>(
+        _actions["Select/None"] = feather_tk::Action::create(
             "None",
-            dtk::Key::A,
-            static_cast<int>(dtk::KeyModifier::Shift) |
-            static_cast<int>(dtk::commandKeyModifier),
+            feather_tk::Key::A,
+            static_cast<int>(feather_tk::KeyModifier::Shift) |
+            static_cast<int>(feather_tk::commandKeyModifier),
             [this]
             {
                 if (_file)
@@ -82,12 +82,12 @@ namespace toucan
                     _file->getSelectionModel()->clearSelection();
                 }
             });
-        addItem(_actions["Select/None"]);
+        addAction(_actions["Select/None"]);
 
-        _actions["Select/Invert"] = std::make_shared<dtk::Action>(
+        _actions["Select/Invert"] = feather_tk::Action::create(
             "Invert",
-            dtk::Key::I,
-            static_cast<int>(dtk::commandKeyModifier),
+            feather_tk::Key::I,
+            static_cast<int>(feather_tk::commandKeyModifier),
             [this]
             {
                 if (_file)
@@ -95,9 +95,9 @@ namespace toucan
                     _file->getSelectionModel()->invertSelection(_file->getTimeline());
                 }
             });
-        addItem(_actions["Select/Invert"]);
+        addAction(_actions["Select/Invert"]);
 
-        _fileObserver = dtk::ValueObserver<std::shared_ptr<File> >::create(
+        _fileObserver = feather_tk::ValueObserver<std::shared_ptr<File> >::create(
             app->getFilesModel()->observeCurrent(),
             [this](const std::shared_ptr<File>& file)
             {
@@ -110,16 +110,16 @@ namespace toucan
     {}
 
     std::shared_ptr<SelectMenu> SelectMenu::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
         auto out = std::shared_ptr<SelectMenu>(new SelectMenu);
         out->_init(context, app, parent);
         return out;
     }
 
-    const std::map<std::string, std::shared_ptr<dtk::Action> >& SelectMenu::getActions() const
+    const std::map<std::string, std::shared_ptr<feather_tk::Action> >& SelectMenu::getActions() const
     {
         return _actions;
     }
@@ -127,11 +127,11 @@ namespace toucan
     void SelectMenu::_menuUpdate()
     {
         const bool file = _file.get();
-        setItemEnabled(_actions["Select/All"], file);
-        setItemEnabled(_actions["Select/AllTracks"], file);
-        setItemEnabled(_actions["Select/AllClips"], file);
-        setItemEnabled(_actions["Select/AllMarkers"], file);
-        setItemEnabled(_actions["Select/None"], file);
-        setItemEnabled(_actions["Select/Invert"], file);
+        setEnabled(_actions["Select/All"], file);
+        setEnabled(_actions["Select/AllTracks"], file);
+        setEnabled(_actions["Select/AllClips"], file);
+        setEnabled(_actions["Select/AllMarkers"], file);
+        setEnabled(_actions["Select/None"], file);
+        setEnabled(_actions["Select/Invert"], file);
     }
 }

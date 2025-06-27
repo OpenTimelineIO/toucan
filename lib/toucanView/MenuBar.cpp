@@ -14,12 +14,12 @@
 namespace toucan
 {
     void MenuBar::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
         const std::shared_ptr<MainWindow>& window,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
-        dtk::MenuBar::_init(context, parent);
+        feather_tk::MenuBar::_init(context, parent);
 
         auto fileMenu = FileMenu::create(context, app, window);
         addMenu("File", fileMenu);
@@ -61,17 +61,17 @@ namespace toucan
     {}
 
     std::shared_ptr<MenuBar> MenuBar::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
         const std::shared_ptr<MainWindow>& window,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
         auto out = std::shared_ptr<MenuBar>(new MenuBar);
         out->_init(context, app, window, parent);
         return out;
     }
 
-    const std::map<std::string, std::shared_ptr<dtk::Action> >& MenuBar::getActions() const
+    const std::map<std::string, std::shared_ptr<feather_tk::Action> >& MenuBar::getActions() const
     {
         return _actions;
     }

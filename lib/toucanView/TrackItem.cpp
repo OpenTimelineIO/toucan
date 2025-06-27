@@ -7,13 +7,13 @@
 #include "GapItem.h"
 #include "VideoClipItem.h"
 
-#include <dtk/ui/DrawUtil.h>
-#include <dtk/core/RenderUtil.h>
+#include <feather-tk/ui/DrawUtil.h>
+#include <feather-tk/core/RenderUtil.h>
 
 namespace toucan
 {
     void TrackItem::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const ItemData& data,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Track>& track,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>& timeline,
@@ -42,13 +42,13 @@ namespace toucan
         _track = track;
         _text = !track->name().empty() ? track->name() : (track->kind() + " Track");
         _color = OTIO_NS::Track::Kind::video == track->kind() ?
-            dtk::Color4F(.2F, .2F, .3F) :
-            dtk::Color4F(.2F, .3F, .2F);
+            feather_tk::Color4F(.2F, .2F, .3F) :
+            feather_tk::Color4F(.2F, .3F, .2F);
 
         setTooltip(track->schema_name() + ": " + _text);
 
-        _layout = dtk::VerticalLayout::create(context, shared_from_this());
-        _layout->setSpacingRole(dtk::SizeRole::SpacingTool);
+        _layout = feather_tk::VerticalLayout::create(context, shared_from_this());
+        _layout->setSpacingRole(feather_tk::SizeRole::SpacingTool);
 
         _label = ItemLabel::create(context, _layout);
         _label->setName(_text);
@@ -90,7 +90,7 @@ namespace toucan
                         data,
                         clip,
                         timeline,
-                        dtk::Color4F(.4F, .4F, .6F),
+                        feather_tk::Color4F(.4F, .4F, .6F),
                         _timeLayout);
                 }
                 else if (OTIO_NS::Track::Kind::audio == track->kind())
@@ -100,7 +100,7 @@ namespace toucan
                         data,
                         clip,
                         timeline,
-                        dtk::Color4F(.4F, .6F, .4F),
+                        feather_tk::Color4F(.4F, .6F, .4F),
                         _timeLayout);
                 }
             }
@@ -122,7 +122,7 @@ namespace toucan
     {}
 
     std::shared_ptr<TrackItem> TrackItem::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const ItemData& data,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Track>& track,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>& timeline,
@@ -143,21 +143,21 @@ namespace toucan
         _timeLayout->setScale(value);
     }
 
-    void TrackItem::setGeometry(const dtk::Box2I& value)
+    void TrackItem::setGeometry(const feather_tk::Box2I& value)
     {
         IItem::setGeometry(value);
         _layout->setGeometry(value);
-        _geom.g2 = dtk::margin(value, -_size.border, 0, -_size.border, 0);
-        _geom.g3 = dtk::margin(_label->getGeometry(), -_size.border, 0, -_size.border, 0);
+        _geom.g2 = feather_tk::margin(value, -_size.border, 0, -_size.border, 0);
+        _geom.g3 = feather_tk::margin(_label->getGeometry(), -_size.border, 0, -_size.border, 0);
         _selectionRect = _geom.g3;
     }
 
-    dtk::Box2I TrackItem::getChildrenClipRect() const
+    feather_tk::Box2I TrackItem::getChildrenClipRect() const
     {
         return _geom.g2;
     }
 
-    void TrackItem::sizeHintEvent(const dtk::SizeHintEvent& event)
+    void TrackItem::sizeHintEvent(const feather_tk::SizeHintEvent& event)
     {
         IItem::sizeHintEvent(event);
         const bool displayScaleChanged = event.displayScale != _size.displayScale;
@@ -165,19 +165,19 @@ namespace toucan
         {
             _size.init = false;
             _size.displayScale = event.displayScale;
-            _size.border = event.style->getSizeRole(dtk::SizeRole::Border, event.displayScale);
+            _size.border = event.style->getSizeRole(feather_tk::SizeRole::Border, event.displayScale);
         }
         _setSizeHint(_layout->getSizeHint());
     }
 
     void TrackItem::drawEvent(
-        const dtk::Box2I& drawRect,
-        const dtk::DrawEvent& event)
+        const feather_tk::Box2I& drawRect,
+        const feather_tk::DrawEvent& event)
     {
         IItem::drawEvent(drawRect, event);
         event.render->drawRect(
             _geom.g3,
-            _selected ? event.style->getColorRole(dtk::ColorRole::Yellow) : _color);
+            _selected ? event.style->getColorRole(feather_tk::ColorRole::Yellow) : _color);
     }
 
     void TrackItem::_timeUnitsUpdate()

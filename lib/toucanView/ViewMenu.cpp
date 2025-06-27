@@ -9,16 +9,16 @@
 namespace toucan
 {
     void ViewMenu::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
-        dtk::Menu::_init(context, parent);
+        feather_tk::Menu::_init(context, parent);
 
-        _actions["View/ZoomIn"] = std::make_shared<dtk::Action>(
+        _actions["View/ZoomIn"] = feather_tk::Action::create(
             "Zoom In",
             "ViewZoomIn",
-            dtk::Key::Equal,
+            feather_tk::Key::Equal,
             0,
             [this]
             {
@@ -27,13 +27,13 @@ namespace toucan
                     _file->getViewModel()->zoomIn();
                 }
             });
-        _actions["View/ZoomIn"]->toolTip = "View zoom in";
-        addItem(_actions["View/ZoomIn"]);
+        _actions["View/ZoomIn"]->setTooltip("View zoom in");
+        addAction(_actions["View/ZoomIn"]);
 
-        _actions["View/ZoomOut"] = std::make_shared<dtk::Action>(
+        _actions["View/ZoomOut"] = feather_tk::Action::create(
             "Zoom Out",
             "ViewZoomOut",
-            dtk::Key::Minus,
+            feather_tk::Key::Minus,
             0,
             [this]
             {
@@ -42,13 +42,13 @@ namespace toucan
                     _file->getViewModel()->zoomOut();
                 }
             });
-        _actions["View/ZoomOut"]->toolTip = "View zoom out";
-        addItem(_actions["View/ZoomOut"]);
+        _actions["View/ZoomOut"]->setTooltip("View zoom out");
+        addAction(_actions["View/ZoomOut"]);
 
-        _actions["View/ZoomReset"] = std::make_shared<dtk::Action>(
+        _actions["View/ZoomReset"] = feather_tk::Action::create(
             "Zoom Reset",
             "ViewZoomReset",
-            dtk::Key::_0,
+            feather_tk::Key::_0,
             0,
             [this]
             {
@@ -57,15 +57,15 @@ namespace toucan
                     _file->getViewModel()->zoomReset();
                 }
             });
-        _actions["View/ZoomReset"]->toolTip = "Reset the view zoom";
-        addItem(_actions["View/ZoomReset"]);
+        _actions["View/ZoomReset"]->setTooltip("Reset the view zoom");
+        addAction(_actions["View/ZoomReset"]);
 
         addDivider();
 
-        _actions["View/Frame"] = std::make_shared<dtk::Action>(
+        _actions["View/Frame"] = feather_tk::Action::create(
             "Frame View",
             "ViewFrame",
-            dtk::Key::Backspace,
+            feather_tk::Key::Backspace,
             0,
             [this](bool value)
             {
@@ -74,14 +74,14 @@ namespace toucan
                     _file->getViewModel()->setFrameView(value);
                 }
             });
-        _actions["View/Frame"]->toolTip = "Frame the view";
-        addItem(_actions["View/Frame"]);
+        _actions["View/Frame"]->setTooltip("Frame the view");
+        addAction(_actions["View/Frame"]);
 
         addDivider();
 
-        _actions["View/Flip"] = std::make_shared<dtk::Action>(
+        _actions["View/Flip"] = feather_tk::Action::create(
             "Flip Vertical",
-            dtk::Key::V,
+            feather_tk::Key::V,
             0,
             [this](bool value)
             {
@@ -92,11 +92,11 @@ namespace toucan
                     _file->getViewModel()->setOptions(options);
                 }
             });
-        addItem(_actions["View/Flip"]);
+        addAction(_actions["View/Flip"]);
 
-        _actions["View/Flop"] = std::make_shared<dtk::Action>(
+        _actions["View/Flop"] = feather_tk::Action::create(
             "Flop Horizontal",
-            dtk::Key::H,
+            feather_tk::Key::H,
             0,
             [this](bool value)
             {
@@ -107,77 +107,77 @@ namespace toucan
                     _file->getViewModel()->setOptions(options);
                 }
             });
-        addItem(_actions["View/Flop"]);
+        addAction(_actions["View/Flop"]);
 
         addDivider();
 
-        _actions["View/Red"] = std::make_shared<dtk::Action>(
+        _actions["View/Red"] = feather_tk::Action::create(
             "Red",
-            dtk::Key::R,
+            feather_tk::Key::R,
             0,
             [this](bool value)
             {
                 if (_file)
                 {
                     ViewOptions options = _file->getViewModel()->getOptions();
-                    options.channelDisplay = value ? dtk::ChannelDisplay::Red : dtk::ChannelDisplay::Color;
+                    options.channelDisplay = value ? feather_tk::ChannelDisplay::Red : feather_tk::ChannelDisplay::Color;
                     _file->getViewModel()->setOptions(options);
                 }
             });
-        addItem(_actions["View/Red"]);
+        addAction(_actions["View/Red"]);
 
-        _actions["View/Green"] = std::make_shared<dtk::Action>(
+        _actions["View/Green"] = feather_tk::Action::create(
             "Green",
-            dtk::Key::G,
+            feather_tk::Key::G,
             0,
             [this](bool value)
             {
                 if (_file)
                 {
                     ViewOptions options = _file->getViewModel()->getOptions();
-                    options.channelDisplay = value ? dtk::ChannelDisplay::Green : dtk::ChannelDisplay::Color;
+                    options.channelDisplay = value ? feather_tk::ChannelDisplay::Green : feather_tk::ChannelDisplay::Color;
                     _file->getViewModel()->setOptions(options);
                 }
             });
-        addItem(_actions["View/Green"]);
+        addAction(_actions["View/Green"]);
 
-        _actions["View/Blue"] = std::make_shared<dtk::Action>(
+        _actions["View/Blue"] = feather_tk::Action::create(
             "Blue",
-            dtk::Key::B,
+            feather_tk::Key::B,
             0,
             [this](bool value)
             {
                 if (_file)
                 {
                     ViewOptions options = _file->getViewModel()->getOptions();
-                    options.channelDisplay = value ? dtk::ChannelDisplay::Blue : dtk::ChannelDisplay::Color;
+                    options.channelDisplay = value ? feather_tk::ChannelDisplay::Blue : feather_tk::ChannelDisplay::Color;
                     _file->getViewModel()->setOptions(options);
                 }
             });
-        addItem(_actions["View/Blue"]);
+        addAction(_actions["View/Blue"]);
 
-        _actions["View/Alpha"] = std::make_shared<dtk::Action>(
+        _actions["View/Alpha"] = feather_tk::Action::create(
             "Alpha",
-            dtk::Key::A,
+            feather_tk::Key::A,
             0,
             [this](bool value)
             {
                 if (_file)
                 {
                     ViewOptions options = _file->getViewModel()->getOptions();
-                    options.channelDisplay = value ? dtk::ChannelDisplay::Alpha : dtk::ChannelDisplay::Color;
+                    options.channelDisplay = value ? feather_tk::ChannelDisplay::Alpha : feather_tk::ChannelDisplay::Color;
                     _file->getViewModel()->setOptions(options);
                 }
             });
-        addItem(_actions["View/Alpha"]);
+        addAction(_actions["View/Alpha"]);
 
         addDivider();
 
         std::weak_ptr<App> appWeak(app);
-        _actions["View/HUD"] = std::make_shared<dtk::Action>(
+        _actions["View/HUD"] = feather_tk::Action::create(
             "HUD",
-            dtk::Key::H,
-            static_cast<int>(dtk::commandKeyModifier),
+            feather_tk::Key::H,
+            static_cast<int>(feather_tk::commandKeyModifier),
             [appWeak](bool value)
             {
                 if (auto app = appWeak.lock())
@@ -187,10 +187,10 @@ namespace toucan
                     app->getGlobalViewModel()->setOptions(options);
                 }
             });
-        _actions["View/HUD"]->toolTip = "Toggle the HUD (Heads Up Display)";
-        addItem(_actions["View/HUD"]);
+        _actions["View/HUD"]->setTooltip("Toggle the HUD (Heads Up Display)");
+        addAction(_actions["View/HUD"]);
 
-        _fileObserver = dtk::ValueObserver<std::shared_ptr<File> >::create(
+        _fileObserver = feather_tk::ValueObserver<std::shared_ptr<File> >::create(
             app->getFilesModel()->observeCurrent(),
             [this](const std::shared_ptr<File>& file)
             {
@@ -198,11 +198,11 @@ namespace toucan
                 _menuUpdate();
             });
 
-        _globalOptionsObserver = dtk::ValueObserver<GlobalViewOptions>::create(
+        _globalOptionsObserver = feather_tk::ValueObserver<GlobalViewOptions>::create(
             app->getGlobalViewModel()->observeOptions(),
             [this](const GlobalViewOptions& value)
             {
-                setItemChecked(_actions["View/HUD"], value.hud);
+                setChecked(_actions["View/HUD"], value.hud);
             });
     }
 
@@ -210,16 +210,16 @@ namespace toucan
     {}
 
     std::shared_ptr<ViewMenu> ViewMenu::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
         auto out = std::shared_ptr<ViewMenu>(new ViewMenu);
         out->_init(context, app, parent);
         return out;
     }
 
-    const std::map<std::string, std::shared_ptr<dtk::Action> >& ViewMenu::getActions() const
+    const std::map<std::string, std::shared_ptr<feather_tk::Action> >& ViewMenu::getActions() const
     {
         return _actions;
     }
@@ -229,44 +229,44 @@ namespace toucan
         const bool file = _file.get();
         if (file)
         {
-            _frameViewObserver = dtk::ValueObserver<bool>::create(
+            _frameViewObserver = feather_tk::ValueObserver<bool>::create(
                 _file->getViewModel()->observeFrameView(),
                 [this](bool value)
                 {
-                    setItemChecked(_actions["View/Frame"], value);
+                    setChecked(_actions["View/Frame"], value);
                 });
 
-            _optionsObserver = dtk::ValueObserver<ViewOptions>::create(
+            _optionsObserver = feather_tk::ValueObserver<ViewOptions>::create(
                 _file->getViewModel()->observeOptions(),
                 [this](const ViewOptions& value)
                 {
-                    setItemChecked(_actions["View/Flip"], value.flip);
-                    setItemChecked(_actions["View/Flop"], value.flop);
-                    setItemChecked(_actions["View/Red"], dtk::ChannelDisplay::Red == value.channelDisplay);
-                    setItemChecked(_actions["View/Green"], dtk::ChannelDisplay::Green == value.channelDisplay);
-                    setItemChecked(_actions["View/Blue"], dtk::ChannelDisplay::Blue == value.channelDisplay);
-                    setItemChecked(_actions["View/Alpha"], dtk::ChannelDisplay::Alpha == value.channelDisplay);
+                    setChecked(_actions["View/Flip"], value.flip);
+                    setChecked(_actions["View/Flop"], value.flop);
+                    setChecked(_actions["View/Red"], feather_tk::ChannelDisplay::Red == value.channelDisplay);
+                    setChecked(_actions["View/Green"], feather_tk::ChannelDisplay::Green == value.channelDisplay);
+                    setChecked(_actions["View/Blue"], feather_tk::ChannelDisplay::Blue == value.channelDisplay);
+                    setChecked(_actions["View/Alpha"], feather_tk::ChannelDisplay::Alpha == value.channelDisplay);
                 });
         }
         else
         {
-            setItemChecked(_actions["View/Frame"], false);
-            setItemChecked(_actions["View/Flip"], false);
-            setItemChecked(_actions["View/Flop"], false);
+            setChecked(_actions["View/Frame"], false);
+            setChecked(_actions["View/Flip"], false);
+            setChecked(_actions["View/Flop"], false);
             _frameViewObserver.reset();
             _optionsObserver.reset();
         }
 
-        setItemEnabled(_actions["View/ZoomIn"], file);
-        setItemEnabled(_actions["View/ZoomOut"], file);
-        setItemEnabled(_actions["View/ZoomReset"], file);
-        setItemEnabled(_actions["View/Frame"], file);
-        setItemEnabled(_actions["View/Flip"], file);
-        setItemEnabled(_actions["View/Flop"], file);
-        setItemEnabled(_actions["View/Red"], file);
-        setItemEnabled(_actions["View/Green"], file);
-        setItemEnabled(_actions["View/Blue"], file);
-        setItemEnabled(_actions["View/Alpha"], file);
-        setItemEnabled(_actions["View/HUD"], file);
+        setEnabled(_actions["View/ZoomIn"], file);
+        setEnabled(_actions["View/ZoomOut"], file);
+        setEnabled(_actions["View/ZoomReset"], file);
+        setEnabled(_actions["View/Frame"], file);
+        setEnabled(_actions["View/Flip"], file);
+        setEnabled(_actions["View/Flop"], file);
+        setEnabled(_actions["View/Red"], file);
+        setEnabled(_actions["View/Green"], file);
+        setEnabled(_actions["View/Blue"], file);
+        setEnabled(_actions["View/Alpha"], file);
+        setEnabled(_actions["View/HUD"], file);
     }
 }

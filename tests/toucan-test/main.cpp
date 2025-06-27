@@ -17,10 +17,9 @@
 #include <toucanRender/Util.h>
 
 #if defined(toucan_VIEW)
-#include <dtk/ui/Init.h>
+#include <feather-tk/ui/Init.h>
 #endif // toucan_VIEW
-#include <dtk/core/Context.h>
-#include <dtk/core/Init.h>
+#include <feather-tk/core/Context.h>
 
 #include <iostream>
 
@@ -35,10 +34,9 @@ int main(int argc, char** argv)
     }
     const std::filesystem::path path(argv[1]);
 
-    auto context = dtk::Context::create();
-    dtk::coreInit(context);
+    auto context = feather_tk::Context::create();
 #if defined(toucan_VIEW)
-    dtk::uiInit(context);
+    feather_tk::uiInit(context);
 #endif // toucan_VIEW
 
     auto host = std::make_shared<ImageEffectHost>(context, getOpenFXPluginPaths(argv[0]));

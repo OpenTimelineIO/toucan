@@ -3,16 +3,16 @@
 
 #pragma once
 
-#include <dtk/ui/IWidget.h>
+#include <feather-tk/ui/IWidget.h>
 
 namespace toucan
 {
     //! Timeline item label.
-    class ItemLabel : public dtk::IWidget
+    class ItemLabel : public feather_tk::IWidget
     {
     protected:
         void _init(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const std::shared_ptr<IWidget>& parent);
 
     public:
@@ -20,7 +20,7 @@ namespace toucan
 
         //! Create a new label.
         static std::shared_ptr<ItemLabel> create(
-            const std::shared_ptr<dtk::Context>&,
+            const std::shared_ptr<feather_tk::Context>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
         //! Set the name.
@@ -30,17 +30,17 @@ namespace toucan
         void setDuration(const std::string&);
 
         //! Set the margin size role.
-        void setMarginRole(dtk::SizeRole);
+        void setMarginRole(feather_tk::SizeRole);
 
-        void setGeometry(const dtk::Box2I&) override;
-        void sizeHintEvent(const dtk::SizeHintEvent&) override;
-        void clipEvent(const dtk::Box2I&, bool) override;
-        void drawEvent(const dtk::Box2I&, const dtk::DrawEvent&) override;
+        void setGeometry(const feather_tk::Box2I&) override;
+        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
+        void clipEvent(const feather_tk::Box2I&, bool) override;
+        void drawEvent(const feather_tk::Box2I&, const feather_tk::DrawEvent&) override;
 
     private:
         std::string _name;
         std::string _duration;
-        dtk::SizeRole _marginRole = dtk::SizeRole::MarginInside;
+        feather_tk::SizeRole _marginRole = feather_tk::SizeRole::MarginInside;
 
         struct SizeData
         {
@@ -48,17 +48,17 @@ namespace toucan
             float displayScale = 0.F;
             int margin = 0;
             int margin2 = 0;
-            dtk::FontInfo fontInfo;
-            dtk::FontMetrics fontMetrics;
-            dtk::Size2I nameSize;
-            dtk::Size2I durationSize;
+            feather_tk::FontInfo fontInfo;
+            feather_tk::FontMetrics fontMetrics;
+            feather_tk::Size2I nameSize;
+            feather_tk::Size2I durationSize;
         };
         SizeData _size;
 
         struct DrawData
         {
-            std::vector<std::shared_ptr<dtk::Glyph> > nameGlyphs;
-            std::vector<std::shared_ptr<dtk::Glyph> > durationGlyphs;
+            std::vector<std::shared_ptr<feather_tk::Glyph> > nameGlyphs;
+            std::vector<std::shared_ptr<feather_tk::Glyph> > durationGlyphs;
         };
         DrawData _draw;
     };

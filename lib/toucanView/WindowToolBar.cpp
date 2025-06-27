@@ -11,73 +11,40 @@
 namespace toucan
 {
     void WindowToolBar::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
         const std::shared_ptr<MainWindow>& window,
-        const std::map<std::string, std::shared_ptr<dtk::Action> >& actions,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::map<std::string, std::shared_ptr<feather_tk::Action> >& actions,
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
-        dtk::IWidget::_init(context, "toucan::WindowToolBar", parent);
+        feather_tk::IWidget::_init(context, "toucan::WindowToolBar", parent);
 
-        _layout = dtk::HorizontalLayout::create(context, shared_from_this());
-        _layout->setSpacingRole(dtk::SizeRole::SpacingSmall);
+        _layout = feather_tk::HorizontalLayout::create(context, shared_from_this());
+        _layout->setSpacingRole(feather_tk::SizeRole::SpacingSmall);
 
-        auto hLayout = dtk::HorizontalLayout::create(context, _layout);
-        hLayout->setSpacingRole(dtk::SizeRole::SpacingTool);
+        auto hLayout = feather_tk::HorizontalLayout::create(context, _layout);
+        hLayout->setSpacingRole(feather_tk::SizeRole::SpacingTool);
 
         auto i = actions.find("Window/FullScreen");
-        auto button = dtk::ToolButton::create(context, hLayout);
-        button->setIcon(i->second->icon);
-        button->setCheckable(true);
-        button->setTooltip(i->second->toolTip);
-        button->setCheckedCallback(
-            [i](bool value)
-            {
-                if (i->second->checkedCallback)
-                {
-                    i->second->checkedCallback(value);
-                }
-            });
+        auto button = feather_tk::ToolButton::create(context, i->second, hLayout);
         _buttons["Window/FullScreen"] = button;
 
         i = actions.find("Window/Tools");
-        button = dtk::ToolButton::create(context, hLayout);
-        button->setIcon(i->second->icon);
-        button->setCheckable(true);
-        button->setTooltip(i->second->toolTip);
-        button->setCheckedCallback(
-            [i](bool value)
-            {
-                if (i->second->checkedCallback)
-                {
-                    i->second->checkedCallback(value);
-                }
-            });
+        button = feather_tk::ToolButton::create(context, i->second, hLayout);
         _buttons["Window/Tools"] = button;
 
         i = actions.find("Window/Playback");
-        button = dtk::ToolButton::create(context, hLayout);
-        button->setIcon(i->second->icon);
-        button->setCheckable(true);
-        button->setTooltip(i->second->toolTip);
-        button->setCheckedCallback(
-            [i](bool value)
-            {
-                if (i->second->checkedCallback)
-                {
-                    i->second->checkedCallback(value);
-                }
-            });
+        button = feather_tk::ToolButton::create(context, i->second, hLayout);
         _buttons["Window/Playback"] = button;
 
-        _fullScreenObserver = dtk::ValueObserver<bool>::create(
+        _fullScreenObserver = feather_tk::ValueObserver<bool>::create(
             window->observeFullScreen(),
             [this](bool value)
             {
                 _buttons["Window/FullScreen"]->setChecked(value);
             });
 
-        _componentObserver = dtk::MapObserver<WindowComponent, bool>::create(
+        _componentObserver = feather_tk::MapObserver<WindowComponent, bool>::create(
             app->getWindowModel()->observeComponents(),
             [this](const std::map<WindowComponent, bool> value)
             {
@@ -92,24 +59,24 @@ namespace toucan
     {}
 
     std::shared_ptr<WindowToolBar> WindowToolBar::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const std::shared_ptr<App>& app,
         const std::shared_ptr<MainWindow>& window,
-        const std::map<std::string, std::shared_ptr<dtk::Action> >& actions,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::map<std::string, std::shared_ptr<feather_tk::Action> >& actions,
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
         auto out = std::shared_ptr<WindowToolBar>(new WindowToolBar);
         out->_init(context, app, window, actions, parent);
         return out;
     }
 
-    void WindowToolBar::setGeometry(const dtk::Box2I& value)
+    void WindowToolBar::setGeometry(const feather_tk::Box2I& value)
     {
         IWidget::setGeometry(value);
         _layout->setGeometry(value);
     }
 
-    void WindowToolBar::sizeHintEvent(const dtk::SizeHintEvent& event)
+    void WindowToolBar::sizeHintEvent(const feather_tk::SizeHintEvent& event)
     {
         IWidget::sizeHintEvent(event);
         _setSizeHint(_layout->getSizeHint());

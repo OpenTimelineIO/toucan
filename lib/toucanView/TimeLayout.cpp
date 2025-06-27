@@ -6,12 +6,12 @@
 namespace toucan
 {
     void ITimeWidget::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const OTIO_NS::TimeRange& timeRange,
         const std::string& objectName,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
-        dtk::IWidget::_init(context, objectName, parent);
+        feather_tk::IWidget::_init(context, objectName, parent);
         _timeRange = timeRange;
     }
 
@@ -51,7 +51,7 @@ namespace toucan
     OTIO_NS::RationalTime ITimeWidget::posToTime(double value) const
     {
         OTIO_NS::RationalTime out;
-        const dtk::Box2I& g = getGeometry();
+        const feather_tk::Box2I& g = getGeometry();
         if (g.w() > 0)
         {
             const double n = (value - g.min.x) / static_cast<double>(g.w());
@@ -61,7 +61,7 @@ namespace toucan
                     _timeRange.duration().value() * n,
                     _timeRange.duration().rate())).
                 round();
-            out = dtk::clamp(
+            out = feather_tk::clamp(
                 out,
                 _timeRange.start_time(),
                 _timeRange.end_time_inclusive());
@@ -72,7 +72,7 @@ namespace toucan
     int ITimeWidget::timeToPos(const OTIO_NS::RationalTime& value) const
     {
         int out = 0;
-        const dtk::Box2I& g = getGeometry();
+        const feather_tk::Box2I& g = getGeometry();
         if (_timeRange.duration().value() > 0.0)
         {
             const OTIO_NS::RationalTime t = value - _timeRange.start_time();
@@ -83,9 +83,9 @@ namespace toucan
     }
 
     void TimeLayout::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const OTIO_NS::TimeRange& timeRange,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
         ITimeWidget::_init(context, timeRange, "toucan::TimeLayout", parent);
     }
@@ -94,16 +94,16 @@ namespace toucan
     {}
 
     std::shared_ptr<TimeLayout> TimeLayout::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const OTIO_NS::TimeRange& timeRange,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
         auto out = std::shared_ptr<TimeLayout>(new TimeLayout);
         out->_init(context, timeRange, parent);
         return out;
     }
 
-    void TimeLayout::setGeometry(const dtk::Box2I& value)
+    void TimeLayout::setGeometry(const feather_tk::Box2I& value)
     {
         ITimeWidget::setGeometry(value);
         for (const auto& child : getChildren())
@@ -113,8 +113,8 @@ namespace toucan
                 const OTIO_NS::TimeRange& timeRange = timeWidget->getTimeRange();
                 const int t0 = timeToPos(timeRange.start_time());
                 const int t1 = timeToPos(timeRange.end_time_exclusive());
-                const dtk::Size2I& childSizeHint = child->getSizeHint();
-                child->setGeometry(dtk::Box2I(
+                const feather_tk::Size2I& childSizeHint = child->getSizeHint();
+                child->setGeometry(feather_tk::Box2I(
                     t0,
                     value.min.y,
                     std::max(t1 - t0, timeWidget->getMinWidth()),
@@ -123,15 +123,15 @@ namespace toucan
         }
     }
 
-    void TimeLayout::sizeHintEvent(const dtk::SizeHintEvent& event)
+    void TimeLayout::sizeHintEvent(const feather_tk::SizeHintEvent& event)
     {
         ITimeWidget::sizeHintEvent(event);
-        dtk::Size2I sizeHint;
+        feather_tk::Size2I sizeHint;
         for (const auto& child : getChildren())
         {
             if (auto timeWidget = std::dynamic_pointer_cast<ITimeWidget>(child))
             {
-                const dtk::Size2I& childSizeHint = timeWidget->getSizeHint();
+                const feather_tk::Size2I& childSizeHint = timeWidget->getSizeHint();
                 sizeHint.h = std::max(sizeHint.h, childSizeHint.h);
             }
         }
@@ -140,9 +140,9 @@ namespace toucan
     }
 
     void TimeStackLayout::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const OTIO_NS::TimeRange& timeRange,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
         ITimeWidget::_init(context, timeRange, "toucan::TimeStackLayout", parent);
     }
@@ -151,16 +151,16 @@ namespace toucan
     {}
 
     std::shared_ptr<TimeStackLayout> TimeStackLayout::create(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         const OTIO_NS::TimeRange& timeRange,
-        const std::shared_ptr<dtk::IWidget>& parent)
+        const std::shared_ptr<feather_tk::IWidget>& parent)
     {
         auto out = std::shared_ptr<TimeStackLayout>(new TimeStackLayout);
         out->_init(context, timeRange, parent);
         return out;
     }
 
-    void TimeStackLayout::setGeometry(const dtk::Box2I& value)
+    void TimeStackLayout::setGeometry(const feather_tk::Box2I& value)
     {
         ITimeWidget::setGeometry(value);
         int y = value.min.y;
@@ -171,14 +171,14 @@ namespace toucan
                 const OTIO_NS::TimeRange& timeRange = timeWidget->getTimeRange();
                 const double t0 = timeToPos(timeRange.start_time());
                 const double t1 = timeToPos(timeRange.end_time_exclusive());
-                const dtk::Size2I& childSizeHint = child->getSizeHint();
-                child->setGeometry(dtk::Box2I(t0, y, t1 - t0, childSizeHint.h));
+                const feather_tk::Size2I& childSizeHint = child->getSizeHint();
+                child->setGeometry(feather_tk::Box2I(t0, y, t1 - t0, childSizeHint.h));
                 y += childSizeHint.h + _size.spacing;
             };
         }
     }
 
-    void TimeStackLayout::sizeHintEvent(const dtk::SizeHintEvent& event)
+    void TimeStackLayout::sizeHintEvent(const feather_tk::SizeHintEvent& event)
     {
         ITimeWidget::sizeHintEvent(event);
         const bool displayScaleChanged = event.displayScale != _size.displayScale;
@@ -186,10 +186,10 @@ namespace toucan
         {
             _size.init = false;
             _size.displayScale = event.displayScale;
-            _size.spacing = event.style->getSizeRole(dtk::SizeRole::SpacingTool, event.displayScale);
+            _size.spacing = event.style->getSizeRole(feather_tk::SizeRole::SpacingTool, event.displayScale);
         }
 
-        dtk::Size2I sizeHint;
+        feather_tk::Size2I sizeHint;
         const auto& children = getChildren();
         if (!children.empty())
         {
@@ -197,7 +197,7 @@ namespace toucan
             {
                 if (auto timeWidget = std::dynamic_pointer_cast<ITimeWidget>(child))
                 {
-                    const dtk::Size2I& childSizeHint = timeWidget->getSizeHint();
+                    const feather_tk::Size2I& childSizeHint = timeWidget->getSizeHint();
                     sizeHint.h += childSizeHint.h;
                 }
             }

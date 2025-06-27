@@ -5,34 +5,34 @@
 
 #include <toucanRender/Util.h>
 
-#include <dtk/core/CmdLine.h>
-#include <dtk/core/Time.h>
+#include <feather-tk/core/CmdLine.h>
+#include <feather-tk/core/Time.h>
 
 #include <OpenImageIO/imagebufalgo.h>
 
 namespace toucan
 {
     void App::_init(
-        const std::shared_ptr<dtk::Context>& context,
+        const std::shared_ptr<feather_tk::Context>& context,
         std::vector<std::string>& argv)
     {
-        std::vector<std::shared_ptr<dtk::ICmdLineArg> > args;
-        args.push_back(dtk::CmdLineValueArg<std::string>::create(
+        std::vector<std::shared_ptr<feather_tk::ICmdLineArg> > args;
+        args.push_back(feather_tk::CmdLineValueArg<std::string>::create(
             _args.input,
             "input",
             "Input .otio file."));
-        auto outArg = dtk::CmdLineValueArg<std::string>::create(
+        auto outArg = feather_tk::CmdLineValueArg<std::string>::create(
             _args.output,
             "output",
             "Output image file.");
         args.push_back(outArg);
 
-        std::vector<std::shared_ptr<dtk::ICmdLineOption> > options;
-        options.push_back(dtk::CmdLineFlagOption::create(
+        std::vector<std::shared_ptr<feather_tk::ICmdLineOption> > options;
+        options.push_back(feather_tk::CmdLineFlagOption::create(
             _options.verbose,
             std::vector<std::string>{ "-v" },
             "Print verbose output."));
-        options.push_back(dtk::CmdLineFlagOption::create(
+        options.push_back(feather_tk::CmdLineFlagOption::create(
             _options.help,
             std::vector<std::string>{ "-h" },
             "Print help."));
@@ -53,7 +53,7 @@ namespace toucan
     {}
 
     std::shared_ptr<App> App::create(
-        const std::shared_ptr<dtk::Context>&context,
+        const std::shared_ptr<feather_tk::Context>&context,
         std::vector<std::string>&argv)
     {
         auto out = std::shared_ptr<App>(new App);
