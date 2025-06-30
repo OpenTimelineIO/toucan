@@ -1,6 +1,6 @@
 [![Build Status](https://github.com/OpenTimelineIO/toucan/actions/workflows/ci-workflow.yml/badge.svg)](https://github.com/OpenTimelineIO/toucan/actions/workflows/ci-workflow.yml)
 
-<img src="images/toucan.svg" alt="toucan" width="100">
+<img src="images/toucan.svg" alt="toucan" width="64">
 
 
 Toucan

@@ -2,18 +2,37 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="406.60223"
-   height="571.95795"
-   viewBox="0 0 107.58017 151.33054"
+   width="512"
+   height="512"
+   viewBox="0 0 135.46666 135.46667"
    version="1.1"
    id="svg1"
    xml:space="preserve"
+   sodipodi:docname="toucan.svg"
+   inkscape:version="1.4.2 (ebf0e94, 2025-05-08)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"><defs
-     id="defs1" /><g
+   xmlns:svg="http://www.w3.org/2000/svg"><sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:current-layer="svg1" /><defs
+     id="defs1" /><circle
+     style="fill:#79a3b3;fill-opacity:1;stroke:none;stroke-width:5.47442"
+     id="path1"
+     cx="67.733337"
+     cy="67.733337"
+     r="65.087502" /><g
      id="layer2"
      style="display:inline"
-     transform="translate(128.70329,109.45055)"><g
+     transform="matrix(0.71717795,0,0,0.71717795,121.45945,91.963403)"><g
        id="g13-8"
        style="display:inline"
        transform="matrix(2.3863737,0,0,2.3863737,-1597.9588,-508.49201)"><path
