@@ -1,10 +1,7 @@
 [![Build Status](https://github.com/OpenTimelineIO/toucan/actions/workflows/ci-workflow.yml/badge.svg)](https://github.com/OpenTimelineIO/toucan/actions/workflows/ci-workflow.yml)
 
-<img src="images/toucan.svg" alt="toucan" width="64">
+# ![DJV Icon](images/toucan_64.svg) Toucan
 
-
-Toucan
-======
 Toucan is a software renderer for OpenTimelineIO files. Toucan can render an
 OpenTimelineIO file with multiple tracks, clips, transitions, and effects
 into an image sequence or movie file.
@@ -39,8 +36,8 @@ Toucan relies on the following libraries:
 Supported VFX platforms: 2024, 2023, 2022
 
 
-Example Renders
-===============
+## Example Renders
+
 Compositing multiple tracks:
 
 ![CompositeTracks](images/CompositeTracks.png)
@@ -90,8 +87,8 @@ Multiple effects on clips, tracks, and stacks:
 ![Track Effects](images/MultipleEffects.png)
 
 
-FFmpeg Encoding
-===============
+## FFmpeg Encoding
+
 Toucan can write movies with FFmpeg directly, or send raw images to the FFmpeg
 command line program over a pipe.
 
@@ -133,11 +130,23 @@ can be found by running `toucan-render` with the `-print_size` option.
 * `output.mov`: The output movie file.
 
 
-Building
-========
+## Building
 
-Building on Linux
------------------
+### Building on Linux
+
+Dependencies:
+* CMake 3.31
+
+Install system packages (Debian based systems):
+```
+sudo apt-get install xorg-dev libglu1-mesa-dev mesa-common-dev mesa-utils
+```
+
+Install system packages (Rocky 9):
+```
+sudo dnf install libX11-devel libXrandr-devel libXinerama-devel libXcursor-devel libXi-devel mesa-libGL-devel
+```
+
 Clone the repository:
 ```
 git clone https://github.com/OpenTimelineIO/toucan.git
@@ -154,8 +163,12 @@ export LD_LIBRARY_PATH=$PWD/install-Release/lib:$LD_LIBRARY_PATH
 install-Release/bin/toucan-view toucan/data/Transition.otio
 ```
 
-Building on macOS
------------------
+### Building on macOS
+
+Dependencies:
+* Xcode
+* CMake 3.31
+
 Clone the repository:
 ```
 git clone https://github.com/OpenTimelineIO/toucan.git
@@ -169,8 +182,16 @@ Run the viewer application:
 install-Release/bin/toucan-view toucan/data/Transition.otio
 ```
 
-Building on Windows
--------------------
+### Building on Windows
+
+Dependencies:
+* Visual Studio 2022
+* CMake 3.31
+* MSYS2 (https://www.msys2.org) for compiling FFmpeg.
+
+Open the Visual Studio command console "x64 Native Tools Command Prompt for VS 2022".
+This can be found in the Start menu, in the "Visual Studio 2022" folder.
+
 Clone the repository:
 ```
 git clone https://github.com/OpenTimelineIO/toucan.git
