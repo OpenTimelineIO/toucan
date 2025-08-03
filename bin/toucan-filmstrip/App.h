@@ -8,6 +8,7 @@
 #include <toucanRender/TimelineWrapper.h>
 
 #include <feather-tk/core/IApp.h>
+#include <feather-tk/core/CmdLine.h>
 
 #include <OpenImageIO/imagebuf.h>
 
@@ -32,19 +33,12 @@ namespace toucan
         void run() override;
     
     private:
-        struct Args
+        struct CmdLine
         {
-            std::string input;
-            std::string output;
+            std::shared_ptr<feather_tk::CmdLineValueArg<std::string> > input;
+            std::shared_ptr<feather_tk::CmdLineValueArg<std::string> > output;
         };
-        Args _args;
-        
-        struct Options
-        {
-            bool verbose = false;
-            bool help = false;
-        };
-        Options _options;
+        CmdLine _cmdLine;
 
         std::shared_ptr<TimelineWrapper> _timelineWrapper;
         std::shared_ptr<ImageGraph> _graph;

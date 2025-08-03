@@ -7,6 +7,7 @@
 #include <toucanRender/ImageGraph.h>
 #include <toucanRender/TimelineWrapper.h>
 
+#include <feather-tk/core/CmdLine.h>
 #include <feather-tk/core/IApp.h>
 
 #include <OpenImageIO/imagebuf.h>
@@ -41,27 +42,23 @@ namespace toucan
         void _writeRawFrame(const OIIO::ImageBuf&);
         void _writeY4mHeader();
         void _writeY4mFrame(const OIIO::ImageBuf&);
-                
-        struct Args
-        {
-            std::string input;
-            std::string output;
-            bool outputRaw = false;
-        };
-        Args _args;
         
-        struct Options
+        struct CmdLine
         {
-            std::string videoCodec = "MJPEG";
-            bool printStart = false;
-            bool printDuration = false;
-            bool printRate = false;
-            bool printSize = false;
-            std::string raw;
-            std::string y4m;
-            bool verbose = false;
+            std::shared_ptr<feather_tk::CmdLineValueArg<std::string> > input;
+            std::shared_ptr<feather_tk::CmdLineValueArg<std::string> > output;
+            bool outputRaw = false;
+
+            std::shared_ptr<feather_tk::CmdLineValueOption<std::string> > videoCodec;
+            std::shared_ptr<feather_tk::CmdLineFlagOption> printStart;
+            std::shared_ptr<feather_tk::CmdLineFlagOption> printDuration;
+            std::shared_ptr<feather_tk::CmdLineFlagOption> printRate;
+            std::shared_ptr<feather_tk::CmdLineFlagOption> printSize;
+            std::shared_ptr<feather_tk::CmdLineValueOption<std::string> > raw;
+            std::shared_ptr<feather_tk::CmdLineValueOption<std::string> > y4m;
+            std::shared_ptr<feather_tk::CmdLineFlagOption> verbose;
         };
-        Options _options;
+        CmdLine _cmdLine;
 
         std::shared_ptr<TimelineWrapper> _timelineWrapper;
         std::shared_ptr<ImageGraph> _graph;

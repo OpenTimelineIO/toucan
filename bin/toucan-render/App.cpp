@@ -7,7 +7,6 @@
 #include <toucanRender/Read.h>
 #include <toucanRender/Util.h>
 
-#include <feather-tk/core/CmdLine.h>
 #include <feather-tk/core/Time.h>
 
 #include <OpenImageIO/imagebufalgo.h>
@@ -48,18 +47,13 @@ namespace toucan
         const std::shared_ptr<feather_tk::Context>& context,
         std::vector<std::string>& argv)
     {
-        std::vector<std::shared_ptr<feather_tk::ICmdLineArg> > args;
-        args.push_back(feather_tk::CmdLineValueArg<std::string>::create(
-            _args.input,
+        _cmdLine.input = feather_tk::CmdLineValueArg<std::string>::create(
             "input",
-            "Input .otio file."));
-        auto outArg = feather_tk::CmdLineValueArg<std::string>::create(
-            _args.output,
+            "Input .otio file.");
+        _cmdLine.output = feather_tk::CmdLineValueArg<std::string>::create(
             "output",
             "Output image or movie file. Use a dash ('-') to write raw frames or y4m to stdout.");
-        args.push_back(outArg);
 
-        std::vector<std::shared_ptr<feather_tk::ICmdLineOption> > options;
         std::vector<std::string> rawList;
         for (const auto& spec : rawSpecs)
         {
@@ -70,57 +64,60 @@ namespace toucan
         {
             y4mList.push_back(spec.first);
         }
-        options.push_back(feather_tk::CmdLineValueOption<std::string>::create(
-            _options.videoCodec,
+        _cmdLine.videoCodec = feather_tk::CmdLineValueOption<std::string>::create(
             std::vector<std::string>{ "-vcodec" },
             "Set the video codec.",
-            _options.videoCodec,
-            feather_tk::join(ffmpeg::getVideoCodecStrings(), ", ")));
-        options.push_back(feather_tk::CmdLineFlagOption::create(
-            _options.printStart,
+            "",
+            "MJPEG",
+            feather_tk::join(ffmpeg::getVideoCodecStrings(), ", "));
+        _cmdLine.printStart = feather_tk::CmdLineFlagOption::create(
             std::vector<std::string>{ "-print_start" },
-            "Print the timeline start time and exit."));
-        options.push_back(feather_tk::CmdLineFlagOption::create(
-            _options.printDuration,
+            "Print the timeline start time and exit.");
+        _cmdLine.printDuration = feather_tk::CmdLineFlagOption::create(
             std::vector<std::string>{ "-print_duration" },
-            "Print the timeline duration and exit."));
-        options.push_back(feather_tk::CmdLineFlagOption::create(
-            _options.printRate,
+            "Print the timeline duration and exit.");
+        _cmdLine.printRate = feather_tk::CmdLineFlagOption::create(
             std::vector<std::string>{ "-print_rate" },
-            "Print the timeline frame rate and exit."));
-        options.push_back(feather_tk::CmdLineFlagOption::create(
-            _options.printSize,
+            "Print the timeline frame rate and exit.");
+        _cmdLine.printSize = feather_tk::CmdLineFlagOption::create(
             std::vector<std::string>{ "-print_size" },
-            "Print the timeline image size."));
-        options.push_back(feather_tk::CmdLineValueOption<std::string>::create(
-            _options.raw,
+            "Print the timeline image size.");
+        _cmdLine.raw = feather_tk::CmdLineValueOption<std::string>::create(
             std::vector<std::string>{ "-raw" },
             "Raw pixel format to send to stdout.",
-            _options.raw,
-            feather_tk::join(rawList, ", ")));
-        options.push_back(feather_tk::CmdLineValueOption<std::string>::create(
-            _options.y4m,
+            "",
+            std::optional<std::string>(),
+            feather_tk::join(rawList, ", "));
+        _cmdLine.y4m = feather_tk::CmdLineValueOption<std::string>::create(
             std::vector<std::string>{ "-y4m" },
             "y4m format to send to stdout.",
-            _options.y4m,
-            feather_tk::join(y4mList, ", ")));
-        options.push_back(feather_tk::CmdLineFlagOption::create(
-            _options.verbose,
+            "",
+            std::optional<std::string>(),
+            feather_tk::join(y4mList, ", "));
+        _cmdLine.verbose = feather_tk::CmdLineFlagOption::create(
             std::vector<std::string>{ "-v" },
-            "Print verbose output."));
+            "Print verbose output.");
 
         IApp::_init(
             context,
             argv,
             "toucan-render",
             "Render timeline files",
-            args,
-            options);
+            { _cmdLine.input, _cmdLine.output },
+            {
+                _cmdLine.videoCodec,
+                _cmdLine.printStart,
+                _cmdLine.printDuration,
+                _cmdLine.printRate,
+                _cmdLine.printSize,
+                _cmdLine.raw,
+                _cmdLine.y4m,
+                _cmdLine.verbose
+            });
 
-        _args.outputRaw = "-" == _args.output;
-        if (_args.outputRaw)
+        if (_cmdLine.output->hasValue() && _cmdLine.output->getValue() == "-")
         {
-            _options.verbose = false;
+            _cmdLine.outputRaw = true;
         }
     }
 
@@ -155,8 +152,8 @@ namespace toucan
     void App::run()
     {
         const std::filesystem::path parentPath = std::filesystem::path(getExeName()).parent_path();
-        const std::filesystem::path inputPath(_args.input);
-        const std::filesystem::path outputPath(_args.output);
+        const std::filesystem::path inputPath(_cmdLine.input->getValue());
+        const std::filesystem::path outputPath(_cmdLine.output->getValue());
         const auto outputSplit = splitFileNameNumber(outputPath.stem().string());
         const int outputStartFrame = atoi(outputSplit.second.c_str());
         const size_t outputNumberPadding = getNumberPadding(outputSplit.second);
@@ -177,22 +174,22 @@ namespace toucan
         const IMATH_NAMESPACE::V2d imageSize = _graph->getImageSize();
 
         // Print information.
-        if (_options.printStart)
+        if (_cmdLine.printStart->found())
         {
             std::cout << timeRange.start_time().value() << std::endl;
             return;
         }
-        else if (_options.printDuration)
+        else if (_cmdLine.printDuration->found())
         {
             std::cout << timeRange.duration().value() << std::endl;
             return;
         }
-        else if (_options.printRate)
+        else if (_cmdLine.printRate->found())
         {
             std::cout << timeRange.duration().rate() << std::endl;
             return;
         }
-        else if (_options.printSize)
+        else if (_cmdLine.printSize->found())
         {
             std::cout << imageSize.x << "x" << imageSize.y << std::endl;
             return;
@@ -205,8 +202,11 @@ namespace toucan
         std::shared_ptr<ffmpeg::Write> ffWrite;
         if (MovieReadNode::hasExtension(outputPath.extension().string()))
         {
-            ffmpeg::VideoCodec videoCodec = ffmpeg::VideoCodec::First;
-            ffmpeg::fromString(_options.videoCodec, videoCodec);
+            ffmpeg::VideoCodec videoCodec = ffmpeg::VideoCodec::MJPEG;
+            if (_cmdLine.videoCodec->hasValue())
+            {
+                ffmpeg::fromString(_cmdLine.videoCodec->getValue(), videoCodec);
+            }
             ffWrite = std::make_shared<ffmpeg::Write>(
                 outputPath,
                 OIIO::ImageSpec(imageSize.x, imageSize.y, 3),
@@ -215,7 +215,7 @@ namespace toucan
         }
 
         // Render the timeline frames.
-        if (!_options.y4m.empty())
+        if (_cmdLine.y4m->hasValue())
         {
             _writeY4mHeader();
         }
@@ -223,7 +223,7 @@ namespace toucan
             time <= timeRange.end_time_inclusive();
             time += timeInc)
         {
-            if (!_args.outputRaw)
+            if (!_cmdLine.outputRaw)
             {
                 std::cout << (time - timeRange.start_time()).value() << "/" <<
                     timeRange.duration().value() << std::endl;
@@ -235,7 +235,7 @@ namespace toucan
                 const auto buf = node->exec();
 
                 // Save the image.
-                if (!_args.outputRaw)
+                if (!_cmdLine.outputRaw)
                 {
                     if (ffWrite)
                     {
@@ -252,11 +252,11 @@ namespace toucan
                         buf.write(fileName);
                     }
                 }
-                else if (!_options.raw.empty())
+                else if (_cmdLine.raw->hasValue())
                 {
                     _writeRawFrame(buf);
                 }
-                else if (!_options.y4m.empty())
+                else if (_cmdLine.y4m->hasValue())
                 {
                     _writeY4mFrame(buf);
                 }
@@ -269,7 +269,7 @@ namespace toucan
         const OIIO::ImageBuf* p = &buf;
         auto spec = buf.spec();
 
-        const auto i = rawSpecs.find(_options.raw);
+        const auto i = rawSpecs.find(_cmdLine.raw->getValue());
         if (i == rawSpecs.end())
         {
             throw std::runtime_error("Cannot find the given raw format");
@@ -329,7 +329,7 @@ namespace toucan
 
         {
             std::stringstream ss;
-            ss << " C" << _options.y4m;
+            ss << " C" << _cmdLine.y4m->getValue();
             s = ss.str();
         }
         fwrite(s.c_str(), s.size(), 1, stdout);
@@ -345,7 +345,7 @@ namespace toucan
         const OIIO::ImageBuf* p = &buf;
         auto spec = buf.spec();
 
-        const auto i = y4mSpecs.find(_options.y4m);
+        const auto i = y4mSpecs.find(_cmdLine.y4m->getValue());
         if (i == y4mSpecs.end())
         {
             throw std::runtime_error("Cannot find the given y4m format");
@@ -371,22 +371,22 @@ namespace toucan
 
         if (!_swsContext)
         {
-            if ("422" == _options.y4m)
+            if ("422" == _cmdLine.y4m->getValue())
             {
                 _avInputPixelFormat = AV_PIX_FMT_RGB24;
                 _avOutputPixelFormat = AV_PIX_FMT_YUV422P;
             }
-            else if ("444" == _options.y4m)
+            else if ("444" == _cmdLine.y4m->getValue())
             {
                 _avInputPixelFormat = AV_PIX_FMT_RGB24;
                 _avOutputPixelFormat = AV_PIX_FMT_YUV444P;
             }
-            else if ("444alpha" == _options.y4m)
+            else if ("444alpha" == _cmdLine.y4m->getValue())
             {
                 _avInputPixelFormat = AV_PIX_FMT_RGBA;
                 _avOutputPixelFormat = AV_PIX_FMT_YUVA444P;
             }
-            else if ("444p16" == _options.y4m)
+            else if ("444p16" == _cmdLine.y4m->getValue())
             {
                 _avInputPixelFormat = AV_PIX_FMT_RGB48;
                 _avOutputPixelFormat = AV_PIX_FMT_YUV444P16;
@@ -423,7 +423,7 @@ namespace toucan
             av_image_get_buffer_size(_avInputPixelFormat, spec.width, spec.height, 1));
         sws_scale_frame(_swsContext, _avFrame2, _avFrame);
 
-        if ("422" == _options.y4m)
+        if ("422" == _cmdLine.y4m->getValue())
         {
             fwrite(
                 _avFrame2->data[0],
@@ -441,7 +441,7 @@ namespace toucan
                 1,
                 stdout);
         }
-        else if ("444" == _options.y4m || "444p16" == _options.y4m)
+        else if ("444" == _cmdLine.y4m->getValue() || "444p16" == _cmdLine.y4m->getValue())
         {
             fwrite(
                 _avFrame2->data[0],
@@ -459,7 +459,7 @@ namespace toucan
                 1,
                 stdout);
         }
-        else if ("444alpha" == _options.y4m)
+        else if ("444alpha" == _cmdLine.y4m->getValue())
         {
             fwrite(
                 _avFrame2->data[0],

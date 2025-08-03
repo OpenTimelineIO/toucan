@@ -5,7 +5,6 @@
 
 #include <toucanRender/Util.h>
 
-#include <feather-tk/core/CmdLine.h>
 #include <feather-tk/core/Time.h>
 
 #include <OpenImageIO/imagebufalgo.h>
@@ -16,34 +15,19 @@ namespace toucan
         const std::shared_ptr<feather_tk::Context>& context,
         std::vector<std::string>& argv)
     {
-        std::vector<std::shared_ptr<feather_tk::ICmdLineArg> > args;
-        args.push_back(feather_tk::CmdLineValueArg<std::string>::create(
-            _args.input,
+        _cmdLine.input = feather_tk::CmdLineValueArg<std::string>::create(
             "input",
-            "Input .otio file."));
-        auto outArg = feather_tk::CmdLineValueArg<std::string>::create(
-            _args.output,
+            "Input .otio file.");
+        _cmdLine.output = feather_tk::CmdLineValueArg<std::string>::create(
             "output",
             "Output image file.");
-        args.push_back(outArg);
-
-        std::vector<std::shared_ptr<feather_tk::ICmdLineOption> > options;
-        options.push_back(feather_tk::CmdLineFlagOption::create(
-            _options.verbose,
-            std::vector<std::string>{ "-v" },
-            "Print verbose output."));
-        options.push_back(feather_tk::CmdLineFlagOption::create(
-            _options.help,
-            std::vector<std::string>{ "-h" },
-            "Print help."));
 
         IApp::_init(
             context,
             argv,
             "toucan-filmstrip",
             "Render timeline files into filmstrips",
-            args,
-            options);
+            { _cmdLine.input, _cmdLine.output });
     }
 
     App::App()
@@ -64,8 +48,8 @@ namespace toucan
     void App::run()
     {
         const std::filesystem::path parentPath = std::filesystem::path(getExeName()).parent_path();
-        const std::filesystem::path inputPath(_args.input);
-        const std::filesystem::path outputPath(_args.output);
+        const std::filesystem::path inputPath(_cmdLine.input->getValue());
+        const std::filesystem::path outputPath(_cmdLine.output->getValue());
         const auto outputSplit = splitFileNameNumber(outputPath.stem().string());
         const int outputStartFrame = atoi(outputSplit.second.c_str());
         const size_t outputNumberPadding = getNumberPadding(outputSplit.second);

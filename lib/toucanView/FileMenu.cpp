@@ -40,7 +40,7 @@ namespace toucan
                 auto fileBrowserSystem = context->getSystem<feather_tk::FileBrowserSystem>();
                 if (_file)
                 {
-                    fileBrowserSystem->setPath(_file->getPath().parent_path());
+                    fileBrowserSystem->getModel()->setPath(_file->getPath().parent_path());
                 }
 
                 std::vector<std::string> extensions;
@@ -53,7 +53,7 @@ namespace toucan
                 extensions.push_back(".otio");
                 extensions.push_back(".otiod");
                 extensions.push_back(".otioz");
-                fileBrowserSystem->setExtensions(extensions);
+                fileBrowserSystem->getModel()->setExtensions(extensions);
 
                 fileBrowserSystem->setRecentFilesModel(_filesModel->getRecentFilesModel());
 

@@ -21,7 +21,8 @@ int main(int argc, char** argv)
     {
         auto context = feather_tk::Context::create();
         auto app = App::create(context, args);
-        app->run();
+        if (0 == app->getExit())
+            app->run();
         out = app->getExit();
     }
     catch (const std::exception& e)

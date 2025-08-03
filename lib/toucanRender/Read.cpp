@@ -67,7 +67,7 @@ namespace toucan
     std::string ImageReadNode::getLabel() const
     {
         std::stringstream ss;
-        ss << _name << ": " << _path.filename().string();
+        ss << "Read: " << _path.filename().string();
         return ss.str();
     }
 
@@ -273,7 +273,7 @@ namespace toucan
     std::string MovieReadNode::getLabel() const
     {
         std::stringstream ss;
-        ss << _name << ": " << _path.filename().string();
+        ss << "Read: " << _path.filename().string();
         return ss.str();
     }
 

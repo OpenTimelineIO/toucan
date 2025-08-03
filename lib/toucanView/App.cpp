@@ -26,18 +26,17 @@ namespace toucan
         const std::shared_ptr<feather_tk::Context>& context,
         std::vector<std::string>& argv)
     {
+        _input = feather_tk::CmdLineValueArg<std::string>::create(
+            "input",
+            "Input timeline.",
+            true);
+
         feather_tk::App::_init(
             context,
             argv,
             "toucan-view",
             "Toucan viewer",
-            {
-                feather_tk::CmdLineValueArg<std::string>::create(
-                    _path,
-                    "input",
-                    "Input timeline.",
-                    true)
-            });
+            { _input });
 
         _settings = feather_tk::Settings::create(context, feather_tk::getSettingsPath("toucan", "toucan-view.settings"));
 
@@ -60,9 +59,9 @@ namespace toucan
         addWindow(_window);
         _window->show();
 
-        if (!_path.empty())
+        if (_input->hasValue())
         {
-            open(_path);
+            open(_input->getValue());
         }
     }
 
