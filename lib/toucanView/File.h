@@ -25,7 +25,7 @@ namespace toucan
     {
     public:
         File(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<ImageEffectHost>&,
             const std::filesystem::path&);
 
@@ -62,13 +62,13 @@ namespace toucan
         const std::string& getImageDataType() const;
 
         //! Observe the current image.
-        std::shared_ptr<feather_tk::IObservableValue<std::shared_ptr<feather_tk::Image> > > observeCurrentImage() const;
+        std::shared_ptr<ftk::IObservableValue<std::shared_ptr<ftk::Image> > > observeCurrentImage() const;
 
         //! Observe the root node.
-        std::shared_ptr<feather_tk::IObservableValue<std::shared_ptr<IImageNode> > > observeRootNode() const;
+        std::shared_ptr<ftk::IObservableValue<std::shared_ptr<IImageNode> > > observeRootNode() const;
 
         //! Observe the current node.
-        std::shared_ptr<feather_tk::IObservableValue<std::shared_ptr<IImageNode> > > observeCurrentNode() const;
+        std::shared_ptr<ftk::IObservableValue<std::shared_ptr<IImageNode> > > observeCurrentNode() const;
 
         //! Set the current node.
         void setCurrentNode(const std::shared_ptr<IImageNode>&);
@@ -83,14 +83,14 @@ namespace toucan
         std::shared_ptr<ViewModel> _viewModel;
         std::shared_ptr<SelectionModel> _selectionModel;
         std::shared_ptr<ThumbnailGenerator> _thumbnailGenerator;
-        std::shared_ptr<feather_tk::ObservableValue<std::shared_ptr<feather_tk::Image> > > _currentImage;
+        std::shared_ptr<ftk::ObservableValue<std::shared_ptr<ftk::Image> > > _currentImage;
         OTIO_NS::RationalTime _currentTime;
 
         std::shared_ptr<ImageGraph> _graph;
-        std::shared_ptr<feather_tk::ObservableValue<std::shared_ptr<IImageNode> > > _rootNode;
-        std::shared_ptr<feather_tk::ObservableValue<std::shared_ptr<IImageNode> > > _currentNode;
+        std::shared_ptr<ftk::ObservableValue<std::shared_ptr<IImageNode> > > _rootNode;
+        std::shared_ptr<ftk::ObservableValue<std::shared_ptr<IImageNode> > > _currentNode;
         OIIO::ImageBuf _imageBuf;
 
-        std::shared_ptr<feather_tk::ValueObserver<OTIO_NS::RationalTime> > _currentTimeObserver;
+        std::shared_ptr<ftk::ValueObserver<OTIO_NS::RationalTime> > _currentTimeObserver;
     };
 }

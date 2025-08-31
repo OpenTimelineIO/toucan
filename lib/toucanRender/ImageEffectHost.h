@@ -18,7 +18,7 @@ namespace toucan
     {
     public:
         ImageEffectHost(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::vector<std::filesystem::path>& searchPath);
 
         ~ImageEffectHost();
@@ -44,7 +44,7 @@ namespace toucan
         static OfxStatus _clipGetImage(OfxImageClipHandle, OfxTime, const OfxRectD*, OfxPropertySetHandle*);
         static OfxStatus _clipReleaseImage(OfxPropertySetHandle);
 
-        std::weak_ptr<feather_tk::Context> _context;
+        std::weak_ptr<ftk::Context> _context;
         PropertySet _propSet;
         OfxHost _host;
         OfxPropertySuiteV1 _propertySuite;

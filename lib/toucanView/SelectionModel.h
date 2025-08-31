@@ -46,7 +46,7 @@ namespace toucan
         const std::vector<SelectionItem >& getSelection() const;
 
         //! Observe the selection.
-        std::shared_ptr<feather_tk::IObservableList<SelectionItem> > observeSelection() const;
+        std::shared_ptr<ftk::IObservableList<SelectionItem> > observeSelection() const;
 
         //! Set the seldction.
         void setSelection(const std::vector<SelectionItem>&);
@@ -76,6 +76,6 @@ namespace toucan
             const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>&,
             std::vector<SelectionItem>&);
 
-        std::shared_ptr<feather_tk::ObservableList<SelectionItem> > _selection;
+        std::shared_ptr<ftk::ObservableList<SelectionItem> > _selection;
     };
 }

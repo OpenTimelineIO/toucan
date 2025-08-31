@@ -11,19 +11,19 @@
 namespace toucan
 {
     void InfoBar::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
-        feather_tk::IWidget::_init(context, "toucan::InfoBar", parent);
+        ftk::IWidget::_init(context, "toucan::InfoBar", parent);
 
-        _layout = feather_tk::HorizontalLayout::create(context, shared_from_this());
-        _layout->setSpacingRole(feather_tk::SizeRole::SpacingTool);
+        _layout = ftk::HorizontalLayout::create(context, shared_from_this());
+        _layout->setSpacingRole(ftk::SizeRole::SpacingTool);
 
-        _label = feather_tk::Label::create(context, _layout);
-        _label->setMarginRole(feather_tk::SizeRole::MarginInside);
+        _label = ftk::Label::create(context, _layout);
+        _label->setMarginRole(ftk::SizeRole::MarginInside);
 
-        _fileObserver = feather_tk::ValueObserver<std::shared_ptr<File> >::create(
+        _fileObserver = ftk::ValueObserver<std::shared_ptr<File> >::create(
             app->getFilesModel()->observeCurrent(),
             [this](const std::shared_ptr<File>& file)
             {
@@ -34,14 +34,14 @@ namespace toucan
                     const IMATH_NAMESPACE::V2i& imageSize = file->getImageSize();
                     const size_t trackCount = file->getTimeline()->find_children<OTIO_NS::Track>().size();
 
-                    text = feather_tk::Format("{0}: {1}x{2}x{3} {4}, {5} tracks").
+                    text = ftk::Format("{0}: {1}x{2}x{3} {4}, {5} tracks").
                         arg(file->getPath().filename().string()).
                         arg(imageSize.x).
                         arg(imageSize.y).
                         arg(file->getImageChannels()).
                         arg(file->getImageDataType()).
                         arg(trackCount);
-                    tooltip = feather_tk::Format(
+                    tooltip = ftk::Format(
                         "Path: {0}\n"
                         "Render: {1}x{2}, {3} image channels, {4} pixel data\n"
                         "Tracks: {5}").
@@ -61,22 +61,22 @@ namespace toucan
     {}
 
     std::shared_ptr<InfoBar> InfoBar::create(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
         auto out = std::shared_ptr<InfoBar>(new InfoBar);
         out->_init(context, app, parent);
         return out;
     }
 
-    void InfoBar::setGeometry(const feather_tk::Box2I& value)
+    void InfoBar::setGeometry(const ftk::Box2I& value)
     {
         IWidget::setGeometry(value);
         _layout->setGeometry(value);
     }
 
-    void InfoBar::sizeHintEvent(const feather_tk::SizeHintEvent& event)
+    void InfoBar::sizeHintEvent(const ftk::SizeHintEvent& event)
     {
         IWidget::sizeHintEvent(event);
         _setSizeHint(_layout->getSizeHint());

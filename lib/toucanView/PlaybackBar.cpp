@@ -9,16 +9,16 @@
 namespace toucan
 {
     void PlaybackBar::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
-        feather_tk::IWidget::_init(context, "toucan::PlaybackBar", parent);
+        ftk::IWidget::_init(context, "toucan::PlaybackBar", parent);
 
-        _layout = feather_tk::HorizontalLayout::create(context, shared_from_this());
-        _layout->setMarginRole(feather_tk::SizeRole::MarginInside);
-        _layout->setSpacingRole(feather_tk::SizeRole::SpacingSmall);
-        _layout->setVAlign(feather_tk::VAlign::Center);
+        _layout = ftk::HorizontalLayout::create(context, shared_from_this());
+        _layout->setMarginRole(ftk::SizeRole::MarginInside);
+        _layout->setSpacingRole(ftk::SizeRole::SpacingSmall);
+        _layout->setVAlign(ftk::VAlign::Center);
 
         _playbackButtons = PlaybackButtons::create(context, _layout);
 
@@ -30,7 +30,7 @@ namespace toucan
         _durationLabel = TimeLabel::create(context, app->getTimeUnitsModel(), _layout);
         _durationLabel->setTooltip("Timeline duration");
 
-        _timeUnitsComboBox = feather_tk::ComboBox::create(
+        _timeUnitsComboBox = ftk::ComboBox::create(
             context,
             { "Timecode", "Frames", "Seconds" },
             _layout);
@@ -75,14 +75,14 @@ namespace toucan
                 }
             });
 
-        _fileObserver = feather_tk::ValueObserver<std::shared_ptr<File> >::create(
+        _fileObserver = ftk::ValueObserver<std::shared_ptr<File> >::create(
             app->getFilesModel()->observeCurrent(),
             [this](const std::shared_ptr<File>& file)
             {
                 _file = file;
                 if (file)
                 {
-                    _timeRangeObserver = feather_tk::ValueObserver<OTIO_NS::TimeRange>::create(
+                    _timeRangeObserver = ftk::ValueObserver<OTIO_NS::TimeRange>::create(
                         file->getPlaybackModel()->observeTimeRange(),
                         [this](const OTIO_NS::TimeRange& value)
                         {
@@ -90,7 +90,7 @@ namespace toucan
                             _timeRangeUpdate();
                         });
 
-                    _currentTimeObserver = feather_tk::ValueObserver<OTIO_NS::RationalTime>::create(
+                    _currentTimeObserver = ftk::ValueObserver<OTIO_NS::RationalTime>::create(
                         file->getPlaybackModel()->observeCurrentTime(),
                         [this](const OTIO_NS::RationalTime& value)
                         {
@@ -98,7 +98,7 @@ namespace toucan
                             _currentTimeUpdate();
                         });
 
-                    _playbackObserver = feather_tk::ValueObserver<Playback>::create(
+                    _playbackObserver = ftk::ValueObserver<Playback>::create(
                         file->getPlaybackModel()->observePlayback(),
                         [this](Playback value)
                         {
@@ -127,7 +127,7 @@ namespace toucan
                 _durationLabel->setEnabled(file.get());
             });
 
-        _timeUnitsObserver = feather_tk::ValueObserver<TimeUnits>::create(
+        _timeUnitsObserver = ftk::ValueObserver<TimeUnits>::create(
             app->getTimeUnitsModel()->observeTimeUnits(),
             [this](TimeUnits value)
             {
@@ -139,22 +139,22 @@ namespace toucan
     {}
 
     std::shared_ptr<PlaybackBar> PlaybackBar::create(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
         auto out = std::shared_ptr<PlaybackBar>(new PlaybackBar);
         out->_init(context, app, parent);
         return out;
     }
 
-    void PlaybackBar::setGeometry(const feather_tk::Box2I& value)
+    void PlaybackBar::setGeometry(const ftk::Box2I& value)
     {
         IWidget::setGeometry(value);
         _layout->setGeometry(value);
     }
 
-    void PlaybackBar::sizeHintEvent(const feather_tk::SizeHintEvent& event)
+    void PlaybackBar::sizeHintEvent(const ftk::SizeHintEvent& event)
     {
         IWidget::sizeHintEvent(event);
         _setSizeHint(_layout->getSizeHint());

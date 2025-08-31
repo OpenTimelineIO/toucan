@@ -14,11 +14,11 @@ namespace toucan
     class File;
 
     //! HUD widget.
-    class HUDWidget : public feather_tk::IWidget
+    class HUDWidget : public ftk::IWidget
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<File>&,
             const std::shared_ptr<IWidget>& parent);
@@ -28,12 +28,12 @@ namespace toucan
 
         //! Create a new widget.
         static std::shared_ptr<HUDWidget> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<File>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const feather_tk::Box2I&) override;
+        void setGeometry(const ftk::Box2I&) override;
 
     private:
         void _widgetUpdate();
@@ -42,11 +42,11 @@ namespace toucan
         OTIO_NS::RationalTime _currentTime;
         OTIO_NS::TimeRange _timeRange;
 
-        std::shared_ptr<feather_tk::VerticalLayout> _layout;
-        std::map<std::string, std::shared_ptr<feather_tk::Label> > _labels;
+        std::shared_ptr<ftk::VerticalLayout> _layout;
+        std::map<std::string, std::shared_ptr<ftk::Label> > _labels;
 
-        std::shared_ptr<feather_tk::ValueObserver<OTIO_NS::RationalTime> > _currentTimeObserver;
-        std::shared_ptr<feather_tk::ValueObserver<OTIO_NS::TimeRange> > _timeRangeObserver;
+        std::shared_ptr<ftk::ValueObserver<OTIO_NS::RationalTime> > _currentTimeObserver;
+        std::shared_ptr<ftk::ValueObserver<OTIO_NS::TimeRange> > _timeRangeObserver;
     };
 }
 

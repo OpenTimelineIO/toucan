@@ -23,28 +23,28 @@
 namespace toucan
 {
     void App::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         std::vector<std::string>& argv)
     {
-        _input = feather_tk::CmdLineValueArg<std::string>::create(
+        _input = ftk::CmdLineValueArg<std::string>::create(
             "input",
             "Input timeline.",
             true);
 
-        feather_tk::App::_init(
+        ftk::App::_init(
             context,
             argv,
             "toucan-view",
             "Toucan viewer",
             { _input });
 
-        _settings = feather_tk::Settings::create(context, feather_tk::getSettingsPath("toucan", "toucan-view.settings"));
+        _settings = ftk::Settings::create(context, ftk::getSettingsPath("toucan", "toucan-view.settings"));
 
         _timeUnitsModel = std::make_shared<TimeUnitsModel>(context, _settings);
 
         _host = std::make_shared<ImageEffectHost>(context, getOpenFXPluginPaths(getExeName()));
 
-        auto fileBrowserSystem = context->getSystem<feather_tk::FileBrowserSystem>();
+        auto fileBrowserSystem = context->getSystem<ftk::FileBrowserSystem>();
         fileBrowserSystem->setNativeFileDialog(false);
 
         _filesModel = std::make_shared<FilesModel>(context, _settings, _host);
@@ -55,7 +55,7 @@ namespace toucan
             context,
             std::dynamic_pointer_cast<App>(shared_from_this()),
             "toucan-view",
-            feather_tk::Size2I(1920, 1080));
+            ftk::Size2I(1920, 1080));
         addWindow(_window);
         _window->show();
 
@@ -69,7 +69,7 @@ namespace toucan
     {}
 
     std::shared_ptr<App> App::create(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         std::vector<std::string>& argv)
     {
         auto out = std::shared_ptr<App>(new App);
@@ -77,7 +77,7 @@ namespace toucan
         return out;
     }
 
-    const std::shared_ptr<feather_tk::Settings>& App::getSettings() const
+    const std::shared_ptr<ftk::Settings>& App::getSettings() const
     {
         return _settings;
     }
@@ -115,7 +115,7 @@ namespace toucan
         }
         catch (const std::exception& e)
         {
-            _context->getSystem<feather_tk::DialogSystem>()->message(
+            _context->getSystem<ftk::DialogSystem>()->message(
                 "ERROR",
                 e.what(),
                 _window);

@@ -41,7 +41,7 @@ namespace toucan
 
     SelectionModel::SelectionModel()
     {
-        _selection = feather_tk::ObservableList<SelectionItem>::create();
+        _selection = ftk::ObservableList<SelectionItem>::create();
     }
 
     SelectionModel::~SelectionModel()
@@ -52,7 +52,7 @@ namespace toucan
         return _selection->get();
     }
 
-    std::shared_ptr<feather_tk::IObservableList<SelectionItem> > SelectionModel::observeSelection() const
+    std::shared_ptr<ftk::IObservableList<SelectionItem> > SelectionModel::observeSelection() const
     {
         return _selection;
     }

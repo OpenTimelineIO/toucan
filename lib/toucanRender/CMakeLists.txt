@@ -45,7 +45,7 @@ endif()
 
 add_library(toucanRender ${HEADERS} ${HEADERS_PRIVATE} ${SOURCE})
 set(LIBS_PUBLIC
-    feather-tk::feather-tk-core
+    ftk::feather-tk-core
     OTIO::opentimelineio
     OTIO::opentime
     OpenImageIO::OpenImageIO

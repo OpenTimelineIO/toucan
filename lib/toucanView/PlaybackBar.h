@@ -16,11 +16,11 @@ namespace toucan
     class File;
 
     //! Playback tool bar.
-    class PlaybackBar : public feather_tk::IWidget
+    class PlaybackBar : public ftk::IWidget
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -29,12 +29,12 @@ namespace toucan
 
         //! Create a new tool bar.
         static std::shared_ptr<PlaybackBar> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
 
     private:
         void _timelineUpdate();
@@ -47,18 +47,18 @@ namespace toucan
         OTIO_NS::RationalTime _currentTime;
         Playback _playback = Playback::Stop;
 
-        std::shared_ptr<feather_tk::HorizontalLayout> _layout;
+        std::shared_ptr<ftk::HorizontalLayout> _layout;
         std::shared_ptr<FrameButtons> _frameButtons;
         std::shared_ptr<PlaybackButtons> _playbackButtons;
         std::shared_ptr<TimeEdit> _timeEdit;
         std::shared_ptr<TimeLabel> _durationLabel;
-        std::shared_ptr<feather_tk::ComboBox> _timeUnitsComboBox;
+        std::shared_ptr<ftk::ComboBox> _timeUnitsComboBox;
 
-        std::shared_ptr<feather_tk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
-        std::shared_ptr<feather_tk::ValueObserver<OTIO_NS::TimeRange> > _timeRangeObserver;
-        std::shared_ptr<feather_tk::ValueObserver<OTIO_NS::RationalTime> > _currentTimeObserver;
-        std::shared_ptr<feather_tk::ValueObserver<Playback> > _playbackObserver;
-        std::shared_ptr<feather_tk::ValueObserver<TimeUnits> > _timeUnitsObserver;
+        std::shared_ptr<ftk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
+        std::shared_ptr<ftk::ValueObserver<OTIO_NS::TimeRange> > _timeRangeObserver;
+        std::shared_ptr<ftk::ValueObserver<OTIO_NS::RationalTime> > _currentTimeObserver;
+        std::shared_ptr<ftk::ValueObserver<Playback> > _playbackObserver;
+        std::shared_ptr<ftk::ValueObserver<TimeUnits> > _timeUnitsObserver;
     };
 }
 

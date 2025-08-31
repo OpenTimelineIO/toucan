@@ -17,11 +17,11 @@ namespace toucan
     class File;
 
     //! Time menu.
-    class TimeMenu : public feather_tk::Menu
+    class TimeMenu : public ftk::Menu
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -30,12 +30,12 @@ namespace toucan
 
         //! Create a new menu.
         static std::shared_ptr<TimeMenu> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
         //! Get the actions.
-        const std::map<std::string, std::shared_ptr<feather_tk::Action> >& getActions() const;
+        const std::map<std::string, std::shared_ptr<ftk::Action> >& getActions() const;
 
     private:
         void _menuUpdate();
@@ -45,12 +45,12 @@ namespace toucan
         OTIO_NS::TimeRange _inOutRange;
         bool _selection = false;
 
-        std::map<std::string, std::shared_ptr<feather_tk::Action> > _actions;
+        std::map<std::string, std::shared_ptr<ftk::Action> > _actions;
 
-        std::shared_ptr<feather_tk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
-        std::shared_ptr<feather_tk::ValueObserver<OTIO_NS::TimeRange> > _timeRangeObserver;
-        std::shared_ptr<feather_tk::ValueObserver<OTIO_NS::TimeRange> > _inOutRangeObserver;
-        std::shared_ptr<feather_tk::ListObserver<SelectionItem> > _selectionObserver;
+        std::shared_ptr<ftk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
+        std::shared_ptr<ftk::ValueObserver<OTIO_NS::TimeRange> > _timeRangeObserver;
+        std::shared_ptr<ftk::ValueObserver<OTIO_NS::TimeRange> > _inOutRangeObserver;
+        std::shared_ptr<ftk::ListObserver<SelectionItem> > _selectionObserver;
     };
 }
 

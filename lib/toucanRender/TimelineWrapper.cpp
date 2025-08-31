@@ -69,7 +69,7 @@ namespace toucan
     TimelineWrapper::TimelineWrapper(const std::filesystem::path& path) :
         _path(path)
     {
-        const std::string extension = feather_tk::toLower(_path.extension().string());
+        const std::string extension = ftk::toLower(_path.extension().string());
         if (".otio" == extension)
         {
             OTIO_NS::ErrorStatus errorStatus;

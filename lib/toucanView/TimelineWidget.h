@@ -18,11 +18,11 @@ namespace toucan
     class TimelineItem;
 
     //! Timeline widget.
-    class TimelineWidget : public feather_tk::IWidget
+    class TimelineWidget : public ftk::IWidget
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -31,7 +31,7 @@ namespace toucan
 
         //! Create a new widget.
         static std::shared_ptr<TimelineWidget> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
@@ -39,13 +39,13 @@ namespace toucan
         void setViewZoom(double);
 
         //! Set the view zoom with focus.
-        void setViewZoom(double, const feather_tk::V2I& focus);
+        void setViewZoom(double, const ftk::V2I& focus);
 
         //! Get whether frame view is enabled.
         bool hasFrameView() const;
 
         //! Observe whether frame view is enabled.
-        std::shared_ptr<feather_tk::IObservableValue<bool> > observeFrameView() const;
+        std::shared_ptr<ftk::IObservableValue<bool> > observeFrameView() const;
 
         //! Set whether frame view is enabled.
         void setFrameView(bool);
@@ -53,21 +53,21 @@ namespace toucan
         //! Frame the view.
         void frameView();
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
-        void mouseMoveEvent(feather_tk::MouseMoveEvent&) override;
-        void mousePressEvent(feather_tk::MouseClickEvent&) override;
-        void mouseReleaseEvent(feather_tk::MouseClickEvent&) override;
-        void scrollEvent(feather_tk::ScrollEvent&) override;
-        void keyPressEvent(feather_tk::KeyEvent&) override;
-        void keyReleaseEvent(feather_tk::KeyEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
+        void mouseMoveEvent(ftk::MouseMoveEvent&) override;
+        void mousePressEvent(ftk::MouseClickEvent&) override;
+        void mouseReleaseEvent(ftk::MouseClickEvent&) override;
+        void scrollEvent(ftk::ScrollEvent&) override;
+        void keyPressEvent(ftk::KeyEvent&) override;
+        void keyReleaseEvent(ftk::KeyEvent&) override;
 
     private:
         void _setViewZoom(
             double zoomNew,
             double zoomPrev,
-            const feather_tk::V2I& focus,
-            const feather_tk::V2I& scrollPos);
+            const ftk::V2I& focus,
+            const ftk::V2I& scrollPos);
 
         double _getTimelineScale() const;
         double _getTimelineScaleMax() const;
@@ -79,11 +79,11 @@ namespace toucan
         OTIO_NS::RationalTime _currentTime;
         OTIO_NS::TimeRange _inOutRange;
         double _scale = 100.0;
-        std::shared_ptr<feather_tk::ObservableValue<bool> > _frameView;
+        std::shared_ptr<ftk::ObservableValue<bool> > _frameView;
         bool _sizeInit = true;
         std::optional<TimelineViewState> _viewState;
 
-        std::shared_ptr<feather_tk::ScrollWidget> _scrollWidget;
+        std::shared_ptr<ftk::ScrollWidget> _scrollWidget;
         std::shared_ptr<TimelineItem> _timelineItem;
 
         enum class MouseMode
@@ -94,13 +94,13 @@ namespace toucan
         struct MouseData
         {
             MouseMode mode = MouseMode::None;
-            feather_tk::V2I scrollPos;
+            ftk::V2I scrollPos;
             std::chrono::steady_clock::time_point wheelTimer;
         };
         MouseData _mouse;
 
-        std::shared_ptr<feather_tk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
-        std::shared_ptr<feather_tk::ValueObserver<OTIO_NS::RationalTime> > _currentTimeObserver;
-        std::shared_ptr<feather_tk::ValueObserver<OTIO_NS::TimeRange> > _inOutRangeObserver;
+        std::shared_ptr<ftk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
+        std::shared_ptr<ftk::ValueObserver<OTIO_NS::RationalTime> > _currentTimeObserver;
+        std::shared_ptr<ftk::ValueObserver<OTIO_NS::TimeRange> > _inOutRangeObserver;
     };
 }

@@ -19,19 +19,19 @@
 namespace toucan
 {
     void WindowMenu::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
         const std::shared_ptr<MainWindow>& window,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
-        feather_tk::Menu::_init(context, parent);
+        ftk::Menu::_init(context, parent);
 
         std::weak_ptr<MainWindow> windowWeak(window);
-        _actions["Window/FullScreen"] = feather_tk::Action::create(
+        _actions["Window/FullScreen"] = ftk::Action::create(
             "Full Screen",
             "WindowFullScreen",
-            feather_tk::Key::U,
-            static_cast<int>(feather_tk::commandKeyModifier),
+            ftk::Key::U,
+            static_cast<int>(ftk::commandKeyModifier),
             [windowWeak](bool value)
             {
                 if (auto window = windowWeak.lock())
@@ -62,8 +62,8 @@ namespace toucan
         std::weak_ptr<App> appWeak(app);
         for (const auto& component : components)
         {
-            const std::string actionName = feather_tk::Format("Window/{0}").arg(component.action);
-            _actions[actionName] = feather_tk::Action::create(
+            const std::string actionName = ftk::Format("Window/{0}").arg(component.action);
+            _actions[actionName] = ftk::Action::create(
                 component.text,
                 component.icon,
                 [appWeak, component](bool value)
@@ -81,53 +81,42 @@ namespace toucan
 
         _menus["Window/Resize"] = addSubMenu("Resize");
 
-        _actions["Window/Resize/1280x720"] = feather_tk::Action::create(
+        _actions["Window/Resize/1280x720"] = ftk::Action::create(
             "1280x720",
             [windowWeak]
             {
                 if (auto window = windowWeak.lock())
                 {
-                    window->setSize(feather_tk::Size2I(1280, 720));
+                    window->setSize(ftk::Size2I(1280, 720));
                 }
             });
         _menus["Window/Resize"]->addAction(_actions["Window/Resize/1280x720"]);
 
-        _actions["Window/Resize/1920x1080"] = feather_tk::Action::create(
+        _actions["Window/Resize/1920x1080"] = ftk::Action::create(
             "1920x1080",
             [windowWeak]
             {
                 if (auto window = windowWeak.lock())
                 {
-                    window->setSize(feather_tk::Size2I(1920, 1080));
+                    window->setSize(ftk::Size2I(1920, 1080));
                 }
             });
         _menus["Window/Resize"]->addAction(_actions["Window/Resize/1920x1080"]);
 
-        _actions["Window/Resize/3840x2160"] = feather_tk::Action::create(
+        _actions["Window/Resize/3840x2160"] = ftk::Action::create(
             "3840x2160",
             [windowWeak]
             {
                 if (auto window = windowWeak.lock())
                 {
-                    window->setSize(feather_tk::Size2I(3840, 2160));
+                    window->setSize(ftk::Size2I(3840, 2160));
                 }
             });
         _menus["Window/Resize"]->addAction(_actions["Window/Resize/3840x2160"]);
 
         _menus["Window/DisplayScale"] = addSubMenu("Display Scale");
 
-        _actions["Window/DisplayScale/Auto"] = feather_tk::Action::create(
-            "Automatic",
-            [windowWeak](bool value)
-            {
-                if (auto window = windowWeak.lock())
-                {
-                    window->setDisplayScale(0.F);
-                }
-            });
-        _menus["Window/DisplayScale"]->addAction(_actions["Window/DisplayScale/Auto"]);
-
-        _actions["Window/DisplayScale/1.0"] = feather_tk::Action::create(
+        _actions["Window/DisplayScale/1.0"] = ftk::Action::create(
             "1.0",
             [windowWeak](bool value)
             {
@@ -138,7 +127,7 @@ namespace toucan
             });
         _menus["Window/DisplayScale"]->addAction(_actions["Window/DisplayScale/1.0"]);
 
-        _actions["Window/DisplayScale/1.5"] = feather_tk::Action::create(
+        _actions["Window/DisplayScale/1.5"] = ftk::Action::create(
             "1.5",
             [windowWeak](bool value)
             {
@@ -149,7 +138,7 @@ namespace toucan
             });
         _menus["Window/DisplayScale"]->addAction(_actions["Window/DisplayScale/1.5"]);
 
-        _actions["Window/DisplayScale/2.0"] = feather_tk::Action::create(
+        _actions["Window/DisplayScale/2.0"] = ftk::Action::create(
             "2.0",
             [windowWeak](bool value)
             {
@@ -160,7 +149,7 @@ namespace toucan
             });
         _menus["Window/DisplayScale"]->addAction(_actions["Window/DisplayScale/2.0"]);
 
-        _actions["Window/DisplayScale/2.5"] = feather_tk::Action::create(
+        _actions["Window/DisplayScale/2.5"] = ftk::Action::create(
             "2.5",
             [windowWeak](bool value)
             {
@@ -171,7 +160,7 @@ namespace toucan
             });
         _menus["Window/DisplayScale"]->addAction(_actions["Window/DisplayScale/2.5"]);
 
-        _actions["Window/DisplayScale/3.0"] = feather_tk::Action::create(
+        _actions["Window/DisplayScale/3.0"] = ftk::Action::create(
             "3.0",
             [windowWeak](bool value)
             {
@@ -182,7 +171,7 @@ namespace toucan
             });
         _menus["Window/DisplayScale"]->addAction(_actions["Window/DisplayScale/3.0"]);
 
-        _actions["Window/Thumbnails"] = feather_tk::Action::create(
+        _actions["Window/Thumbnails"] = ftk::Action::create(
             "Thumbnails",
             [appWeak](bool value)
             {
@@ -193,7 +182,7 @@ namespace toucan
             });
         addAction(_actions["Window/Thumbnails"]);
 
-        _actions["Window/Tooltips"] = feather_tk::Action::create(
+        _actions["Window/Tooltips"] = ftk::Action::create(
             "Tooltips",
             [appWeak](bool value)
             {
@@ -204,14 +193,14 @@ namespace toucan
             });
         addAction(_actions["Window/Tooltips"]);
 
-        _fullScreenObserver = feather_tk::ValueObserver<bool>::create(
+        _fullScreenObserver = ftk::ValueObserver<bool>::create(
             window->observeFullScreen(),
             [this](bool value)
             {
                 setChecked(_actions["Window/FullScreen"], value);
             });
 
-        _componentsObserver = feather_tk::MapObserver<WindowComponent, bool>::create(
+        _componentsObserver = ftk::MapObserver<WindowComponent, bool>::create(
             app->getWindowModel()->observeComponents(),
             [this](const std::map<WindowComponent, bool>& value)
             {
@@ -225,11 +214,10 @@ namespace toucan
                 setChecked(_actions["Window/InfoBar"], i->second);
             });
 
-        _displayScaleObserver = feather_tk::ValueObserver<float>::create(
+        _displayScaleObserver = ftk::ValueObserver<float>::create(
             window->observeDisplayScale(),
             [this](float value)
             {
-                _menus["Window/DisplayScale"]->setChecked(_actions["Window/DisplayScale/Auto"], 0.F == value);
                 _menus["Window/DisplayScale"]->setChecked(_actions["Window/DisplayScale/1.0"], 1.F == value);
                 _menus["Window/DisplayScale"]->setChecked(_actions["Window/DisplayScale/1.5"], 1.5F == value);
                 _menus["Window/DisplayScale"]->setChecked(_actions["Window/DisplayScale/2.0"], 2.F == value);
@@ -237,14 +225,14 @@ namespace toucan
                 _menus["Window/DisplayScale"]->setChecked(_actions["Window/DisplayScale/3.0"], 3.F == value);
             });
 
-        _thumbnailsObserver = feather_tk::ValueObserver<bool>::create(
+        _thumbnailsObserver = ftk::ValueObserver<bool>::create(
             app->getWindowModel()->observeThumbnails(),
             [this](bool value)
             {
                 setChecked(_actions["Window/Thumbnails"], value);
             });
 
-        _tooltipsObserver = feather_tk::ValueObserver<bool>::create(
+        _tooltipsObserver = ftk::ValueObserver<bool>::create(
             app->getWindowModel()->observeTooltips(),
             [this](bool value)
             {
@@ -256,17 +244,17 @@ namespace toucan
     {}
 
     std::shared_ptr<WindowMenu> WindowMenu::create(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
         const std::shared_ptr<MainWindow>& window,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
         auto out = std::shared_ptr<WindowMenu>(new WindowMenu);
         out->_init(context, app, window, parent);
         return out;
     }
 
-    const std::map<std::string, std::shared_ptr<feather_tk::Action> >& WindowMenu::getActions() const
+    const std::map<std::string, std::shared_ptr<ftk::Action> >& WindowMenu::getActions() const
     {
         return _actions;
     }

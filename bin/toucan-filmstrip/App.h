@@ -14,11 +14,11 @@
 
 namespace toucan
 {
-    class App : public feather_tk::IApp
+    class App : public ftk::IApp
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             std::vector<std::string>&);
 
         App();
@@ -27,7 +27,7 @@ namespace toucan
         ~App();
 
         static std::shared_ptr<App> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             std::vector<std::string>&);
         
         void run() override;
@@ -35,8 +35,8 @@ namespace toucan
     private:
         struct CmdLine
         {
-            std::shared_ptr<feather_tk::CmdLineValueArg<std::string> > input;
-            std::shared_ptr<feather_tk::CmdLineValueArg<std::string> > output;
+            std::shared_ptr<ftk::CmdLineValueArg<std::string> > input;
+            std::shared_ptr<ftk::CmdLineValueArg<std::string> > output;
         };
         CmdLine _cmdLine;
 

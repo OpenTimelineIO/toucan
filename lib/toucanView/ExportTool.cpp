@@ -25,9 +25,9 @@
 namespace toucan
 {
     void ExportWidget::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
         IWidget::_init(context, "toucan::ExportWidget", parent);
 
@@ -43,10 +43,10 @@ namespace toucan
         
         _widgetUpdate();
 
-        _timer = feather_tk::Timer::create(context);
+        _timer = ftk::Timer::create(context);
         _timer->setRepeating(true);
 
-        _fileObserver = feather_tk::ValueObserver<std::shared_ptr<File> >::create(
+        _fileObserver = ftk::ValueObserver<std::shared_ptr<File> >::create(
             app->getFilesModel()->observeCurrent(),
             [this](const std::shared_ptr<File>& file)
             {
@@ -76,29 +76,29 @@ namespace toucan
     }
 
     std::shared_ptr<ExportWidget> ExportWidget::create(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
         auto out = std::shared_ptr<ExportWidget>(new ExportWidget);
         out->_init(context, app, parent);
         return out;
     }
 
-    void ExportWidget::setGeometry(const feather_tk::Box2I& value)
+    void ExportWidget::setGeometry(const ftk::Box2I& value)
     {
         IWidget::setGeometry(value);
         _layout->setGeometry(value);
     }
 
-    void ExportWidget::sizeHintEvent(const feather_tk::SizeHintEvent& event)
+    void ExportWidget::sizeHintEvent(const ftk::SizeHintEvent& event)
     {
         IWidget::sizeHintEvent(event);
         _setSizeHint(_layout->getSizeHint());
     }
 
     void ExportWidget::_initSettings(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         SettingsValues& settingsValues)
     {
         try
@@ -166,45 +166,45 @@ namespace toucan
     }
 
     void ExportWidget::_initCommonUI(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const SettingsValues& settingsValues)
     {
-        _layout = feather_tk::VerticalLayout::create(context, shared_from_this());
-        _layout->setSpacingRole(feather_tk::SizeRole::None);
+        _layout = ftk::VerticalLayout::create(context, shared_from_this());
+        _layout->setSpacingRole(ftk::SizeRole::None);
 
-        auto vLayout = feather_tk::VerticalLayout::create(context, _layout);
-        vLayout->setMarginRole(feather_tk::SizeRole::Margin);
+        auto vLayout = ftk::VerticalLayout::create(context, _layout);
+        vLayout->setMarginRole(ftk::SizeRole::Margin);
 
-        auto gridLayout = feather_tk::GridLayout::create(context, vLayout);
+        auto gridLayout = ftk::GridLayout::create(context, vLayout);
 
-        auto label = feather_tk::Label::create(context, "Directory:", gridLayout);
+        auto label = ftk::Label::create(context, "Directory:", gridLayout);
         gridLayout->setGridPos(label, 0, 0);
-        _dirEdit = feather_tk::FileEdit::create(context, gridLayout);
+        _dirEdit = ftk::FileEdit::create(context, gridLayout);
         _dirEdit->setPath(settingsValues.dir);
-        _dirEdit->setHStretch(feather_tk::Stretch::Expanding);
+        _dirEdit->setHStretch(ftk::Stretch::Expanding);
         gridLayout->setGridPos(_dirEdit, 0, 1);
 
-        label = feather_tk::Label::create(context, "Image size:", gridLayout);
+        label = ftk::Label::create(context, "Image size:", gridLayout);
         gridLayout->setGridPos(label, 1, 0);
-        auto hLayout = feather_tk::HorizontalLayout::create(context, gridLayout);
-        hLayout->setSpacingRole(feather_tk::SizeRole::SpacingSmall);
+        auto hLayout = ftk::HorizontalLayout::create(context, gridLayout);
+        hLayout->setSpacingRole(ftk::SizeRole::SpacingSmall);
         gridLayout->setGridPos(hLayout, 1, 1);
-        _sizeComboBox = feather_tk::ComboBox::create(
+        _sizeComboBox = ftk::ComboBox::create(
             context,
             std::vector<std::string>{ "Default", "Custom" },
             hLayout);
         _sizeComboBox->setCurrentIndex(settingsValues.sizeChoice);
-        _sizeComboBox->setHStretch(feather_tk::Stretch::Expanding);
-        _widthEdit = feather_tk::IntEdit::create(context, hLayout);
-        _widthEdit->setRange(feather_tk::RangeI(1, 15360));
+        _sizeComboBox->setHStretch(ftk::Stretch::Expanding);
+        _widthEdit = ftk::IntEdit::create(context, hLayout);
+        _widthEdit->setRange(ftk::RangeI(1, 15360));
         _widthEdit->setValue(settingsValues.customSize.w);
-        _heightEdit = feather_tk::IntEdit::create(context, hLayout);
-        _heightEdit->setRange(feather_tk::RangeI(1, 15360));
+        _heightEdit = ftk::IntEdit::create(context, hLayout);
+        _heightEdit->setRange(ftk::RangeI(1, 15360));
         _heightEdit->setValue(settingsValues.customSize.h);
 
-        feather_tk::Divider::create(context, feather_tk::Orientation::Vertical, _layout);
+        ftk::Divider::create(context, ftk::Orientation::Vertical, _layout);
 
-        _tabWidget = feather_tk::TabWidget::create(context, _layout);
+        _tabWidget = ftk::TabWidget::create(context, _layout);
 
         _sizeComboBox->setIndexCallback(
             [this](int value)
@@ -214,50 +214,50 @@ namespace toucan
     }
 
     void ExportWidget::_initImageUI(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const SettingsValues& settingsValues)
     {
-        auto vLayout = feather_tk::VerticalLayout::create(context);
-        vLayout->setMarginRole(feather_tk::SizeRole::Margin);
+        auto vLayout = ftk::VerticalLayout::create(context);
+        vLayout->setMarginRole(ftk::SizeRole::Margin);
         _tabWidget->addTab("Images", vLayout);
 
-        auto gridLayout = feather_tk::GridLayout::create(context, vLayout);
+        auto gridLayout = ftk::GridLayout::create(context, vLayout);
 
-        auto label = feather_tk::Label::create(context, "Base name:", gridLayout);
+        auto label = ftk::Label::create(context, "Base name:", gridLayout);
         gridLayout->setGridPos(label, 0, 0);
-        _imageBaseNameEdit = feather_tk::LineEdit::create(context, gridLayout);
+        _imageBaseNameEdit = ftk::LineEdit::create(context, gridLayout);
         _imageBaseNameEdit->setText(settingsValues.imageBaseName);
-        _imageBaseNameEdit->setHStretch(feather_tk::Stretch::Expanding);
+        _imageBaseNameEdit->setHStretch(ftk::Stretch::Expanding);
         gridLayout->setGridPos(_imageBaseNameEdit, 0, 1);
 
-        label = feather_tk::Label::create(context, "Number padding:", gridLayout);
+        label = ftk::Label::create(context, "Number padding:", gridLayout);
         gridLayout->setGridPos(label, 1, 0);
-        _imagePaddingEdit = feather_tk::IntEdit::create(context, gridLayout);
-        _imagePaddingEdit->setRange(feather_tk::RangeI(0, 9));
+        _imagePaddingEdit = ftk::IntEdit::create(context, gridLayout);
+        _imagePaddingEdit->setRange(ftk::RangeI(0, 9));
         _imagePaddingEdit->setValue(settingsValues.imagePadding);
         gridLayout->setGridPos(_imagePaddingEdit, 1, 1);
 
-        label = feather_tk::Label::create(context, "Extension:", gridLayout);
+        label = ftk::Label::create(context, "Extension:", gridLayout);
         gridLayout->setGridPos(label, 2, 0);
-        _imageExtensionEdit = feather_tk::LineEdit::create(context, gridLayout);
+        _imageExtensionEdit = ftk::LineEdit::create(context, gridLayout);
         _imageExtensionEdit->setText(settingsValues.imageExtension);
-        _imageExtensionEdit->setHStretch(feather_tk::Stretch::Expanding);
+        _imageExtensionEdit->setHStretch(ftk::Stretch::Expanding);
         gridLayout->setGridPos(_imageExtensionEdit, 2, 1);
 
-        label = feather_tk::Label::create(context, "Filename:", gridLayout);
+        label = ftk::Label::create(context, "Filename:", gridLayout);
         gridLayout->setGridPos(label, 3, 0);
-        _imageFilenameLabel = feather_tk::Label::create(context, gridLayout);
-        _imageFilenameLabel->setHStretch(feather_tk::Stretch::Expanding);
+        _imageFilenameLabel = ftk::Label::create(context, gridLayout);
+        _imageFilenameLabel->setHStretch(ftk::Stretch::Expanding);
         gridLayout->setGridPos(_imageFilenameLabel, 3, 1);
 
-        feather_tk::Divider::create(context, feather_tk::Orientation::Vertical, vLayout);
+        ftk::Divider::create(context, ftk::Orientation::Vertical, vLayout);
 
-        _exportSequenceButton = feather_tk::PushButton::create(
+        _exportSequenceButton = ftk::PushButton::create(
             context,
             "Export Sequence",
             vLayout);
 
-        _exportFrameButton = feather_tk::PushButton::create(
+        _exportFrameButton = ftk::PushButton::create(
             context,
             "Export Frame",
             vLayout);
@@ -294,48 +294,48 @@ namespace toucan
     }
 
     void ExportWidget::_initMovieUI(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const SettingsValues& settingsValues)
     {
-        auto vLayout = feather_tk::VerticalLayout::create(context);
-        vLayout->setMarginRole(feather_tk::SizeRole::Margin);
+        auto vLayout = ftk::VerticalLayout::create(context);
+        vLayout->setMarginRole(ftk::SizeRole::Margin);
         _tabWidget->addTab("Movie", vLayout);
         _tabWidget->setCurrentTab(settingsValues.currentTab);
 
-        auto gridLayout = feather_tk::GridLayout::create(context, vLayout);
+        auto gridLayout = ftk::GridLayout::create(context, vLayout);
 
-        auto label = feather_tk::Label::create(context, "Base name:", gridLayout);
+        auto label = ftk::Label::create(context, "Base name:", gridLayout);
         gridLayout->setGridPos(label, 0, 0);
-        _movieBaseNameEdit = feather_tk::LineEdit::create(context, gridLayout);
+        _movieBaseNameEdit = ftk::LineEdit::create(context, gridLayout);
         _movieBaseNameEdit->setText(settingsValues.movieBaseName);
-        _movieBaseNameEdit->setHStretch(feather_tk::Stretch::Expanding);
+        _movieBaseNameEdit->setHStretch(ftk::Stretch::Expanding);
         gridLayout->setGridPos(_movieBaseNameEdit, 0, 1);
 
-        label = feather_tk::Label::create(context, "Extension:", gridLayout);
+        label = ftk::Label::create(context, "Extension:", gridLayout);
         gridLayout->setGridPos(label, 1, 0);
-        _movieExtensionEdit = feather_tk::LineEdit::create(context, gridLayout);
+        _movieExtensionEdit = ftk::LineEdit::create(context, gridLayout);
         _movieExtensionEdit->setText(settingsValues.movieExtension);
-        _movieExtensionEdit->setHStretch(feather_tk::Stretch::Expanding);
+        _movieExtensionEdit->setHStretch(ftk::Stretch::Expanding);
         gridLayout->setGridPos(_movieExtensionEdit, 1, 1);
 
-        label = feather_tk::Label::create(context, "Filename:", gridLayout);
+        label = ftk::Label::create(context, "Filename:", gridLayout);
         gridLayout->setGridPos(label, 2, 0);
-        _movieFilenameLabel = feather_tk::Label::create(context, gridLayout);
-        _movieFilenameLabel->setHStretch(feather_tk::Stretch::Expanding);
+        _movieFilenameLabel = ftk::Label::create(context, gridLayout);
+        _movieFilenameLabel->setHStretch(ftk::Stretch::Expanding);
         gridLayout->setGridPos(_movieFilenameLabel, 2, 1);
 
-        label = feather_tk::Label::create(context, "Codec:", gridLayout);
+        label = ftk::Label::create(context, "Codec:", gridLayout);
         gridLayout->setGridPos(label, 3, 0);
-        _movieCodecComboBox = feather_tk::ComboBox::create(context, _movieCodecs, gridLayout);
+        _movieCodecComboBox = ftk::ComboBox::create(context, _movieCodecs, gridLayout);
         ffmpeg::VideoCodec ffmpegVideoCodec = ffmpeg::VideoCodec::First;
         ffmpeg::fromString(settingsValues.movieCodec, ffmpegVideoCodec);
         _movieCodecComboBox->setCurrentIndex(static_cast<int>(ffmpegVideoCodec));
-        _movieCodecComboBox->setHStretch(feather_tk::Stretch::Expanding);
+        _movieCodecComboBox->setHStretch(ftk::Stretch::Expanding);
         gridLayout->setGridPos(_movieCodecComboBox, 3, 1);
 
-        feather_tk::Divider::create(context, feather_tk::Orientation::Vertical, vLayout);
+        ftk::Divider::create(context, ftk::Orientation::Vertical, vLayout);
 
-        _exportMovieButton = feather_tk::PushButton::create(
+        _exportMovieButton = ftk::PushButton::create(
             context,
             "Export Movie",
             vLayout);
@@ -405,11 +405,11 @@ namespace toucan
             default: break;
             }
 
-            _dialog = feather_tk::ProgressDialog::create(
+            _dialog = ftk::ProgressDialog::create(
                 getContext(),
                 "Export",
                 "Exporting:");
-            _dialog->setMessage(feather_tk::Format("{0} / {1}").arg(0).arg(_timeRange.duration().value()));
+            _dialog->setMessage(ftk::Format("{0} / {1}").arg(0).arg(_timeRange.duration().value()));
             _dialog->setCloseCallback(
                 [this]
                 {
@@ -430,7 +430,7 @@ namespace toucan
         }
         catch (const std::exception& e)
         {
-            auto dialogSystem = getContext()->getSystem<feather_tk::DialogSystem>();
+            auto dialogSystem = getContext()->getSystem<ftk::DialogSystem>();
             dialogSystem->message("ERROR", e.what(), getWindow());
         }
     }
@@ -471,7 +471,7 @@ namespace toucan
                 {
                     _dialog->close();
                 }
-                getContext()->getSystem<feather_tk::DialogSystem>()->message(
+                getContext()->getSystem<ftk::DialogSystem>()->message(
                     "ERROR",
                     e.what(),
                     getWindow());
@@ -489,7 +489,7 @@ namespace toucan
                     (_time - _timeRange.start_time()).value() / static_cast<double>(duration.value()) :
                     0.0;
                 _dialog->setValue(v);
-                _dialog->setMessage(feather_tk::Format("{0} / {1}").
+                _dialog->setMessage(ftk::Format("{0} / {1}").
                     arg((_time - _timeRange.start_time()).value()).
                     arg(_timeRange.duration().value()));
             }
@@ -519,13 +519,13 @@ namespace toucan
     }
 
     void ExportTool::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
         IToolWidget::_init(context, app, "toucan::ExportTool", "Export", parent);
 
-        _scrollWidget = feather_tk::ScrollWidget::create(context, feather_tk::ScrollType::Both, shared_from_this());
+        _scrollWidget = ftk::ScrollWidget::create(context, ftk::ScrollType::Both, shared_from_this());
         _scrollWidget->setBorder(false);
 
         _widget = ExportWidget::create(context, app);
@@ -536,22 +536,22 @@ namespace toucan
     {}
 
     std::shared_ptr<ExportTool> ExportTool::create(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
         auto out = std::shared_ptr<ExportTool>(new ExportTool);
         out->_init(context, app, parent);
         return out;
     }
 
-    void ExportTool::setGeometry(const feather_tk::Box2I& value)
+    void ExportTool::setGeometry(const ftk::Box2I& value)
     {
         IToolWidget::setGeometry(value);
         _scrollWidget->setGeometry(value);
     }
 
-    void ExportTool::sizeHintEvent(const feather_tk::SizeHintEvent& event)
+    void ExportTool::sizeHintEvent(const ftk::SizeHintEvent& event)
     {
         IToolWidget::sizeHintEvent(event);
         _setSizeHint(_scrollWidget->getSizeHint());

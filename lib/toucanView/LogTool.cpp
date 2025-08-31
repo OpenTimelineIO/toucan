@@ -17,36 +17,36 @@ namespace toucan
     }
 
     void LogTool::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
         IToolWidget::_init(context, app, "toucan::LogTool", "Log", parent);
 
-        _layout = feather_tk::VerticalLayout::create(context, shared_from_this());
-        _layout->setSpacingRole(feather_tk::SizeRole::None);
+        _layout = ftk::VerticalLayout::create(context, shared_from_this());
+        _layout->setSpacingRole(ftk::SizeRole::None);
 
-        _scrollWidget = feather_tk::ScrollWidget::create(context, feather_tk::ScrollType::Both, _layout);
+        _scrollWidget = ftk::ScrollWidget::create(context, ftk::ScrollType::Both, _layout);
         _scrollWidget->setBorder(false);
-        _scrollWidget->setVStretch(feather_tk::Stretch::Expanding);
+        _scrollWidget->setVStretch(ftk::Stretch::Expanding);
 
-        _label = feather_tk::Label::create(context);
-        _label->setVAlign(feather_tk::VAlign::Top);
-        _label->setFontRole(feather_tk::FontRole::Mono);
-        _label->setMarginRole(feather_tk::SizeRole::MarginSmall);
+        _label = ftk::Label::create(context);
+        _label->setVAlign(ftk::VAlign::Top);
+        _label->setFontRole(ftk::FontRole::Mono);
+        _label->setMarginRole(ftk::SizeRole::MarginSmall);
         _scrollWidget->setWidget(_label);
 
-        feather_tk::Divider::create(context, feather_tk::Orientation::Vertical, _layout);
+        ftk::Divider::create(context, ftk::Orientation::Vertical, _layout);
 
-        _bottomLayout = feather_tk::HorizontalLayout::create(context, _layout);
-        _bottomLayout->setMarginRole(feather_tk::SizeRole::MarginSmall);
-        _bottomLayout->setSpacingRole(feather_tk::SizeRole::SpacingSmall);
+        _bottomLayout = ftk::HorizontalLayout::create(context, _layout);
+        _bottomLayout->setMarginRole(ftk::SizeRole::MarginSmall);
+        _bottomLayout->setSpacingRole(ftk::SizeRole::SpacingSmall);
 
-        _searchBox = feather_tk::SearchBox::create(context, _bottomLayout);
-        _searchBox->setHStretch(feather_tk::Stretch::Expanding);
+        _searchBox = ftk::SearchBox::create(context, _bottomLayout);
+        _searchBox->setHStretch(ftk::Stretch::Expanding);
         _searchBox->setTooltip("Search the log");
 
-        _clearButton = feather_tk::ToolButton::create(context, _bottomLayout);
+        _clearButton = ftk::ToolButton::create(context, _bottomLayout);
         _clearButton->setIcon("Clear");
         _clearButton->setTooltip("Clear the log");
 
@@ -65,13 +65,13 @@ namespace toucan
                 _textUpdate();
             });
 
-        _logObserver = feather_tk::ListObserver<feather_tk::LogItem>::create(
-            context->getSystem<feather_tk::LogSystem>()->observeLogItems(),
-            [this](const std::vector<feather_tk::LogItem>& items)
+        _logObserver = ftk::ListObserver<ftk::LogItem>::create(
+            context->getSystem<ftk::LogSystem>()->observeLogItems(),
+            [this](const std::vector<ftk::LogItem>& items)
             {
                 for (const auto& item : items)
                 {
-                    for (const auto& line : feather_tk::split(feather_tk::toString(item), '\n'))
+                    for (const auto& line : ftk::split(ftk::toString(item), '\n'))
                     {
                         _text.push_back(line);
                     }
@@ -84,22 +84,22 @@ namespace toucan
     {}
 
     std::shared_ptr<LogTool> LogTool::create(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
         auto out = std::shared_ptr<LogTool>(new LogTool);
         out->_init(context, app, parent);
         return out;
     }
 
-    void LogTool::setGeometry(const feather_tk::Box2I& value)
+    void LogTool::setGeometry(const ftk::Box2I& value)
     {
         IToolWidget::setGeometry(value);
         _layout->setGeometry(value);
     }
 
-    void LogTool::sizeHintEvent(const feather_tk::SizeHintEvent& event)
+    void LogTool::sizeHintEvent(const ftk::SizeHintEvent& event)
     {
         IToolWidget::sizeHintEvent(event);
         _setSizeHint(_layout->getSizeHint());
@@ -122,13 +122,13 @@ namespace toucan
         {
             for (const auto& line : _text)
             {
-                if (feather_tk::contains(line, search, feather_tk::CaseCompare::Insensitive))
+                if (ftk::contains(line, search, ftk::CaseCompare::Insensitive))
                 {
                     text.push_back(line);
                 }
             }
         }
-        _label->setText(feather_tk::join(text, '\n'));
+        _label->setText(ftk::join(text, '\n'));
 
         _clearButton->setEnabled(!_text.empty());
     }

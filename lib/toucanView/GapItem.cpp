@@ -8,7 +8,7 @@
 namespace toucan
 {
     void GapItem::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const ItemData& data,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Gap>& gap,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>& timeline,
@@ -33,12 +33,12 @@ namespace toucan
 
         _gap = gap;
         _text = !gap->name().empty() ? gap->name() : "Gap";
-        _color = feather_tk::Color4F(.3F, .3F, .3F);
+        _color = ftk::Color4F(.3F, .3F, .3F);
 
         setTooltip(gap->schema_name() + ": " + _text);
 
-        _layout = feather_tk::VerticalLayout::create(context, shared_from_this());
-        _layout->setSpacingRole(feather_tk::SizeRole::SpacingTool);
+        _layout = ftk::VerticalLayout::create(context, shared_from_this());
+        _layout->setSpacingRole(ftk::SizeRole::SpacingTool);
 
         _label = ItemLabel::create(context, _layout);
         _label->setName(_text);
@@ -75,7 +75,7 @@ namespace toucan
     {}
 
     std::shared_ptr<GapItem> GapItem::create(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const ItemData& data,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Gap>& gap,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>& timeline,
@@ -95,21 +95,21 @@ namespace toucan
         }
     }
 
-    void GapItem::setGeometry(const feather_tk::Box2I& value)
+    void GapItem::setGeometry(const ftk::Box2I& value)
     {
         IItem::setGeometry(value);
         _layout->setGeometry(value);
-        _geom.g2 = feather_tk::margin(value, -_size.border, 0, -_size.border, 0);
-        _geom.g3 = feather_tk::margin(_label->getGeometry(), -_size.border, 0, -_size.border, 0);
+        _geom.g2 = ftk::margin(value, -_size.border, 0, -_size.border, 0);
+        _geom.g3 = ftk::margin(_label->getGeometry(), -_size.border, 0, -_size.border, 0);
         _selectionRect = _geom.g3;
     }
 
-    feather_tk::Box2I GapItem::getChildrenClipRect() const
+    ftk::Box2I GapItem::getChildrenClipRect() const
     {
         return _geom.g2;
     }
 
-    void GapItem::sizeHintEvent(const feather_tk::SizeHintEvent& event)
+    void GapItem::sizeHintEvent(const ftk::SizeHintEvent& event)
     {
         IItem::sizeHintEvent(event);
         const bool displayScaleChanged = event.displayScale != _size.displayScale;
@@ -117,19 +117,19 @@ namespace toucan
         {
             _size.init = false;
             _size.displayScale = event.displayScale;
-            _size.border = event.style->getSizeRole(feather_tk::SizeRole::Border, event.displayScale);
+            _size.border = event.style->getSizeRole(ftk::SizeRole::Border, event.displayScale);
         }
         _setSizeHint(_layout->getSizeHint());
     }
 
     void GapItem::drawEvent(
-        const feather_tk::Box2I& drawRect,
-        const feather_tk::DrawEvent& event)
+        const ftk::Box2I& drawRect,
+        const ftk::DrawEvent& event)
     {
         IItem::drawEvent(drawRect, event);
         event.render->drawRect(
             _geom.g3,
-            _selected ? event.style->getColorRole(feather_tk::ColorRole::Yellow) : _color);
+            _selected ? event.style->getColorRole(ftk::ColorRole::Yellow) : _color);
     }
 
     void GapItem::_timeUnitsUpdate()

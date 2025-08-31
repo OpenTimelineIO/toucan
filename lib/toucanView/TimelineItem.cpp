@@ -13,7 +13,7 @@
 namespace toucan
 {
     void TimelineItem::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const ItemData& data,
         const std::shared_ptr<IWidget>& parent)
     {
@@ -29,7 +29,7 @@ namespace toucan
         _setMousePressEnabled(
             true,
             0,
-            0 | static_cast<int>(feather_tk::KeyModifier::Shift) | static_cast<int>(feather_tk::commandKeyModifier));
+            0 | static_cast<int>(ftk::KeyModifier::Shift) | static_cast<int>(ftk::commandKeyModifier));
 
         _timeline = data.file->getTimeline();
         _timeRange = data.file->getTimelineWrapper()->getTimeRange();
@@ -44,14 +44,14 @@ namespace toucan
             _timeline,
             shared_from_this());
 
-        _selectionObserver = feather_tk::ListObserver<SelectionItem>::create(
+        _selectionObserver = ftk::ListObserver<SelectionItem>::create(
             _selectionModel->observeSelection(),
             [this](const std::vector<SelectionItem>& selection)
             {
                 _select(shared_from_this(), selection);
             });
 
-        _thumbnailsObserver = feather_tk::ValueObserver<bool>::create(
+        _thumbnailsObserver = ftk::ValueObserver<bool>::create(
             data.app->getWindowModel()->observeThumbnails(),
             [this](bool value)
             {
@@ -65,7 +65,7 @@ namespace toucan
     {}
 
     std::shared_ptr<TimelineItem> TimelineItem::create(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const ItemData& data,
         const std::shared_ptr<IWidget>& parent)
     {
@@ -100,26 +100,26 @@ namespace toucan
         _setDrawUpdate();
     }
 
-    void TimelineItem::setGeometry(const feather_tk::Box2I& value)
+    void TimelineItem::setGeometry(const ftk::Box2I& value)
     {
         IItem::setGeometry(value);
-        const feather_tk::Box2I& g = getGeometry();
+        const ftk::Box2I& g = getGeometry();
         const int timeHeight = _size.fontMetrics.lineHeight + _size.margin * 2;
         for (const auto& child : getChildren())
         {
-            const feather_tk::Size2I& sizeHint = child->getSizeHint();
+            const ftk::Size2I& sizeHint = child->getSizeHint();
             int h = timeHeight;
             if (_thumbnails)
             {
                 h += _size.thumbnailHeight;
             }
-            child->setGeometry(feather_tk::Box2I(
+            child->setGeometry(ftk::Box2I(
                 g.min.x,
                 g.min.y + h,
                 sizeHint.w,
                 sizeHint.h));
         }
-        if (auto scrollArea = getParentT<feather_tk::ScrollArea>())
+        if (auto scrollArea = getParentT<ftk::ScrollArea>())
         {
             _size.scrollPos = scrollArea->getScrollPos();
         }
@@ -128,7 +128,7 @@ namespace toucan
     void TimelineItem::tickEvent(
         bool parentsVisible,
         bool parentsEnabled,
-        const feather_tk::TickEvent& event)
+        const ftk::TickEvent& event)
     {
         IItem::tickEvent(parentsVisible, parentsEnabled, event);
         auto i = _thumbnailRequests.begin();
@@ -149,7 +149,7 @@ namespace toucan
         }
     }
 
-    void TimelineItem::sizeHintEvent(const feather_tk::SizeHintEvent& event)
+    void TimelineItem::sizeHintEvent(const ftk::SizeHintEvent& event)
     {
         IItem::sizeHintEvent(event);
         const bool displayScaleChanged = event.displayScale != _size.displayScale;
@@ -157,11 +157,11 @@ namespace toucan
         {
             _size.init = false;
             _size.displayScale = event.displayScale;
-            _size.margin = event.style->getSizeRole(feather_tk::SizeRole::MarginInside, event.displayScale);
-            _size.border = event.style->getSizeRole(feather_tk::SizeRole::Border, event.displayScale);
-            _size.handle = event.style->getSizeRole(feather_tk::SizeRole::Handle, event.displayScale);
-            _size.thumbnailHeight = 2 * event.style->getSizeRole(feather_tk::SizeRole::SwatchLarge, event.displayScale);
-            _size.fontInfo = event.style->getFontRole(feather_tk::FontRole::Mono, event.displayScale);
+            _size.margin = event.style->getSizeRole(ftk::SizeRole::MarginInside, event.displayScale);
+            _size.border = event.style->getSizeRole(ftk::SizeRole::Border, event.displayScale);
+            _size.handle = event.style->getSizeRole(ftk::SizeRole::Handle, event.displayScale);
+            _size.thumbnailHeight = 2 * event.style->getSizeRole(ftk::SizeRole::SwatchLarge, event.displayScale);
+            _size.fontInfo = event.style->getFontRole(ftk::FontRole::Mono, event.displayScale);
             _size.fontMetrics = event.fontSystem->getMetrics(_size.fontInfo);
             std::vector<uint64_t> ids;
             for (const auto& request : _thumbnailRequests)
@@ -177,7 +177,7 @@ namespace toucan
         {
             childSizeHint = std::max(childSizeHint, child->getSizeHint().h);
         }
-        feather_tk::Size2I sizeHint(
+        ftk::Size2I sizeHint(
             _timeRange.duration().rescaled_to(1.0).value() * _scale,
             _size.fontMetrics.lineHeight + _size.margin * 2);
         if (_thumbnails)
@@ -188,29 +188,29 @@ namespace toucan
         _setSizeHint(sizeHint);
     }
 
-    void TimelineItem::drawEvent(const feather_tk::Box2I& drawRect, const feather_tk::DrawEvent& event)
+    void TimelineItem::drawEvent(const ftk::Box2I& drawRect, const ftk::DrawEvent& event)
     {
         IItem::drawEvent(drawRect, event);
 
-        const feather_tk::Box2I& g = getGeometry();
+        const ftk::Box2I& g = getGeometry();
         const int thumbnailWidth = _size.thumbnailHeight * _thumbnailGenerator->getAspect();
         const int y = g.min.y + _size.fontMetrics.lineHeight + _size.margin * 2;
         if (_thumbnails)
         {
             for (int x = g.min.x; x < g.max.x && thumbnailWidth > 0; x += thumbnailWidth)
             {
-                const feather_tk::Box2I g2(x, y, thumbnailWidth, _size.thumbnailHeight);
-                if (feather_tk::intersects(g2, drawRect))
+                const ftk::Box2I g2(x, y, thumbnailWidth, _size.thumbnailHeight);
+                if (ftk::intersects(g2, drawRect))
                 {
                     const OTIO_NS::RationalTime t = posToTime(x);
-                    std::shared_ptr<feather_tk::Image> image;
+                    std::shared_ptr<ftk::Image> image;
                     if (_thumbnailCache->get(getThumbnailCacheKey(nullptr, t, _size.thumbnailHeight), image))
                     {
                         if (image)
                         {
                             event.render->drawImage(
                                 image,
-                                feather_tk::Box2I(x, y, image->getWidth(), image->getHeight()));
+                                ftk::Box2I(x, y, image->getWidth(), image->getHeight()));
                         }
                     }
                     else
@@ -237,8 +237,8 @@ namespace toucan
         while (i != _thumbnailRequests.end())
         {
             const int x = timeToPos(i->time);
-            const feather_tk::Box2I g2(x, y, thumbnailWidth, _size.thumbnailHeight);
-            if (!feather_tk::intersects(g2, drawRect))
+            const ftk::Box2I g2(x, y, thumbnailWidth, _size.thumbnailHeight);
+            if (!ftk::intersects(g2, drawRect))
             {
                 cancel.push_back(i->id);
                 i = _thumbnailRequests.erase(i);
@@ -251,26 +251,26 @@ namespace toucan
         _thumbnailGenerator->cancelThumbnails(cancel);
     }
 
-    void TimelineItem::drawOverlayEvent(const feather_tk::Box2I& drawRect, const feather_tk::DrawEvent& event)
+    void TimelineItem::drawOverlayEvent(const ftk::Box2I& drawRect, const ftk::DrawEvent& event)
     {
         IItem::drawOverlayEvent(drawRect, event);
-        const feather_tk::Box2I& g = getGeometry();
+        const ftk::Box2I& g = getGeometry();
 
-        const feather_tk::Box2I g2(
+        const ftk::Box2I g2(
             g.min.x,
             g.min.y + _size.scrollPos.y,
             g.w(),
             _size.fontMetrics.lineHeight + _size.margin * 2);
-        event.render->drawRect(g2, event.style->getColorRole(feather_tk::ColorRole::Base));
+        event.render->drawRect(g2, event.style->getColorRole(ftk::ColorRole::Base));
 
         if (_inOutRange != _timeRange)
         {
             const int x0 = timeToPos(_inOutRange.start_time());
             const int x1 = timeToPos(_inOutRange.end_time_exclusive());
-            feather_tk::Color4F color = event.style->getColorRole(feather_tk::ColorRole::Yellow);
+            ftk::Color4F color = event.style->getColorRole(ftk::ColorRole::Yellow);
             color.a = .5F;
             event.render->drawRect(
-                feather_tk::Box2I(
+                ftk::Box2I(
                     x0,
                     g.min.y + _size.scrollPos.y,
                     x1 - x0,
@@ -283,12 +283,12 @@ namespace toucan
 
         int pos = timeToPos(_currentTime);
         event.render->drawRect(
-            feather_tk::Box2I(pos, g.min.y + _size.scrollPos.y, _size.border * 2, g.h()),
-            event.style->getColorRole(feather_tk::ColorRole::Red));
+            ftk::Box2I(pos, g.min.y + _size.scrollPos.y, _size.border * 2, g.h()),
+            event.style->getColorRole(ftk::ColorRole::Red));
 
         std::string s = toString(_currentTime, _timeUnits);
-        feather_tk::Size2I size = event.fontSystem->getSize(s, _size.fontInfo);
-        feather_tk::Box2I g3(
+        ftk::Size2I size = event.fontSystem->getSize(s, _size.fontInfo);
+        ftk::Box2I g3(
             pos + _size.border * 2 + _size.margin,
             g.min.y + _size.scrollPos.y + _size.margin,
             size.w,
@@ -302,10 +302,10 @@ namespace toucan
             event.fontSystem->getGlyphs(s, _size.fontInfo),
             _size.fontMetrics,
             g3.min,
-            event.style->getColorRole(feather_tk::ColorRole::Text));
+            event.style->getColorRole(ftk::ColorRole::Text));
     }
 
-    void TimelineItem::mouseMoveEvent(feather_tk::MouseMoveEvent& event)
+    void TimelineItem::mouseMoveEvent(ftk::MouseMoveEvent& event)
     {
         IItem::mouseMoveEvent(event);
         if (MouseMode::CurrentTime == _mouse.mode)
@@ -319,13 +319,13 @@ namespace toucan
         }
     }
 
-    void TimelineItem::mousePressEvent(feather_tk::MouseClickEvent& event)
+    void TimelineItem::mousePressEvent(ftk::MouseClickEvent& event)
     {
         IItem::mousePressEvent(event);
         if (0 == event.button &&
             (0 == event.modifiers ||
-                static_cast<int>(feather_tk::KeyModifier::Shift) == event.modifiers ||
-                static_cast<int>(feather_tk::commandKeyModifier) == event.modifiers))
+                static_cast<int>(ftk::KeyModifier::Shift) == event.modifiers ||
+                static_cast<int>(ftk::commandKeyModifier) == event.modifiers))
         {
             std::shared_ptr<IItem> selection;
             _select(shared_from_this(), event.pos, selection);
@@ -342,12 +342,12 @@ namespace toucan
                 _mouse.mode = MouseMode::Select;
                 auto selectionPrev = _selectionModel->getSelection();
                 std::vector<SelectionItem> selectionNew;
-                if (static_cast<int>(feather_tk::KeyModifier::Shift) == event.modifiers)
+                if (static_cast<int>(ftk::KeyModifier::Shift) == event.modifiers)
                 {
                     selectionNew = selectionPrev;
                     selectionNew.insert(selectionNew.end(), item);
                 }
-                else if (static_cast<int>(feather_tk::commandKeyModifier) == event.modifiers)
+                else if (static_cast<int>(ftk::commandKeyModifier) == event.modifiers)
                 {
                     selectionNew = selectionPrev;
                     auto i = std::find(selectionNew.begin(), selectionNew.end(), item);
@@ -377,7 +377,7 @@ namespace toucan
         }
     }
 
-    void TimelineItem::mouseReleaseEvent(feather_tk::MouseClickEvent& event)
+    void TimelineItem::mouseReleaseEvent(ftk::MouseClickEvent& event)
     {
         IItem::mouseReleaseEvent(event);
         if (_mouse.mode != MouseMode::None)
@@ -393,16 +393,16 @@ namespace toucan
         _setDrawUpdate();
     }
 
-    feather_tk::Size2I TimelineItem::_getLabelMaxSize(
-        const std::shared_ptr<feather_tk::FontSystem>& fontSystem) const
+    ftk::Size2I TimelineItem::_getLabelMaxSize(
+        const std::shared_ptr<ftk::FontSystem>& fontSystem) const
     {
         const std::string labelMax = toString(_timeRange.end_time_inclusive(), _timeUnits);
-        const feather_tk::Size2I labelMaxSize = fontSystem->getSize(labelMax, _size.fontInfo);
+        const ftk::Size2I labelMaxSize = fontSystem->getSize(labelMax, _size.fontInfo);
         return labelMaxSize;
     }
 
     void TimelineItem::_getTimeTicks(
-        const std::shared_ptr<feather_tk::FontSystem>& fontSystem,
+        const std::shared_ptr<ftk::FontSystem>& fontSystem,
         double& seconds,
         int& tick)
     {
@@ -411,7 +411,7 @@ namespace toucan
         const int secondsTick = 1.0 / duration * w;
         const int minutesTick = 60.0 / duration * w;
         const int hoursTick = 3600.0 / duration * w;
-        const feather_tk::Size2I labelMaxSize = _getLabelMaxSize(fontSystem);
+        const ftk::Size2I labelMaxSize = _getLabelMaxSize(fontSystem);
         const int distanceMin = _size.border + _size.margin + labelMaxSize.w;
         seconds = 0.0;
         tick = 0;
@@ -433,18 +433,18 @@ namespace toucan
     }
 
     void TimelineItem::_drawTimeTicks(
-        const feather_tk::Box2I& drawRect,
-        const feather_tk::DrawEvent& event)
+        const ftk::Box2I& drawRect,
+        const ftk::DrawEvent& event)
     {
         if (_timeRange != OTIO_NS::TimeRange())
         {
-            const feather_tk::Box2I& g = getGeometry();
+            const ftk::Box2I& g = getGeometry();
             const int w = getSizeHint().w;
             const float duration = _timeRange.duration().rescaled_to(1.0).value();
             const int frameTick = 1.0 / _timeRange.duration().value() * w;
             if (duration > 0.0 && frameTick >= _size.handle)
             {
-                feather_tk::TriMesh2F mesh;
+                ftk::TriMesh2F mesh;
                 size_t i = 1;
                 const OTIO_NS::RationalTime t0 = posToTime(g.min.x) - _timeRange.start_time();
                 const OTIO_NS::RationalTime t1 = posToTime(g.max.x) - _timeRange.start_time();
@@ -453,7 +453,7 @@ namespace toucan
                 const double x1 = static_cast<int>(t1.rescaled_to(1.0).value() / inc) * inc;
                 for (double t = x0; t <= x1; t += inc)
                 {
-                    const feather_tk::Box2I box(
+                    const ftk::Box2I box(
                         g.min.x +
                         t / duration * w,
                         _size.scrollPos.y +
@@ -463,10 +463,10 @@ namespace toucan
                         _size.margin * 2);
                     if (intersects(box, drawRect))
                     {
-                        mesh.v.push_back(feather_tk::V2F(box.min.x, box.min.y));
-                        mesh.v.push_back(feather_tk::V2F(box.max.x + 1, box.min.y));
-                        mesh.v.push_back(feather_tk::V2F(box.max.x + 1, box.max.y + 1));
-                        mesh.v.push_back(feather_tk::V2F(box.min.x, box.max.y + 1));
+                        mesh.v.push_back(ftk::V2F(box.min.x, box.min.y));
+                        mesh.v.push_back(ftk::V2F(box.max.x + 1, box.min.y));
+                        mesh.v.push_back(ftk::V2F(box.max.x + 1, box.max.y + 1));
+                        mesh.v.push_back(ftk::V2F(box.min.x, box.max.y + 1));
                         mesh.triangles.push_back({ i + 0, i + 1, i + 2 });
                         mesh.triangles.push_back({ i + 2, i + 3, i + 0 });
                         i += 4;
@@ -476,7 +476,7 @@ namespace toucan
                 {
                     event.render->drawMesh(
                         mesh,
-                        event.style->getColorRole(feather_tk::ColorRole::Button));
+                        event.style->getColorRole(ftk::ColorRole::Button));
                 }
             }
 
@@ -485,7 +485,7 @@ namespace toucan
             _getTimeTicks(event.fontSystem, seconds, tick);
             if (duration > 0.0 && seconds > 0.0 && tick > 0)
             {
-                feather_tk::TriMesh2F mesh;
+                ftk::TriMesh2F mesh;
                 size_t i = 1;
                 const OTIO_NS::RationalTime t0 = posToTime(g.min.x) - _timeRange.start_time();
                 const OTIO_NS::RationalTime t1 = posToTime(g.max.x) - _timeRange.start_time();
@@ -494,7 +494,7 @@ namespace toucan
                 const double x1 = static_cast<int>(t1.rescaled_to(1.0).value() / inc) * inc;
                 for (double t = x0; t <= x1; t += inc)
                 {
-                    const feather_tk::Box2I box(
+                    const ftk::Box2I box(
                         g.min.x +
                         t / duration * w,
                         _size.scrollPos.y +
@@ -504,10 +504,10 @@ namespace toucan
                         _size.margin * 2);
                     if (intersects(box, drawRect))
                     {
-                        mesh.v.push_back(feather_tk::V2F(box.min.x, box.min.y));
-                        mesh.v.push_back(feather_tk::V2F(box.max.x + 1, box.min.y));
-                        mesh.v.push_back(feather_tk::V2F(box.max.x + 1, box.max.y + 1));
-                        mesh.v.push_back(feather_tk::V2F(box.min.x, box.max.y + 1));
+                        mesh.v.push_back(ftk::V2F(box.min.x, box.min.y));
+                        mesh.v.push_back(ftk::V2F(box.max.x + 1, box.min.y));
+                        mesh.v.push_back(ftk::V2F(box.max.x + 1, box.max.y + 1));
+                        mesh.v.push_back(ftk::V2F(box.min.x, box.max.y + 1));
                         mesh.triangles.push_back({ i + 0, i + 1, i + 2 });
                         mesh.triangles.push_back({ i + 2, i + 3, i + 0 });
                         i += 4;
@@ -517,19 +517,19 @@ namespace toucan
                 {
                     event.render->drawMesh(
                         mesh,
-                        event.style->getColorRole(feather_tk::ColorRole::Button));
+                        event.style->getColorRole(ftk::ColorRole::Button));
                 }
             }
         }
     }
 
     void TimelineItem::_drawTimeLabels(
-        const feather_tk::Box2I& drawRect,
-        const feather_tk::DrawEvent& event)
+        const ftk::Box2I& drawRect,
+        const ftk::DrawEvent& event)
     {
         if (_timeRange != OTIO_NS::TimeRange())
         {
-            const feather_tk::Box2I& g = getGeometry();
+            const ftk::Box2I& g = getGeometry();
             const int w = getSizeHint().w;
             const float duration = _timeRange.duration().rescaled_to(1.0).value();
             double seconds = 0;
@@ -537,7 +537,7 @@ namespace toucan
             _getTimeTicks(event.fontSystem, seconds, tick);
             if (seconds > 0.0 && tick > 0)
             {
-                const feather_tk::Size2I labelMaxSize = _getLabelMaxSize(event.fontSystem);
+                const ftk::Size2I labelMaxSize = _getLabelMaxSize(event.fontSystem);
                 const OTIO_NS::RationalTime t0 = posToTime(g.min.x) - _timeRange.start_time();
                 const OTIO_NS::RationalTime t1 = posToTime(g.max.x) - _timeRange.start_time();
                 const double inc = seconds;
@@ -547,7 +547,7 @@ namespace toucan
                 {
                     const OTIO_NS::RationalTime time = _timeRange.start_time() +
                         OTIO_NS::RationalTime(t, 1.0).rescaled_to(_timeRange.duration().rate());
-                    const feather_tk::Box2I box(
+                    const ftk::Box2I box(
                         g.min.x +
                         t / duration * w +
                         _size.border +
@@ -564,7 +564,7 @@ namespace toucan
                             event.fontSystem->getGlyphs(label, _size.fontInfo),
                             _size.fontMetrics,
                             box.min,
-                            event.style->getColorRole(feather_tk::ColorRole::TextDisabled));
+                            event.style->getColorRole(ftk::ColorRole::TextDisabled));
                     }
                 }
             }
@@ -572,20 +572,20 @@ namespace toucan
     }
 
     void TimelineItem::_select(
-        const std::shared_ptr<feather_tk::IWidget>& widget,
-        const feather_tk::V2I& pos,
+        const std::shared_ptr<ftk::IWidget>& widget,
+        const ftk::V2I& pos,
         std::shared_ptr<IItem>& out)
     {
         if (auto iitem = std::dynamic_pointer_cast<IItem>(widget))
         {
-            if (feather_tk::contains(iitem->getSelectionRect(), pos))
+            if (ftk::contains(iitem->getSelectionRect(), pos))
             {
                 out = iitem;
             }
         }
         for (const auto& child : widget->getChildren())
         {
-            if (feather_tk::contains(child->getGeometry(), pos))
+            if (ftk::contains(child->getGeometry(), pos))
             {
                 _select(child, pos, out);
             }
@@ -593,7 +593,7 @@ namespace toucan
     }
 
     void TimelineItem::_select(
-        const std::shared_ptr<feather_tk::IWidget>& widget,
+        const std::shared_ptr<ftk::IWidget>& widget,
         const std::vector<SelectionItem>& selection)
     {
         if (auto iitem = std::dynamic_pointer_cast<IItem>(widget))

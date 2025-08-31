@@ -15,11 +15,11 @@
 namespace toucan
 {
     void AudioClipItem::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const ItemData& data,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Clip>& clip,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>& timeline,
-        const feather_tk::Color4F& color,
+        const ftk::Color4F& color,
         const std::shared_ptr<IWidget>& parent)
     {
         OTIO_NS::TimeRange timeRange = clip->transformed_time_range(
@@ -48,8 +48,8 @@ namespace toucan
 
         setTooltip(clip->schema_name() + ": " + _text);
 
-        _layout = feather_tk::VerticalLayout::create(context, shared_from_this());
-        _layout->setSpacingRole(feather_tk::SizeRole::SpacingTool);
+        _layout = ftk::VerticalLayout::create(context, shared_from_this());
+        _layout->setSpacingRole(ftk::SizeRole::SpacingTool);
 
         _label = ItemLabel::create(context, _layout);
         _label->setName(_text);
@@ -88,11 +88,11 @@ namespace toucan
     {}
 
     std::shared_ptr<AudioClipItem> AudioClipItem::create(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const ItemData& data,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Clip>& clip,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>& timeline,
-        const feather_tk::Color4F& color,
+        const ftk::Color4F& color,
         const std::shared_ptr<IWidget>& parent)
     {
         auto out = std::make_shared<AudioClipItem>();
@@ -109,21 +109,21 @@ namespace toucan
         }
     }
 
-    void AudioClipItem::setGeometry(const feather_tk::Box2I& value)
+    void AudioClipItem::setGeometry(const ftk::Box2I& value)
     {
         IItem::setGeometry(value);
         _layout->setGeometry(value);
-        _geom.g2 = feather_tk::margin(value, -_size.border, 0, -_size.border, 0);
-        _geom.g3 = feather_tk::margin(_label->getGeometry(), -_size.border, 0, -_size.border, 0);
+        _geom.g2 = ftk::margin(value, -_size.border, 0, -_size.border, 0);
+        _geom.g3 = ftk::margin(_label->getGeometry(), -_size.border, 0, -_size.border, 0);
         _selectionRect = _geom.g3;
     }
 
-    feather_tk::Box2I AudioClipItem::getChildrenClipRect() const
+    ftk::Box2I AudioClipItem::getChildrenClipRect() const
     {
         return _geom.g2;
     }
 
-    void AudioClipItem::sizeHintEvent(const feather_tk::SizeHintEvent& event)
+    void AudioClipItem::sizeHintEvent(const ftk::SizeHintEvent& event)
     {
         IItem::sizeHintEvent(event);
         const bool displayScaleChanged = event.displayScale != _size.displayScale;
@@ -131,19 +131,19 @@ namespace toucan
         {
             _size.init = false;
             _size.displayScale = event.displayScale;
-            _size.border = event.style->getSizeRole(feather_tk::SizeRole::Border, event.displayScale);
+            _size.border = event.style->getSizeRole(ftk::SizeRole::Border, event.displayScale);
         }
         _setSizeHint(_layout->getSizeHint());
     }
     
     void AudioClipItem::drawEvent(
-        const feather_tk::Box2I& drawRect,
-        const feather_tk::DrawEvent& event)
+        const ftk::Box2I& drawRect,
+        const ftk::DrawEvent& event)
     {
         IItem::drawEvent(drawRect, event);
         event.render->drawRect(
             _geom.g3,
-            _selected ? event.style->getColorRole(feather_tk::ColorRole::Yellow) : _color);
+            _selected ? event.style->getColorRole(ftk::ColorRole::Yellow) : _color);
     }
 
     void AudioClipItem::_timeUnitsUpdate()
@@ -151,11 +151,11 @@ namespace toucan
         _textUpdate();
     }
 
-    void AudioClipItem::_buildMenu(const std::shared_ptr<feather_tk::Menu>& menu)
+    void AudioClipItem::_buildMenu(const std::shared_ptr<ftk::Menu>& menu)
     {
         if (auto externalReference = dynamic_cast<OTIO_NS::ExternalReference*>(_clip->media_reference()))
         {
-            auto action = feather_tk::Action::create(
+            auto action = ftk::Action::create(
                 "Open Media",
                 [this, externalReference]
                 {

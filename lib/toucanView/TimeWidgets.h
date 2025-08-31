@@ -17,11 +17,11 @@
 namespace toucan
 {
     //! Frame buttons.
-    class FrameButtons : public feather_tk::IWidget
+    class FrameButtons : public ftk::IWidget
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<IWidget>& parent);
 
     public:
@@ -29,27 +29,27 @@ namespace toucan
 
         //! Create a new widget.
         static std::shared_ptr<FrameButtons> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
         //! Set the callback.
         void setCallback(const std::function<void(TimeAction)>&);
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
 
     private:
         std::function<void(TimeAction)> _callback;
-        std::shared_ptr<feather_tk::HorizontalLayout> _layout;
-        std::shared_ptr<feather_tk::ButtonGroup> _buttonGroup;
+        std::shared_ptr<ftk::HorizontalLayout> _layout;
+        std::shared_ptr<ftk::ButtonGroup> _buttonGroup;
     };
 
     //! Playback buttons.
-    class PlaybackButtons : public feather_tk::IWidget
+    class PlaybackButtons : public ftk::IWidget
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<IWidget>& parent);
 
     public:
@@ -57,7 +57,7 @@ namespace toucan
 
         //! Create a new widget.
         static std::shared_ptr<PlaybackButtons> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
         //! Set the playback.
@@ -66,24 +66,24 @@ namespace toucan
         //! Set the callback.
         void setCallback(const std::function<void(Playback)>&);
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
 
     private:
         void _playbackUpdate();
 
         Playback _playback = Playback::Stop;
         std::function<void(Playback)> _callback;
-        std::shared_ptr<feather_tk::HorizontalLayout> _layout;
-        std::shared_ptr<feather_tk::ButtonGroup> _buttonGroup;
+        std::shared_ptr<ftk::HorizontalLayout> _layout;
+        std::shared_ptr<ftk::ButtonGroup> _buttonGroup;
     };
 
     //! Time edit.
-    class TimeEdit : public feather_tk::IWidget
+    class TimeEdit : public ftk::IWidget
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<TimeUnitsModel>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -92,7 +92,7 @@ namespace toucan
 
         //! Create a new widget.
         static std::shared_ptr<TimeEdit> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<TimeUnitsModel>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
@@ -105,10 +105,10 @@ namespace toucan
         //! Set the callback.
         void setCallback(const std::function<void(const OTIO_NS::RationalTime&)>&);
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
-        void keyPressEvent(feather_tk::KeyEvent&) override;
-        void keyReleaseEvent(feather_tk::KeyEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
+        void keyPressEvent(ftk::KeyEvent&) override;
+        void keyReleaseEvent(ftk::KeyEvent&) override;
 
     private:
         void _timeInc(int = 1);
@@ -119,20 +119,20 @@ namespace toucan
         OTIO_NS::TimeRange _timeRange;
         TimeUnits _timeUnits = TimeUnits::First;
 
-        std::shared_ptr<feather_tk::HorizontalLayout> _layout;
-        std::shared_ptr<feather_tk::LineEdit> _lineEdit;
-        std::shared_ptr<feather_tk::IncButtons> _incButtons;
+        std::shared_ptr<ftk::HorizontalLayout> _layout;
+        std::shared_ptr<ftk::LineEdit> _lineEdit;
+        std::shared_ptr<ftk::IncButtons> _incButtons;
         std::function<void(const OTIO_NS::RationalTime&)> _callback;
 
-        std::shared_ptr<feather_tk::ValueObserver<TimeUnits> > _timeUnitsObserver;
+        std::shared_ptr<ftk::ValueObserver<TimeUnits> > _timeUnitsObserver;
     };
 
     //! Time label.
-    class TimeLabel : public feather_tk::IWidget
+    class TimeLabel : public ftk::IWidget
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<TimeUnitsModel>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -141,7 +141,7 @@ namespace toucan
 
         //! Create a new widget.
         static std::shared_ptr<TimeLabel> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<TimeUnitsModel>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
@@ -149,10 +149,10 @@ namespace toucan
         void setTime(const OTIO_NS::RationalTime&);
 
         //! Set the margin size role.
-        void setMarginRole(feather_tk::SizeRole);
+        void setMarginRole(ftk::SizeRole);
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
 
     private:
         void _timeUpdate();
@@ -160,9 +160,9 @@ namespace toucan
         OTIO_NS::RationalTime _time;
         TimeUnits _timeUnits = TimeUnits::First;
 
-        std::shared_ptr<feather_tk::Label> _label;
+        std::shared_ptr<ftk::Label> _label;
 
-        std::shared_ptr<feather_tk::ValueObserver<TimeUnits> > _timeUnitsObserver;
+        std::shared_ptr<ftk::ValueObserver<TimeUnits> > _timeUnitsObserver;
     };
 }
 

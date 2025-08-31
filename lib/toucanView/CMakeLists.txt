@@ -99,6 +99,6 @@ set(SOURCE
     WindowToolBar.cpp)
 
 add_library(toucanView ${HEADERS} ${SOURCE})
-target_link_libraries(toucanView PUBLIC toucanRender feather-tk::feather-tk-ui)
+target_link_libraries(toucanView PUBLIC toucanRender ftk::feather-tk-ui)
 set_target_properties(toucanView PROPERTIES FOLDER lib)
 add_dependencies(toucanView ${TOUCAN_PLUGINS})

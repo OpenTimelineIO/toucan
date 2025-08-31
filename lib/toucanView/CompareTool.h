@@ -19,11 +19,11 @@ namespace toucan
     class File;
 
     //! Compare widget.
-    class CompareWidget : public feather_tk::IWidget
+    class CompareWidget : public ftk::IWidget
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<File>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -32,7 +32,7 @@ namespace toucan
 
         //! Create a new widget.
         static std::shared_ptr<CompareWidget> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<File>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
@@ -42,16 +42,16 @@ namespace toucan
         void setB(bool);
         void setBCallback(const std::function<void(bool)>&);
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
 
     private:
         bool _current = false;
         bool _b = false;
 
-        std::shared_ptr<feather_tk::HorizontalLayout> _layout;
-        std::shared_ptr<feather_tk::ToolButton> _button;
-        std::shared_ptr<feather_tk::ToolButton> _bButton;
+        std::shared_ptr<ftk::HorizontalLayout> _layout;
+        std::shared_ptr<ftk::ToolButton> _button;
+        std::shared_ptr<ftk::ToolButton> _bButton;
     };
 
     //! Compare tool.
@@ -59,7 +59,7 @@ namespace toucan
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -68,12 +68,12 @@ namespace toucan
 
         //! Create a new tool.
         static std::shared_ptr<CompareTool> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
 
     private:
         void _widgetUpdate();
@@ -84,19 +84,19 @@ namespace toucan
         int _currentIndex = -1;
         int _bIndex = -1;
 
-        std::shared_ptr<feather_tk::VerticalLayout> _layout;
-        std::shared_ptr<feather_tk::ScrollWidget> _scrollWidget;
-        std::shared_ptr<feather_tk::VerticalLayout> _widgetLayout;
+        std::shared_ptr<ftk::VerticalLayout> _layout;
+        std::shared_ptr<ftk::ScrollWidget> _scrollWidget;
+        std::shared_ptr<ftk::VerticalLayout> _widgetLayout;
         std::vector<std::shared_ptr<CompareWidget> > _widgets;
-        std::shared_ptr<feather_tk::GridLayout> _bottomLayout;
-        std::shared_ptr<feather_tk::ComboBox> _modeComboBox;
-        std::shared_ptr<feather_tk::CheckBox> _startTimeCheckBox;
-        std::shared_ptr<feather_tk::CheckBox> _resizeCheckBox;
+        std::shared_ptr<ftk::GridLayout> _bottomLayout;
+        std::shared_ptr<ftk::ComboBox> _modeComboBox;
+        std::shared_ptr<ftk::CheckBox> _startTimeCheckBox;
+        std::shared_ptr<ftk::CheckBox> _resizeCheckBox;
 
-        std::shared_ptr<feather_tk::ListObserver<std::shared_ptr<File> > > _filesObserver;
-        std::shared_ptr<feather_tk::ValueObserver<int> > _fileIndexObserver;
-        std::shared_ptr<feather_tk::ValueObserver<int> > _bIndexObserver;
-        std::shared_ptr<feather_tk::ValueObserver<CompareOptions> > _compareOptionsObserver;
+        std::shared_ptr<ftk::ListObserver<std::shared_ptr<File> > > _filesObserver;
+        std::shared_ptr<ftk::ValueObserver<int> > _fileIndexObserver;
+        std::shared_ptr<ftk::ValueObserver<int> > _bIndexObserver;
+        std::shared_ptr<ftk::ValueObserver<CompareOptions> > _compareOptionsObserver;
     };
 }
 

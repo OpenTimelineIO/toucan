@@ -21,15 +21,15 @@ namespace toucan
         Count,
         First = ToolBar
     };
-    FEATHER_TK_ENUM(WindowComponent);
+    FTK_ENUM(WindowComponent);
 
     //! Window model.
     class WindowModel : public std::enable_shared_from_this<WindowModel>
     {
     public:
         WindowModel(
-            const std::shared_ptr<feather_tk::Context>&,
-            const std::shared_ptr<feather_tk::Settings>&);
+            const std::shared_ptr<ftk::Context>&,
+            const std::shared_ptr<ftk::Settings>&);
 
         virtual ~WindowModel();
 
@@ -37,7 +37,7 @@ namespace toucan
         const std::map<WindowComponent, bool> getComponents() const;
 
         //! Observe the window components.
-        std::shared_ptr<feather_tk::IObservableMap<WindowComponent, bool> > observeComponents() const;
+        std::shared_ptr<ftk::IObservableMap<WindowComponent, bool> > observeComponents() const;
 
         //! Set the window components.
         void setComponents(const std::map<WindowComponent, bool>&);
@@ -52,7 +52,7 @@ namespace toucan
         bool getThumbnails() const;
 
         //! Observe whether thumbnails are enabled.
-        std::shared_ptr<feather_tk::IObservableValue<bool> > observeThumbnails() const;
+        std::shared_ptr<ftk::IObservableValue<bool> > observeThumbnails() const;
 
         //! Set whether thumbnails are enabled.
         void setThumbnails(bool);
@@ -61,15 +61,15 @@ namespace toucan
         bool getTooltips() const;
 
         //! Observe whether tooltips are enabled.
-        std::shared_ptr<feather_tk::IObservableValue<bool> > observeTooltips() const;
+        std::shared_ptr<ftk::IObservableValue<bool> > observeTooltips() const;
 
         //! Set whether tooltips are enabled.
         void setTooltips(bool);
 
     private:
-        std::shared_ptr<feather_tk::Settings> _settings;
-        std::shared_ptr<feather_tk::ObservableMap<WindowComponent, bool> > _components;
-        std::shared_ptr<feather_tk::ObservableValue<bool> > _thumbnails;
-        std::shared_ptr<feather_tk::ObservableValue<bool> > _tooltips;
+        std::shared_ptr<ftk::Settings> _settings;
+        std::shared_ptr<ftk::ObservableMap<WindowComponent, bool> > _components;
+        std::shared_ptr<ftk::ObservableValue<bool> > _thumbnails;
+        std::shared_ptr<ftk::ObservableValue<bool> > _tooltips;
     };
 }

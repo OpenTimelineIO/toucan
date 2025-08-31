@@ -7,12 +7,12 @@
 
 #include <iostream>
 
-FEATHER_TK_MAIN()
+FTK_MAIN()
 {
     try
     {
-        auto context = feather_tk::Context::create();
-        auto args = feather_tk::convert(argc, argv);
+        auto context = ftk::Context::create();
+        auto args = ftk::convert(argc, argv);
         auto app = toucan::App::create(context, args);
         if (app->getExit() != 0)
             return app->getExit();

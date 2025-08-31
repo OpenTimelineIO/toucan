@@ -13,14 +13,14 @@
 namespace toucan
 {
     //! Get a marker color.
-    feather_tk::Color4F getMarkerColor(const std::string&);
+    ftk::Color4F getMarkerColor(const std::string&);
 
     //! Timeline marker item.
     class MarkerItem : public IItem
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const ItemData&,
             const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Marker>&,
             const OTIO_NS::TimeRange&,
@@ -31,15 +31,15 @@ namespace toucan
 
         //! Create a new item.
         static std::shared_ptr<MarkerItem> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const ItemData&,
             const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Marker>&,
             const OTIO_NS::TimeRange&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
-        void drawEvent(const feather_tk::Box2I&, const feather_tk::DrawEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
+        void drawEvent(const ftk::Box2I&, const ftk::DrawEvent&) override;
 
     protected:
         void _timeUnitsUpdate() override;
@@ -49,7 +49,7 @@ namespace toucan
 
         OTIO_NS::SerializableObject::Retainer<OTIO_NS::Marker> _marker;
         std::string _text;
-        feather_tk::Color4F _color;
+        ftk::Color4F _color;
 
         std::shared_ptr<ItemLabel> _label;
 

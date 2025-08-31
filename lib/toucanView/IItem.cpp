@@ -10,7 +10,7 @@
 namespace toucan
 {
     void IItem::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const ItemData& data,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::SerializableObjectWithMetadata>& object,
         const OTIO_NS::TimeRange& timeRange,
@@ -23,7 +23,7 @@ namespace toucan
         _file = data.file;
         _object = object;
 
-        _timeUnitsObserver = feather_tk::ValueObserver<TimeUnits>::create(
+        _timeUnitsObserver = ftk::ValueObserver<TimeUnits>::create(
             data.app->getTimeUnitsModel()->observeTimeUnits(),
             [this](TimeUnits value)
             {
@@ -40,7 +40,7 @@ namespace toucan
         return _object;
     }
 
-    const feather_tk::Box2I& IItem::getSelectionRect() const
+    const ftk::Box2I& IItem::getSelectionRect() const
     {
         return _selectionRect;
     }
@@ -58,20 +58,20 @@ namespace toucan
         _setDrawUpdate();
     }
 
-    void IItem::setGeometry(const feather_tk::Box2I& value)
+    void IItem::setGeometry(const ftk::Box2I& value)
     {
         ITimeWidget::setGeometry(value);
         _selectionRect = value;
     }
 
-    void IItem::mousePressEvent(feather_tk::MouseClickEvent& event)
+    void IItem::mousePressEvent(ftk::MouseClickEvent& event)
     {
         ITimeWidget::mousePressEvent(event);
         if ((1 == event.button && 0 == event.modifiers) ||
-            (0 == event.button && static_cast<int>(feather_tk::KeyModifier::Super) == event.modifiers))
+            (0 == event.button && static_cast<int>(ftk::KeyModifier::Super) == event.modifiers))
         {
             event.accept = true;
-            _menu = feather_tk::Menu::create(getContext());
+            _menu = ftk::Menu::create(getContext());
             _buildMenu(_menu);
             auto weak = std::weak_ptr<IItem>(std::dynamic_pointer_cast<IItem>(shared_from_this()));
             _menu->setCloseCallback(
@@ -84,11 +84,11 @@ namespace toucan
                 });
             _menu->open(
                 getWindow(),
-                feather_tk::Box2I(event.pos.x, event.pos.y, 0, 0));
+                ftk::Box2I(event.pos.x, event.pos.y, 0, 0));
         }
     }
 
-    void IItem::mouseReleaseEvent(feather_tk::MouseClickEvent& event)
+    void IItem::mouseReleaseEvent(ftk::MouseClickEvent& event)
     {
         ITimeWidget::mouseReleaseEvent(event);
     }
@@ -96,9 +96,9 @@ namespace toucan
     void IItem::_timeUnitsUpdate()
     {}
 
-    void IItem::_buildMenu(const std::shared_ptr<feather_tk::Menu>& menu)
+    void IItem::_buildMenu(const std::shared_ptr<ftk::Menu>& menu)
     {
-        auto action = feather_tk::Action::create(
+        auto action = ftk::Action::create(
             "Go To Start",
             [this]
             {
@@ -113,7 +113,7 @@ namespace toucan
 
         if (_timeRange.duration().value() > 1.0)
         {
-            action = feather_tk::Action::create(
+            action = ftk::Action::create(
                 "Set In/Out Points",
                 [this]
                 {
@@ -125,7 +125,7 @@ namespace toucan
             menu->addAction(action);
         }
 
-        action = feather_tk::Action::create(
+        action = ftk::Action::create(
             "Reset In/Out Points",
             [this]
             {

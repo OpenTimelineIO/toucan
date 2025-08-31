@@ -21,11 +21,11 @@ namespace toucan
     class File;
 
     //! JSON widget.
-    class JSONWidget : public feather_tk::IWidget
+    class JSONWidget : public ftk::IWidget
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const OTIO_NS::SerializableObject::Retainer<OTIO_NS::SerializableObjectWithMetadata>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -34,7 +34,7 @@ namespace toucan
 
         //! Create a new widget.
         static std::shared_ptr<JSONWidget> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const OTIO_NS::SerializableObject::Retainer<OTIO_NS::SerializableObjectWithMetadata>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
@@ -44,8 +44,8 @@ namespace toucan
         //! Set the search.
         void setSearch(const std::string&);
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
 
     private:
         void _textUpdate();
@@ -54,9 +54,9 @@ namespace toucan
         std::vector<std::string> _lineNumbers;
         std::vector<std::string> _text;
         std::string _search;
-        std::shared_ptr<feather_tk::Bellows> _bellows;
-        std::shared_ptr<feather_tk::Label> _lineNumbersLabel;
-        std::shared_ptr<feather_tk::Label> _textLabel;
+        std::shared_ptr<ftk::Bellows> _bellows;
+        std::shared_ptr<ftk::Label> _lineNumbersLabel;
+        std::shared_ptr<ftk::Label> _textLabel;
     };
 
     //! JSON tool.
@@ -64,7 +64,7 @@ namespace toucan
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -73,27 +73,27 @@ namespace toucan
 
         //! Create a new tool.
         static std::shared_ptr<JSONTool> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
 
     private:
         std::shared_ptr<File> _file;
 
-        std::shared_ptr<feather_tk::VerticalLayout> _layout;
-        std::shared_ptr<feather_tk::ScrollWidget> _scrollWidget;
-        std::shared_ptr<feather_tk::VerticalLayout> _scrollLayout;
+        std::shared_ptr<ftk::VerticalLayout> _layout;
+        std::shared_ptr<ftk::ScrollWidget> _scrollWidget;
+        std::shared_ptr<ftk::VerticalLayout> _scrollLayout;
         std::vector<std::shared_ptr<JSONWidget> > _widgets;
-        std::shared_ptr<feather_tk::HorizontalLayout> _bottomLayout;
-        std::shared_ptr<feather_tk::SearchBox> _searchBox;
-        std::shared_ptr<feather_tk::ToolButton> _openButton;
-        std::shared_ptr<feather_tk::ToolButton> _closeButton;
+        std::shared_ptr<ftk::HorizontalLayout> _bottomLayout;
+        std::shared_ptr<ftk::SearchBox> _searchBox;
+        std::shared_ptr<ftk::ToolButton> _openButton;
+        std::shared_ptr<ftk::ToolButton> _closeButton;
 
-        std::shared_ptr<feather_tk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
-        std::shared_ptr<feather_tk::ListObserver<SelectionItem> > _selectionObserver;
+        std::shared_ptr<ftk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
+        std::shared_ptr<ftk::ListObserver<SelectionItem> > _selectionObserver;
     };
 }
 

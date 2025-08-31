@@ -8,6 +8,6 @@
 namespace toucan
 {
     void playbackModelTest(
-        const std::shared_ptr<feather_tk::Context>&,
+        const std::shared_ptr<ftk::Context>&,
         const std::filesystem::path& path);
 }

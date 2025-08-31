@@ -15,36 +15,36 @@
 namespace toucan
 {
     void JSONWidget::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::SerializableObjectWithMetadata>& object,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
         IWidget::_init(context, "toucan::JSONWidget", parent);
 
         _object = object;
-        _text = feather_tk::split(object->to_json_string(), { '\n' });
+        _text = ftk::split(object->to_json_string(), { '\n' });
         for (int i = 0; i < _text.size(); ++i)
         {
-            _lineNumbers.push_back(feather_tk::Format("{0}").arg(i, feather_tk::digits(_text.size()), '0'));
+            _lineNumbers.push_back(ftk::Format("{0}").arg(i, ftk::digits(_text.size()), '0'));
         }
 
-        _bellows = feather_tk::Bellows::create(context, object->name(), shared_from_this());
+        _bellows = ftk::Bellows::create(context, object->name(), shared_from_this());
         _bellows->setOpen(true);
 
-        auto hLayout = feather_tk::HorizontalLayout::create(context);
-        hLayout->setSpacingRole(feather_tk::SizeRole::None);
+        auto hLayout = ftk::HorizontalLayout::create(context);
+        hLayout->setSpacingRole(ftk::SizeRole::None);
         _bellows->setWidget(hLayout);
 
-        _lineNumbersLabel = feather_tk::Label::create(context, hLayout);
-        _lineNumbersLabel->setBackgroundRole(feather_tk::ColorRole::Base);
-        _lineNumbersLabel->setFontRole(feather_tk::FontRole::Mono);
-        _lineNumbersLabel->setMarginRole(feather_tk::SizeRole::MarginSmall);
-        _lineNumbersLabel->setHStretch(feather_tk::Stretch::Fixed);
+        _lineNumbersLabel = ftk::Label::create(context, hLayout);
+        _lineNumbersLabel->setBackgroundRole(ftk::ColorRole::Base);
+        _lineNumbersLabel->setFontRole(ftk::FontRole::Mono);
+        _lineNumbersLabel->setMarginRole(ftk::SizeRole::MarginSmall);
+        _lineNumbersLabel->setHStretch(ftk::Stretch::Fixed);
 
-        _textLabel = feather_tk::Label::create(context, hLayout);
-        _textLabel->setFontRole(feather_tk::FontRole::Mono);
-        _textLabel->setMarginRole(feather_tk::SizeRole::MarginSmall);
-        _textLabel->setHStretch(feather_tk::Stretch::Expanding);
+        _textLabel = ftk::Label::create(context, hLayout);
+        _textLabel->setFontRole(ftk::FontRole::Mono);
+        _textLabel->setMarginRole(ftk::SizeRole::MarginSmall);
+        _textLabel->setHStretch(ftk::Stretch::Expanding);
 
         _textUpdate();
     }
@@ -53,9 +53,9 @@ namespace toucan
     {}
 
     std::shared_ptr<JSONWidget> JSONWidget::create(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::SerializableObjectWithMetadata>& object,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
         auto out = std::shared_ptr<JSONWidget>(new JSONWidget);
         out->_init(context, object, parent);
@@ -75,13 +75,13 @@ namespace toucan
         _textUpdate();
     }
 
-    void JSONWidget::setGeometry(const feather_tk::Box2I& value)
+    void JSONWidget::setGeometry(const ftk::Box2I& value)
     {
         IWidget::setGeometry(value);
         _bellows->setGeometry(value);
     }
 
-    void JSONWidget::sizeHintEvent(const feather_tk::SizeHintEvent& event)
+    void JSONWidget::sizeHintEvent(const ftk::SizeHintEvent& event)
     {
         IWidget::sizeHintEvent(event);
         _setSizeHint(_bellows->getSizeHint());
@@ -95,56 +95,56 @@ namespace toucan
             std::vector<std::string> text;
             for (size_t i = 0; i < _lineNumbers.size() && i < _text.size(); ++i)
             {
-                if (feather_tk::contains(_text[i], _search, feather_tk::CaseCompare::Insensitive))
+                if (ftk::contains(_text[i], _search, ftk::CaseCompare::Insensitive))
                 {
                     lineNumbers.push_back(_lineNumbers[i]);
                     text.push_back(_text[i]);
                 }
             }
-            _lineNumbersLabel->setText(feather_tk::join(lineNumbers, '\n'));
-            _textLabel->setText(feather_tk::join(text, '\n'));
+            _lineNumbersLabel->setText(ftk::join(lineNumbers, '\n'));
+            _textLabel->setText(ftk::join(text, '\n'));
         }
         else
         {
-            _lineNumbersLabel->setText(feather_tk::join(_lineNumbers, '\n'));
-            _textLabel->setText(feather_tk::join(_text, '\n'));
+            _lineNumbersLabel->setText(ftk::join(_lineNumbers, '\n'));
+            _textLabel->setText(ftk::join(_text, '\n'));
         }
     }
 
     void JSONTool::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
         IToolWidget::_init(context, app, "toucan::JSONTool", "JSON", parent);
 
-        _layout = feather_tk::VerticalLayout::create(context, shared_from_this());
-        _layout->setSpacingRole(feather_tk::SizeRole::None);
+        _layout = ftk::VerticalLayout::create(context, shared_from_this());
+        _layout->setSpacingRole(ftk::SizeRole::None);
 
-        _scrollWidget = feather_tk::ScrollWidget::create(context, feather_tk::ScrollType::Both, _layout);
+        _scrollWidget = ftk::ScrollWidget::create(context, ftk::ScrollType::Both, _layout);
         _scrollWidget->setBorder(false);
-        _scrollWidget->setVStretch(feather_tk::Stretch::Expanding);
+        _scrollWidget->setVStretch(ftk::Stretch::Expanding);
 
-        _scrollLayout = feather_tk::VerticalLayout::create(context);
-        _scrollLayout->setSpacingRole(feather_tk::SizeRole::None);
+        _scrollLayout = ftk::VerticalLayout::create(context);
+        _scrollLayout->setSpacingRole(ftk::SizeRole::None);
         _scrollWidget->setWidget(_scrollLayout);
 
-        feather_tk::Divider::create(context, feather_tk::Orientation::Vertical, _layout);
+        ftk::Divider::create(context, ftk::Orientation::Vertical, _layout);
 
-        _bottomLayout = feather_tk::HorizontalLayout::create(context, _layout);
-        _bottomLayout->setMarginRole(feather_tk::SizeRole::MarginSmall);
-        _bottomLayout->setSpacingRole(feather_tk::SizeRole::SpacingSmall);
+        _bottomLayout = ftk::HorizontalLayout::create(context, _layout);
+        _bottomLayout->setMarginRole(ftk::SizeRole::MarginSmall);
+        _bottomLayout->setSpacingRole(ftk::SizeRole::SpacingSmall);
 
-        _searchBox = feather_tk::SearchBox::create(context, _bottomLayout);
-        _searchBox->setHStretch(feather_tk::Stretch::Expanding);
+        _searchBox = ftk::SearchBox::create(context, _bottomLayout);
+        _searchBox->setHStretch(ftk::Stretch::Expanding);
         _searchBox->setTooltip("Search the JSON text");
 
-        auto hLayout = feather_tk::HorizontalLayout::create(context, _bottomLayout);
-        hLayout->setSpacingRole(feather_tk::SizeRole::SpacingTool);
-        _openButton = feather_tk::ToolButton::create(context, hLayout);
+        auto hLayout = ftk::HorizontalLayout::create(context, _bottomLayout);
+        hLayout->setSpacingRole(ftk::SizeRole::SpacingTool);
+        _openButton = ftk::ToolButton::create(context, hLayout);
         _openButton->setIcon("BellowsOpen");
         _openButton->setTooltip("Open all");
-        _closeButton = feather_tk::ToolButton::create(context, hLayout);
+        _closeButton = ftk::ToolButton::create(context, hLayout);
         _closeButton->setIcon("BellowsClosed");
         _closeButton->setTooltip("Close all");
 
@@ -175,13 +175,13 @@ namespace toucan
                 }
             });
 
-        _fileObserver = feather_tk::ValueObserver<std::shared_ptr<File> >::create(
+        _fileObserver = ftk::ValueObserver<std::shared_ptr<File> >::create(
             app->getFilesModel()->observeCurrent(),
             [this](const std::shared_ptr<File>& file)
             {
                 if (file)
                 {
-                    _selectionObserver = feather_tk::ListObserver<SelectionItem>::create(
+                    _selectionObserver = ftk::ListObserver<SelectionItem>::create(
                         file->getSelectionModel()->observeSelection(),
                         [this](const std::vector<SelectionItem>& selection)
                         {
@@ -223,22 +223,22 @@ namespace toucan
     {}
 
     std::shared_ptr<JSONTool> JSONTool::create(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
         auto out = std::shared_ptr<JSONTool>(new JSONTool);
         out->_init(context, app, parent);
         return out;
     }
 
-    void JSONTool::setGeometry(const feather_tk::Box2I& value)
+    void JSONTool::setGeometry(const ftk::Box2I& value)
     {
         IToolWidget::setGeometry(value);
         _layout->setGeometry(value);
     }
 
-    void JSONTool::sizeHintEvent(const feather_tk::SizeHintEvent& event)
+    void JSONTool::sizeHintEvent(const ftk::SizeHintEvent& event)
     {
         IToolWidget::sizeHintEvent(event);
         _setSizeHint(_layout->getSizeHint());

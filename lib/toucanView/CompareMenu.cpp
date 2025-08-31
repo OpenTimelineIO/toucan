@@ -10,11 +10,11 @@
 namespace toucan
 {
     void CompareMenu::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
-        feather_tk::Menu::_init(context, parent);
+        ftk::Menu::_init(context, parent);
 
         _filesModel = app->getFilesModel();
 
@@ -22,10 +22,10 @@ namespace toucan
 
         addDivider();
 
-        _actions["Compare/A"] = feather_tk::Action::create(
+        _actions["Compare/A"] = ftk::Action::create(
             "A",
-            feather_tk::Key::A,
-            static_cast<int>(feather_tk::KeyModifier::Shift),
+            ftk::Key::A,
+            static_cast<int>(ftk::KeyModifier::Shift),
             [this](bool)
             {
                 CompareOptions options = _filesModel->getCompareOptions();
@@ -34,10 +34,10 @@ namespace toucan
             });
         addAction(_actions["Compare/A"]);
 
-        _actions["Compare/B"] = feather_tk::Action::create(
+        _actions["Compare/B"] = ftk::Action::create(
             "B",
-            feather_tk::Key::B,
-            static_cast<int>(feather_tk::KeyModifier::Shift),
+            ftk::Key::B,
+            static_cast<int>(ftk::KeyModifier::Shift),
             [this](bool)
             {
                 CompareOptions options = _filesModel->getCompareOptions();
@@ -46,10 +46,10 @@ namespace toucan
             });
         addAction(_actions["Compare/B"]);
 
-        _actions["Compare/Split"] = feather_tk::Action::create(
+        _actions["Compare/Split"] = ftk::Action::create(
             "Split",
-            feather_tk::Key::S,
-            static_cast<int>(feather_tk::KeyModifier::Shift),
+            ftk::Key::S,
+            static_cast<int>(ftk::KeyModifier::Shift),
             [this](bool)
             {
                 CompareOptions options = _filesModel->getCompareOptions();
@@ -58,10 +58,10 @@ namespace toucan
             });
         addAction(_actions["Compare/Split"]);
 
-        _actions["Compare/Overlay"] = feather_tk::Action::create(
+        _actions["Compare/Overlay"] = ftk::Action::create(
             "Overlay",
-            feather_tk::Key::E,
-            static_cast<int>(feather_tk::KeyModifier::Shift),
+            ftk::Key::E,
+            static_cast<int>(ftk::KeyModifier::Shift),
             [this](bool)
             {
                 CompareOptions options = _filesModel->getCompareOptions();
@@ -70,10 +70,10 @@ namespace toucan
             });
         addAction(_actions["Compare/Overlay"]);
 
-        _actions["Compare/Horizontal"] = feather_tk::Action::create(
+        _actions["Compare/Horizontal"] = ftk::Action::create(
             "Horizontal",
-            feather_tk::Key::H,
-            static_cast<int>(feather_tk::KeyModifier::Shift),
+            ftk::Key::H,
+            static_cast<int>(ftk::KeyModifier::Shift),
             [this](bool)
             {
                 CompareOptions options = _filesModel->getCompareOptions();
@@ -82,10 +82,10 @@ namespace toucan
             });
         addAction(_actions["Compare/Horizontal"]);
 
-        _actions["Compare/Vertical"] = feather_tk::Action::create(
+        _actions["Compare/Vertical"] = ftk::Action::create(
             "Vertical",
-            feather_tk::Key::V,
-            static_cast<int>(feather_tk::KeyModifier::Shift),
+            ftk::Key::V,
+            static_cast<int>(ftk::KeyModifier::Shift),
             [this](bool)
             {
                 CompareOptions options = _filesModel->getCompareOptions();
@@ -94,7 +94,7 @@ namespace toucan
             });
         addAction(_actions["Compare/Vertical"]);
 
-        _modeObserver = feather_tk::ValueObserver<CompareOptions>::create(
+        _modeObserver = ftk::ValueObserver<CompareOptions>::create(
             app->getFilesModel()->observeCompareOptions(),
             [this](const CompareOptions& value)
             {
@@ -106,7 +106,7 @@ namespace toucan
                 setChecked(_actions["Compare/Vertical"], CompareMode::Vertical == value.mode);
             });
 
-        _filesObserver = feather_tk::ListObserver<std::shared_ptr<File> >::create(
+        _filesObserver = ftk::ListObserver<std::shared_ptr<File> >::create(
             _filesModel->observeFiles(),
             [this](const std::vector<std::shared_ptr<File> >& files)
             {
@@ -114,7 +114,7 @@ namespace toucan
                 _bFileActions.clear();
                 for (int i = 0; i < files.size(); ++i)
                 {
-                    auto action = feather_tk::Action::create(
+                    auto action = ftk::Action::create(
                         files[i]->getPath().filename().string(),
                         [this, i](bool value)
                         {
@@ -126,7 +126,7 @@ namespace toucan
                 }
             });
 
-        _fileObserver = feather_tk::ValueObserver<std::shared_ptr<File> >::create(
+        _fileObserver = ftk::ValueObserver<std::shared_ptr<File> >::create(
             app->getFilesModel()->observeCurrent(),
             [this](const std::shared_ptr<File>& file)
             {
@@ -134,7 +134,7 @@ namespace toucan
                 _menuUpdate();
             });
 
-        _bIndexObserver = feather_tk::ValueObserver<int>::create(
+        _bIndexObserver = ftk::ValueObserver<int>::create(
             _filesModel->observeBIndex(),
             [this](int index)
             {
@@ -149,16 +149,16 @@ namespace toucan
     {}
 
     std::shared_ptr<CompareMenu> CompareMenu::create(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
         auto out = std::shared_ptr<CompareMenu>(new CompareMenu);
         out->_init(context, app, parent);
         return out;
     }
 
-    const std::map<std::string, std::shared_ptr<feather_tk::Action> >& CompareMenu::getActions() const
+    const std::map<std::string, std::shared_ptr<ftk::Action> >& CompareMenu::getActions() const
     {
         return _actions;
     }

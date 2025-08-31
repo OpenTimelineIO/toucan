@@ -14,11 +14,11 @@ namespace toucan
     class App;
 
     //! Compare menu.
-    class CompareMenu : public feather_tk::Menu
+    class CompareMenu : public ftk::Menu
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -27,12 +27,12 @@ namespace toucan
 
         //! Create a new menu.
         static std::shared_ptr<CompareMenu> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
         //! Get the actions.
-        const std::map<std::string, std::shared_ptr<feather_tk::Action> >& getActions() const;
+        const std::map<std::string, std::shared_ptr<ftk::Action> >& getActions() const;
 
     private:
         void _menuUpdate();
@@ -40,13 +40,13 @@ namespace toucan
         std::shared_ptr<FilesModel> _filesModel;
         std::shared_ptr<File> _file;
 
-        std::map<std::string, std::shared_ptr<feather_tk::Menu> > _menus;
-        std::map<std::string, std::shared_ptr<feather_tk::Action> > _actions;
-        std::vector<std::shared_ptr<feather_tk::Action> > _bFileActions;
+        std::map<std::string, std::shared_ptr<ftk::Menu> > _menus;
+        std::map<std::string, std::shared_ptr<ftk::Action> > _actions;
+        std::vector<std::shared_ptr<ftk::Action> > _bFileActions;
 
-        std::shared_ptr<feather_tk::ListObserver<std::shared_ptr<File> > > _filesObserver;
-        std::shared_ptr<feather_tk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
-        std::shared_ptr<feather_tk::ValueObserver<int> > _bIndexObserver;
-        std::shared_ptr<feather_tk::ValueObserver<CompareOptions> > _modeObserver;
+        std::shared_ptr<ftk::ListObserver<std::shared_ptr<File> > > _filesObserver;
+        std::shared_ptr<ftk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
+        std::shared_ptr<ftk::ValueObserver<int> > _bIndexObserver;
+        std::shared_ptr<ftk::ValueObserver<CompareOptions> > _modeObserver;
     };
 }

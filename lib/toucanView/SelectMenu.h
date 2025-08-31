@@ -13,11 +13,11 @@ namespace toucan
     class File;
 
     //! Select menu.
-    class SelectMenu : public feather_tk::Menu
+    class SelectMenu : public ftk::Menu
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -26,21 +26,21 @@ namespace toucan
 
         //! Create a new menu.
         static std::shared_ptr<SelectMenu> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
         //! Get the actions.
-        const std::map<std::string, std::shared_ptr<feather_tk::Action> >& getActions() const;
+        const std::map<std::string, std::shared_ptr<ftk::Action> >& getActions() const;
 
     private:
         void _menuUpdate();
 
         std::shared_ptr<File> _file;
 
-        std::map<std::string, std::shared_ptr<feather_tk::Action> > _actions;
+        std::map<std::string, std::shared_ptr<ftk::Action> > _actions;
 
-        std::shared_ptr<feather_tk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
+        std::shared_ptr<ftk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
     };
 }
 

@@ -11,16 +11,16 @@
 namespace toucan
 {
     void PlaybackMenu::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
-        feather_tk::Menu::_init(context, parent);
+        ftk::Menu::_init(context, parent);
 
-        _actions["Playback/Stop"] = feather_tk::Action::create(
+        _actions["Playback/Stop"] = ftk::Action::create(
             "Stop",
             "PlaybackStop",
-            feather_tk::Key::K,
+            ftk::Key::K,
             0,
             [this]
             {
@@ -31,10 +31,10 @@ namespace toucan
             });
         addAction(_actions["Playback/Stop"]);
 
-        _actions["Playback/Forward"] = feather_tk::Action::create(
+        _actions["Playback/Forward"] = ftk::Action::create(
             "Forward",
             "PlaybackForward",
-            feather_tk::Key::L,
+            ftk::Key::L,
             0,
             [this]
             {
@@ -45,10 +45,10 @@ namespace toucan
             });
         addAction(_actions["Playback/Forward"]);
 
-        _actions["Playback/Reverse"] = feather_tk::Action::create(
+        _actions["Playback/Reverse"] = ftk::Action::create(
             "Reverse",
             "PlaybackReverse",
-            feather_tk::Key::J,
+            ftk::Key::J,
             0,
             [this]
             {
@@ -61,9 +61,9 @@ namespace toucan
 
         addDivider();
 
-        _actions["Playback/Toggle"] = feather_tk::Action::create(
+        _actions["Playback/Toggle"] = ftk::Action::create(
             "Toggle Playback",
-            feather_tk::Key::Space,
+            ftk::Key::Space,
             0,
             [this]
             {
@@ -74,7 +74,7 @@ namespace toucan
             });
         addAction(_actions["Playback/Toggle"]);
 
-        _fileObserver = feather_tk::ValueObserver<std::shared_ptr<File> >::create(
+        _fileObserver = ftk::ValueObserver<std::shared_ptr<File> >::create(
             app->getFilesModel()->observeCurrent(),
             [this](const std::shared_ptr<File>& file)
             {
@@ -87,16 +87,16 @@ namespace toucan
     {}
 
     std::shared_ptr<PlaybackMenu> PlaybackMenu::create(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
         auto out = std::shared_ptr<PlaybackMenu>(new PlaybackMenu);
         out->_init(context, app, parent);
         return out;
     }
 
-    const std::map<std::string, std::shared_ptr<feather_tk::Action> >& PlaybackMenu::getActions() const
+    const std::map<std::string, std::shared_ptr<ftk::Action> >& PlaybackMenu::getActions() const
     {
         return _actions;
     }
@@ -106,7 +106,7 @@ namespace toucan
         const bool file = _file.get();
         if (file)
         {
-            _playbackObserver = feather_tk::ValueObserver<Playback>::create(
+            _playbackObserver = ftk::ValueObserver<Playback>::create(
                 _file->getPlaybackModel()->observePlayback(),
                 [this](Playback value)
                 {

@@ -34,9 +34,9 @@ int main(int argc, char** argv)
     }
     const std::filesystem::path path(argv[1]);
 
-    auto context = feather_tk::Context::create();
+    auto context = ftk::Context::create();
 #if defined(toucan_VIEW)
-    feather_tk::uiInit(context);
+    ftk::uiInit(context);
 #endif // toucan_VIEW
 
     auto host = std::make_shared<ImageEffectHost>(context, getOpenFXPluginPaths(argv[0]));

@@ -21,7 +21,7 @@ namespace toucan
         Count,
         First = Timecode
     };
-    FEATHER_TK_ENUM(TimeUnits);
+    FTK_ENUM(TimeUnits);
 
     //! Convert a time to a string.
     std::string toString(const OTIO_NS::RationalTime&, TimeUnits);
@@ -37,8 +37,8 @@ namespace toucan
     {
     public:
         TimeUnitsModel(
-            const std::shared_ptr<feather_tk::Context>&,
-            const std::shared_ptr<feather_tk::Settings>&);
+            const std::shared_ptr<ftk::Context>&,
+            const std::shared_ptr<ftk::Settings>&);
 
         virtual ~TimeUnitsModel();
 
@@ -46,13 +46,13 @@ namespace toucan
         TimeUnits getTimeUnits() const;
 
         //! Observe the time units.
-        std::shared_ptr<feather_tk::IObservableValue<TimeUnits> > observeTimeUnits() const;
+        std::shared_ptr<ftk::IObservableValue<TimeUnits> > observeTimeUnits() const;
 
         //! Set the time units.
         void setTimeUnits(TimeUnits);
 
     private:
-        std::shared_ptr<feather_tk::Settings> _settings;
-        std::shared_ptr<feather_tk::ObservableValue<TimeUnits> > _timeUnits;
+        std::shared_ptr<ftk::Settings> _settings;
+        std::shared_ptr<ftk::ObservableValue<TimeUnits> > _timeUnits;
     };
 }

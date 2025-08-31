@@ -19,7 +19,7 @@ namespace toucan
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -28,26 +28,26 @@ namespace toucan
 
         //! Create a new tool.
         static std::shared_ptr<LogTool> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
 
     private:
         void _textUpdate();
 
         std::list<std::string> _text;
 
-        std::shared_ptr<feather_tk::VerticalLayout> _layout;
-        std::shared_ptr<feather_tk::ScrollWidget> _scrollWidget;
-        std::shared_ptr<feather_tk::Label> _label;
-        std::shared_ptr<feather_tk::HorizontalLayout> _bottomLayout;
-        std::shared_ptr<feather_tk::SearchBox> _searchBox;
-        std::shared_ptr<feather_tk::ToolButton> _clearButton;
+        std::shared_ptr<ftk::VerticalLayout> _layout;
+        std::shared_ptr<ftk::ScrollWidget> _scrollWidget;
+        std::shared_ptr<ftk::Label> _label;
+        std::shared_ptr<ftk::HorizontalLayout> _bottomLayout;
+        std::shared_ptr<ftk::SearchBox> _searchBox;
+        std::shared_ptr<ftk::ToolButton> _clearButton;
 
-        std::shared_ptr<feather_tk::ListObserver<feather_tk::LogItem> > _logObserver;
+        std::shared_ptr<ftk::ListObserver<ftk::LogItem> > _logObserver;
     };
 }
 

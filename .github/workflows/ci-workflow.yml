@@ -24,16 +24,13 @@ jobs:
         sudo apt-get install xorg-dev libglu1-mesa-dev mesa-common-dev mesa-utils xvfb
 
     - name: Build
-      run: |
-        bash toucan/SuperBuild.sh Debug
+      run: sh toucan/sbuild-linux.sh Debug
 
     - name: Install
-      run: |
-        cmake --build build-Debug --config Debug --target install
+      run: cmake --build build-Debug --config Debug --target install
 
     - name: Tests
-      run: |
-        build-Debug/tests/toucan-test/toucan-test toucan/data
+      run: build-Debug/tests/toucan-test/toucan-test toucan/data
 
   linux-package:
     runs-on: ubuntu-latest
@@ -52,16 +49,13 @@ jobs:
         sudo apt-get install xorg-dev libglu1-mesa-dev mesa-common-dev mesa-utils xvfb
 
     - name: Build
-      run: |
-        bash toucan/SuperBuild.sh Release
+      run: sh toucan/sbuild-macos.sh
 
     - name: Install
-      run: |
-        cmake --build build-Release --config Release --target install
+      run: cmake --build build-Release --config Release --target install
 
     - name: Package
-      run: |
-        cmake --build build-Release --config Release --target package
+      run: cmake --build build-Release --config Release --target package
 
     - name: Upload artifact
       id: linux-package-artifact
@@ -92,16 +86,13 @@ jobs:
         echo "DYLD_LIBRARY_PATH=$PWD/install-Debug/lib:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
 
     - name: Build
-      run: |
-        bash toucan/SuperBuild.sh Debug
+      run: sh toucan/sbuild-macos.sh Debug
 
     - name: Install
-      run: |
-        cmake --build build-Debug --config Debug --target install
+      run: cmake --build build-Debug --config Debug --target install
 
     - name: Tests
-      run: |
-        build-Debug/tests/toucan-test/toucan-test toucan/data
+      run: build-Debug/tests/toucan-test/toucan-test toucan/data
 
   macos-build:
     runs-on: macos-latest
@@ -119,16 +110,13 @@ jobs:
         echo "DYLD_LIBRARY_PATH=$PWD/install-Debug/lib:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
 
     - name: Build
-      run: |
-        bash toucan/SuperBuild.sh Debug
+      run: sh toucan/sbuild-macos.sh Debug
 
     - name: Install
-      run: |
-        cmake --build build-Debug --config Debug --target install
+      run: cmake --build build-Debug --config Debug --target install
 
     - name: Tests
-      run: |
-        build-Debug/tests/toucan-test/toucan-test toucan/data
+      run: build-Debug/tests/toucan-test/toucan-test toucan/data
 
   macos-package:
     runs-on: macos-latest
@@ -146,16 +134,13 @@ jobs:
         echo "DYLD_LIBRARY_PATH=$PWD/install-Debug/lib:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
 
     - name: Build
-      run: |
-        bash toucan/SuperBuild.sh Release
+      run: bash toucan/sbuild-macos.sh
 
     - name: Install
-      run: |
-        cmake --build build-Release --config Release --target install
+      run: cmake --build build-Release --config Release --target install
 
     - name: Package
-      run: |
-        cmake --build build-Release --config Release --target package
+      run: cmake --build build-Release --config Release --target package
 
     - name: Upload artifact
       id: macos-package-artifact
@@ -190,18 +175,15 @@ jobs:
 
     - name: Build
       shell: cmd
-      run: |
-        toucan\SuperBuild.bat Debug
+      run: toucan\sbuild-win.bat Debug
 
     - name: Install
       shell: cmd
-      run: |
-        cmake --build build-Debug --config Debug --target INSTALL
+      run: cmake --build build-Debug --config Debug --target INSTALL
 
     - name: Tests
       shell: cmd
-      run: |
-        build-Debug\tests\toucan-test\Debug\toucan-test.exe toucan\data
+      run: build-Debug\tests\toucan-test\Debug\toucan-test.exe toucan\data
 
   windows-package:
     runs-on: windows-latest
@@ -222,18 +204,15 @@ jobs:
 
     - name: Build
       shell: cmd
-      run: |
-        toucan\SuperBuild.bat Release
+      run: toucan\sbuild-win.bat
 
     - name: Install
       shell: cmd
-      run: |
-        cmake --build build-Release --config Release --target INSTALL
+      run: cmake --build build-Release --config Release --target INSTALL
 
     - name: Package
       shell: cmd
-      run: |
-        cmake --build build-Release --config Release --target PACKAGE
+      run: cmake --build build-Release --config Release --target PACKAGE
 
     - name: Upload artifact
       id: windows-package-artifact

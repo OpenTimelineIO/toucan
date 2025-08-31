@@ -10,11 +10,11 @@ namespace toucan
     class App;
 
     //! Base class for tools.
-    class IToolWidget : public feather_tk::IWidget
+    class IToolWidget : public ftk::IWidget
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::string& objectName,
             const std::string& text,

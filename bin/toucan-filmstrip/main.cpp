@@ -19,7 +19,7 @@ int main(int argc, char** argv)
     }
     try
     {
-        auto context = feather_tk::Context::create();
+        auto context = ftk::Context::create();
         auto app = App::create(context, args);
         if (0 == app->getExit())
             app->run();

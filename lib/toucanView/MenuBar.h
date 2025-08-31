@@ -11,11 +11,11 @@ namespace toucan
     class MainWindow;
 
     //! Menu bar.
-    class MenuBar : public feather_tk::MenuBar
+    class MenuBar : public ftk::MenuBar
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<MainWindow>&,
             const std::shared_ptr<IWidget>& parent);
@@ -25,17 +25,17 @@ namespace toucan
 
         //! Create a new menu bar.
         static std::shared_ptr<MenuBar> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<MainWindow>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
         //! Get the actions.
-        const std::map<std::string, std::shared_ptr<feather_tk::Action> >& getActions() const;
+        const std::map<std::string, std::shared_ptr<ftk::Action> >& getActions() const;
 
     private:
-        std::map<std::string, std::shared_ptr<feather_tk::Menu> > _menus;
-        std::map<std::string, std::shared_ptr<feather_tk::Action> > _actions;
+        std::map<std::string, std::shared_ptr<ftk::Menu> > _menus;
+        std::map<std::string, std::shared_ptr<ftk::Action> > _actions;
     };
 }
 

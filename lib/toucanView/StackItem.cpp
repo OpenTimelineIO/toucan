@@ -11,7 +11,7 @@
 namespace toucan
 {
     void StackItem::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const ItemData& data,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Stack>& stack,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>& timeline ,
@@ -37,12 +37,12 @@ namespace toucan
 
         _stack = stack;
         _text = !stack->name().empty() ? stack->name() : "Stack";
-        _color = feather_tk::Color4F(.2F, .2F, .2F);
+        _color = ftk::Color4F(.2F, .2F, .2F);
 
         setTooltip(stack->schema_name() + ": " + _text);
 
-        _layout = feather_tk::VerticalLayout::create(context, shared_from_this());
-        _layout->setSpacingRole(feather_tk::SizeRole::SpacingTool);
+        _layout = ftk::VerticalLayout::create(context, shared_from_this());
+        _layout->setSpacingRole(ftk::SizeRole::SpacingTool);
 
         _label = ItemLabel::create(context, _layout);
         _label->setName(_text);
@@ -91,7 +91,7 @@ namespace toucan
     {}
 
     std::shared_ptr<StackItem> StackItem::create(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const ItemData& data,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Stack>& stack,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>& timeline,
@@ -112,21 +112,21 @@ namespace toucan
         _timeLayout->setScale(value);
     }
 
-    void StackItem::setGeometry(const feather_tk::Box2I& value)
+    void StackItem::setGeometry(const ftk::Box2I& value)
     {
         IItem::setGeometry(value);
         _layout->setGeometry(value);
-        _geom.g2 = feather_tk::margin(value, -_size.border, 0, -_size.border, 0);
-        _geom.g3 = feather_tk::margin(_label->getGeometry(), -_size.border, 0, -_size.border, 0);
+        _geom.g2 = ftk::margin(value, -_size.border, 0, -_size.border, 0);
+        _geom.g3 = ftk::margin(_label->getGeometry(), -_size.border, 0, -_size.border, 0);
         _selectionRect = _geom.g3;
     }
 
-    feather_tk::Box2I StackItem::getChildrenClipRect() const
+    ftk::Box2I StackItem::getChildrenClipRect() const
     {
         return _geom.g2;
     }
 
-    void StackItem::sizeHintEvent(const feather_tk::SizeHintEvent& event)
+    void StackItem::sizeHintEvent(const ftk::SizeHintEvent& event)
     {
         IItem::sizeHintEvent(event);
         const bool displayScaleChanged = event.displayScale != _size.displayScale;
@@ -134,19 +134,19 @@ namespace toucan
         {
             _size.init = false;
             _size.displayScale = event.displayScale;
-            _size.border = event.style->getSizeRole(feather_tk::SizeRole::Border, event.displayScale);
+            _size.border = event.style->getSizeRole(ftk::SizeRole::Border, event.displayScale);
         }
         _setSizeHint(_layout->getSizeHint());
     }
 
     void StackItem::drawEvent(
-        const feather_tk::Box2I& drawRect,
-        const feather_tk::DrawEvent& event)
+        const ftk::Box2I& drawRect,
+        const ftk::DrawEvent& event)
     {
         IItem::drawEvent(drawRect, event);
         event.render->drawRect(
             _geom.g3,
-            _selected ? event.style->getColorRole(feather_tk::ColorRole::Yellow) : _color);
+            _selected ? event.style->getColorRole(ftk::ColorRole::Yellow) : _color);
     }
 
     void StackItem::_timeUnitsUpdate()

@@ -15,11 +15,11 @@ namespace toucan
     class File;
 
     //! Information tool bar.
-    class InfoBar : public feather_tk::IWidget
+    class InfoBar : public ftk::IWidget
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -28,18 +28,18 @@ namespace toucan
 
         //! Create a new tool bar.
         static std::shared_ptr<InfoBar> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
 
     private:
-        std::shared_ptr<feather_tk::HorizontalLayout> _layout;
-        std::shared_ptr<feather_tk::Label> _label;
+        std::shared_ptr<ftk::HorizontalLayout> _layout;
+        std::shared_ptr<ftk::Label> _label;
 
-        std::shared_ptr<feather_tk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
+        std::shared_ptr<ftk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
     };
 }
 

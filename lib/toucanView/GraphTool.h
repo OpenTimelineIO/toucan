@@ -17,11 +17,11 @@ namespace toucan
     class File;
 
     //! Image graph widget.
-    class GraphWidget : public feather_tk::IWidget
+    class GraphWidget : public ftk::IWidget
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -30,27 +30,27 @@ namespace toucan
 
         //! Create a new widget.
         static std::shared_ptr<GraphWidget> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
-        void drawEvent(const feather_tk::Box2I&, const feather_tk::DrawEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
+        void drawEvent(const ftk::Box2I&, const ftk::DrawEvent&) override;
 
     private:
         int _getDepth(const std::shared_ptr<IImageNode>&, int = 0) const;
 
         void _createNodes(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<IImageNode>&,
             int = 0);
 
         void _drawInputs(
             const std::shared_ptr<IImageNode>&,
-            const feather_tk::Box2I& drawRect,
-            const feather_tk::DrawEvent&,
-            const feather_tk::LineOptions&);
+            const ftk::Box2I& drawRect,
+            const ftk::DrawEvent&,
+            const ftk::LineOptions&);
 
         void _graphUpdate();
 
@@ -59,12 +59,12 @@ namespace toucan
         int _depth = 0;
         std::shared_ptr<IImageNode> _currentNode;
 
-        std::shared_ptr<feather_tk::VerticalLayout> _layout;
-        std::vector<std::shared_ptr<feather_tk::HorizontalLayout> > _layouts;
-        std::shared_ptr<feather_tk::ButtonGroup> _buttonGroup;
-        std::vector<std::shared_ptr<feather_tk::PushButton> > _buttons;
-        std::map<std::shared_ptr<IImageNode>, std::shared_ptr<feather_tk::PushButton> > _nodeToButton;
-        std::map<std::shared_ptr<feather_tk::PushButton>, std::shared_ptr<IImageNode> > _buttonToNode;
+        std::shared_ptr<ftk::VerticalLayout> _layout;
+        std::vector<std::shared_ptr<ftk::HorizontalLayout> > _layouts;
+        std::shared_ptr<ftk::ButtonGroup> _buttonGroup;
+        std::vector<std::shared_ptr<ftk::PushButton> > _buttons;
+        std::map<std::shared_ptr<IImageNode>, std::shared_ptr<ftk::PushButton> > _nodeToButton;
+        std::map<std::shared_ptr<ftk::PushButton>, std::shared_ptr<IImageNode> > _buttonToNode;
 
         struct SizeData
         {
@@ -74,9 +74,9 @@ namespace toucan
         };
         SizeData _size;
 
-        std::shared_ptr<feather_tk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
-        std::shared_ptr<feather_tk::ValueObserver<std::shared_ptr<IImageNode> > > _rootNodeObserver;
-        std::shared_ptr<feather_tk::ValueObserver<std::shared_ptr<IImageNode> > > _currentNodeObserver;
+        std::shared_ptr<ftk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
+        std::shared_ptr<ftk::ValueObserver<std::shared_ptr<IImageNode> > > _rootNodeObserver;
+        std::shared_ptr<ftk::ValueObserver<std::shared_ptr<IImageNode> > > _currentNodeObserver;
     };
 
     //! Image graph tool.
@@ -84,7 +84,7 @@ namespace toucan
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -93,15 +93,15 @@ namespace toucan
 
         //! Create a new tool.
         static std::shared_ptr<GraphTool> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
 
     private:
-        std::shared_ptr<feather_tk::ScrollWidget> _scrollWidget;
+        std::shared_ptr<ftk::ScrollWidget> _scrollWidget;
         std::shared_ptr<GraphWidget> _widget;
     };
 }

@@ -11,10 +11,10 @@
 namespace toucan
 {
     void ThumbnailsWidget::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::MediaReference>& ref,
         const std::shared_ptr<ThumbnailGenerator>& thumbnailGenerator,
-        const std::shared_ptr<feather_tk::LRUCache<std::string, std::shared_ptr<feather_tk::Image> > >& thumbnailCache,
+        const std::shared_ptr<ftk::LRUCache<std::string, std::shared_ptr<ftk::Image> > >& thumbnailCache,
         const OTIO_NS::TimeRange& timeRange,
         const std::shared_ptr<IWidget>& parent)
     {
@@ -29,10 +29,10 @@ namespace toucan
     {}
 
     std::shared_ptr<ThumbnailsWidget> ThumbnailsWidget::create(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::MediaReference>& ref,
         const std::shared_ptr<ThumbnailGenerator>& thumbnailGenerator,
-        const std::shared_ptr<feather_tk::LRUCache<std::string, std::shared_ptr<feather_tk::Image> > >& thumbnailCache,
+        const std::shared_ptr<ftk::LRUCache<std::string, std::shared_ptr<ftk::Image> > >& thumbnailCache,
         const OTIO_NS::TimeRange& timeRange,
         const std::shared_ptr<IWidget>& parent)
     {
@@ -44,7 +44,7 @@ namespace toucan
     void ThumbnailsWidget::tickEvent(
         bool parentsVisible,
         bool parentsEnabled,
-        const feather_tk::TickEvent& event)
+        const ftk::TickEvent& event)
     {
         ITimeWidget::tickEvent(parentsVisible, parentsEnabled, event);
         if (_thumbnailAspectRequest.valid() &&
@@ -71,7 +71,7 @@ namespace toucan
         }
     }
 
-    void ThumbnailsWidget::sizeHintEvent(const feather_tk::SizeHintEvent& event)
+    void ThumbnailsWidget::sizeHintEvent(const ftk::SizeHintEvent& event)
     {
         ITimeWidget::sizeHintEvent(event);
         const bool displayScaleChanged = event.displayScale != _size.displayScale;
@@ -79,7 +79,7 @@ namespace toucan
         {
             _size.init = false;
             _size.displayScale = event.displayScale;
-            _size.thumbnailHeight = 2 * event.style->getSizeRole(feather_tk::SizeRole::SwatchLarge, event.displayScale);
+            _size.thumbnailHeight = 2 * event.style->getSizeRole(ftk::SizeRole::SwatchLarge, event.displayScale);
             std::vector<uint64_t> ids;
             for (const auto& request : _thumbnailRequests)
             {
@@ -88,32 +88,32 @@ namespace toucan
             _thumbnailRequests.clear();
             _thumbnailGenerator->cancelThumbnails(ids);
         }
-        _setSizeHint(feather_tk::Size2I(0, _size.thumbnailHeight));
+        _setSizeHint(ftk::Size2I(0, _size.thumbnailHeight));
     }
     
     void ThumbnailsWidget::drawEvent(
-        const feather_tk::Box2I& drawRect,
-        const feather_tk::DrawEvent& event)
+        const ftk::Box2I& drawRect,
+        const ftk::DrawEvent& event)
     {
         ITimeWidget::drawEvent(drawRect, event);
 
-        const feather_tk::Box2I& g = getGeometry();
+        const ftk::Box2I& g = getGeometry();
         const int thumbnailWidth = _size.thumbnailHeight * _thumbnailAspect;
         const int y = g.min.y;
         for (int x = g.min.x; x < g.max.x && thumbnailWidth > 0; x += thumbnailWidth)
         {
-            const feather_tk::Box2I g2(x, y, thumbnailWidth, _size.thumbnailHeight);
-            if (feather_tk::intersects(g2, drawRect))
+            const ftk::Box2I g2(x, y, thumbnailWidth, _size.thumbnailHeight);
+            if (ftk::intersects(g2, drawRect))
             {
                 const OTIO_NS::RationalTime t = posToTime(x);
-                std::shared_ptr<feather_tk::Image> image;
+                std::shared_ptr<ftk::Image> image;
                 const std::string cacheKey = getThumbnailCacheKey(_ref, t, _size.thumbnailHeight);
                 if (_thumbnailCache->get(cacheKey, image))
                 {
                     if (image)
                     {
-                        const feather_tk::Box2I g3(x, y, image->getWidth(), image->getHeight());
-                        event.render->drawRect(g3, feather_tk::Color4F(0.F, 0.F, 0.F));
+                        const ftk::Box2I g3(x, y, image->getWidth(), image->getHeight());
+                        event.render->drawRect(g3, ftk::Color4F(0.F, 0.F, 0.F));
                         event.render->drawImage(image, g3);
                     }
                 }
@@ -142,8 +142,8 @@ namespace toucan
         while (i != _thumbnailRequests.end())
         {
             const int x = timeToPos(i->time);
-            const feather_tk::Box2I g2(x, y, thumbnailWidth, _size.thumbnailHeight);
-            if (!feather_tk::intersects(g2, drawRect))
+            const ftk::Box2I g2(x, y, thumbnailWidth, _size.thumbnailHeight);
+            if (!ftk::intersects(g2, drawRect))
             {
                 cancel.push_back(i->id);
                 i = _thumbnailRequests.erase(i);

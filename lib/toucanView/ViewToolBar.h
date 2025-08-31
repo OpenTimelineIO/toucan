@@ -14,13 +14,13 @@ namespace toucan
     class File;
 
     //! View tool bar.
-    class ViewToolBar : public feather_tk::IWidget
+    class ViewToolBar : public ftk::IWidget
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
-            const std::map<std::string, std::shared_ptr<feather_tk::Action> >&,
+            const std::map<std::string, std::shared_ptr<ftk::Action> >&,
             const std::shared_ptr<IWidget>& parent);
 
     public:
@@ -28,13 +28,13 @@ namespace toucan
 
         //! Create a new tool bar.
         static std::shared_ptr<ViewToolBar> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
-            const std::map<std::string, std::shared_ptr<feather_tk::Action> >&,
+            const std::map<std::string, std::shared_ptr<ftk::Action> >&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
 
     private:
         void _widgetUpdate();
@@ -42,12 +42,12 @@ namespace toucan
         size_t _filesSize = 0;
         std::shared_ptr<File> _file;
 
-        std::shared_ptr<feather_tk::HorizontalLayout> _layout;
-        std::map<std::string, std::shared_ptr<feather_tk::ToolButton> > _buttons;
+        std::shared_ptr<ftk::HorizontalLayout> _layout;
+        std::map<std::string, std::shared_ptr<ftk::ToolButton> > _buttons;
 
-        std::shared_ptr<feather_tk::ListObserver<std::shared_ptr<File> > > _filesObserver;
-        std::shared_ptr<feather_tk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
-        std::shared_ptr<feather_tk::ValueObserver<bool> > _frameViewObserver;
+        std::shared_ptr<ftk::ListObserver<std::shared_ptr<File> > > _filesObserver;
+        std::shared_ptr<ftk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
+        std::shared_ptr<ftk::ValueObserver<bool> > _frameViewObserver;
     };
 }
 

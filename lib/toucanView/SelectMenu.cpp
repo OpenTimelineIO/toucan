@@ -12,16 +12,16 @@
 namespace toucan
 {
     void SelectMenu::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
-        feather_tk::Menu::_init(context, parent);
+        ftk::Menu::_init(context, parent);
 
-        _actions["Select/All"] = feather_tk::Action::create(
+        _actions["Select/All"] = ftk::Action::create(
             "All",
-            feather_tk::Key::A,
-            static_cast<int>(feather_tk::commandKeyModifier),
+            ftk::Key::A,
+            static_cast<int>(ftk::commandKeyModifier),
             [this]
             {
                 if (_file)
@@ -31,7 +31,7 @@ namespace toucan
             });
         addAction(_actions["Select/All"]);
 
-        _actions["Select/AllTracks"] = feather_tk::Action::create(
+        _actions["Select/AllTracks"] = ftk::Action::create(
             "All Tracks",
             [this]
             {
@@ -44,7 +44,7 @@ namespace toucan
             });
         addAction(_actions["Select/AllTracks"]);
 
-        _actions["Select/AllClips"] = feather_tk::Action::create(
+        _actions["Select/AllClips"] = ftk::Action::create(
             "All Clips",
             [this]
             {
@@ -57,7 +57,7 @@ namespace toucan
             });
         addAction(_actions["Select/AllClips"]);
 
-        _actions["Select/AllMarkers"] = feather_tk::Action::create(
+        _actions["Select/AllMarkers"] = ftk::Action::create(
             "All Markers",
             [this]
             {
@@ -70,11 +70,11 @@ namespace toucan
             });
         addAction(_actions["Select/AllMarkers"]);
 
-        _actions["Select/None"] = feather_tk::Action::create(
+        _actions["Select/None"] = ftk::Action::create(
             "None",
-            feather_tk::Key::A,
-            static_cast<int>(feather_tk::KeyModifier::Shift) |
-            static_cast<int>(feather_tk::commandKeyModifier),
+            ftk::Key::A,
+            static_cast<int>(ftk::KeyModifier::Shift) |
+            static_cast<int>(ftk::commandKeyModifier),
             [this]
             {
                 if (_file)
@@ -84,10 +84,10 @@ namespace toucan
             });
         addAction(_actions["Select/None"]);
 
-        _actions["Select/Invert"] = feather_tk::Action::create(
+        _actions["Select/Invert"] = ftk::Action::create(
             "Invert",
-            feather_tk::Key::I,
-            static_cast<int>(feather_tk::commandKeyModifier),
+            ftk::Key::I,
+            static_cast<int>(ftk::commandKeyModifier),
             [this]
             {
                 if (_file)
@@ -97,7 +97,7 @@ namespace toucan
             });
         addAction(_actions["Select/Invert"]);
 
-        _fileObserver = feather_tk::ValueObserver<std::shared_ptr<File> >::create(
+        _fileObserver = ftk::ValueObserver<std::shared_ptr<File> >::create(
             app->getFilesModel()->observeCurrent(),
             [this](const std::shared_ptr<File>& file)
             {
@@ -110,16 +110,16 @@ namespace toucan
     {}
 
     std::shared_ptr<SelectMenu> SelectMenu::create(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
         auto out = std::shared_ptr<SelectMenu>(new SelectMenu);
         out->_init(context, app, parent);
         return out;
     }
 
-    const std::map<std::string, std::shared_ptr<feather_tk::Action> >& SelectMenu::getActions() const
+    const std::map<std::string, std::shared_ptr<ftk::Action> >& SelectMenu::getActions() const
     {
         return _actions;
     }

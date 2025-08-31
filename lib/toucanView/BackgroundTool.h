@@ -22,7 +22,7 @@ namespace toucan
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -31,12 +31,12 @@ namespace toucan
 
         //! Create a new tool.
         static std::shared_ptr<BackgroundTool> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
 
     private:
         void _widgetUpdate();
@@ -44,15 +44,15 @@ namespace toucan
         std::shared_ptr<GlobalViewModel> _model;
         GlobalViewOptions _options;
 
-        std::shared_ptr<feather_tk::ScrollWidget> _scrollWidget;
-        std::shared_ptr<feather_tk::VerticalLayout> _layout;
-        std::shared_ptr<feather_tk::ComboBox> _comboBox;
-        std::shared_ptr<feather_tk::ColorWidget> _solidColorWidget;
-        std::shared_ptr<feather_tk::ColorWidget> _checkersColor0Widget;
-        std::shared_ptr<feather_tk::ColorWidget> _checkersColor1Widget;
-        std::shared_ptr<feather_tk::IntEditSlider> _checkersSizeSlider;
+        std::shared_ptr<ftk::ScrollWidget> _scrollWidget;
+        std::shared_ptr<ftk::VerticalLayout> _layout;
+        std::shared_ptr<ftk::ComboBox> _comboBox;
+        std::shared_ptr<ftk::ColorWidget> _solidColorWidget;
+        std::shared_ptr<ftk::ColorWidget> _checkersColor0Widget;
+        std::shared_ptr<ftk::ColorWidget> _checkersColor1Widget;
+        std::shared_ptr<ftk::IntEditSlider> _checkersSizeSlider;
 
-        std::shared_ptr<feather_tk::ValueObserver<GlobalViewOptions> > _optionsObserver;
+        std::shared_ptr<ftk::ValueObserver<GlobalViewOptions> > _optionsObserver;
     };
 }
 

@@ -146,7 +146,7 @@ namespace toucan
                     tag,
                     AV_DICT_IGNORE_SUFFIX)))
                 {
-                    if ("timecode" == feather_tk::toLower(tag->key))
+                    if ("timecode" == ftk::toLower(tag->key))
                     {
                         timecode = tag->value;
                         break;
@@ -296,7 +296,7 @@ namespace toucan
                 {
                     const std::string key(tag->key);
                     const std::string value(tag->value);
-                    if ("timecode" == feather_tk::toLower(key))
+                    if ("timecode" == ftk::toLower(key))
                     {
                         timecode = value;
                     }

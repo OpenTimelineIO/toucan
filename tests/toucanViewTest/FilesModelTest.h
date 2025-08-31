@@ -10,7 +10,7 @@
 namespace toucan
 {
     void filesModelTest(
-        const std::shared_ptr<feather_tk::Context>&,
+        const std::shared_ptr<ftk::Context>&,
         const std::shared_ptr<ImageEffectHost>&,
         const std::filesystem::path& path);
 }

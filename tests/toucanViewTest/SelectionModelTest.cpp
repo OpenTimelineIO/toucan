@@ -17,11 +17,11 @@ namespace toucan
         class Test
         {
         public:
-            Test(const std::shared_ptr<feather_tk::Context>& context)
+            Test(const std::shared_ptr<ftk::Context>& context)
             {
                 model = std::make_shared<SelectionModel>();
 
-                selectionObserver = feather_tk::ListObserver<SelectionItem>::create(
+                selectionObserver = ftk::ListObserver<SelectionItem>::create(
                     model->observeSelection(),
                     [this](const std::vector<SelectionItem>& value)
                     {
@@ -32,12 +32,12 @@ namespace toucan
             std::shared_ptr<SelectionModel> model;
             std::vector<SelectionItem> selection;
 
-            std::shared_ptr<feather_tk::ListObserver<SelectionItem> > selectionObserver;
+            std::shared_ptr<ftk::ListObserver<SelectionItem> > selectionObserver;
         };
     }
 
     void selectionModelTest(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::filesystem::path& path)
     {
         std::cout << "selectionModelTest" << std::endl;

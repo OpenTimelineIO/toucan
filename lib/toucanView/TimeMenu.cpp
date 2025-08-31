@@ -12,16 +12,16 @@
 namespace toucan
 {
     void TimeMenu::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
-        feather_tk::Menu::_init(context, parent);
+        ftk::Menu::_init(context, parent);
 
-        _actions["Time/FrameStart"] = feather_tk::Action::create(
+        _actions["Time/FrameStart"] = ftk::Action::create(
             "Start Frame",
             "FrameStart",
-            feather_tk::Key::Up,
+            ftk::Key::Up,
             0,
             [this]
             {
@@ -34,10 +34,10 @@ namespace toucan
             });
         addAction(_actions["Time/FrameStart"]);
 
-        _actions["Time/FramePrev"] = feather_tk::Action::create(
+        _actions["Time/FramePrev"] = ftk::Action::create(
             "Previous Frame",
             "FramePrev",
-            feather_tk::Key::Left,
+            ftk::Key::Left,
             0,
             [this]
             {
@@ -50,10 +50,10 @@ namespace toucan
             });
         addAction(_actions["Time/FramePrev"]);
 
-        _actions["Time/FramePrevX10"] = feather_tk::Action::create(
+        _actions["Time/FramePrevX10"] = ftk::Action::create(
             "Previous Frame X10",
-            feather_tk::Key::Left,
-            static_cast<int>(feather_tk::KeyModifier::Shift),
+            ftk::Key::Left,
+            static_cast<int>(ftk::KeyModifier::Shift),
             [this]
             {
                 if (_file)
@@ -65,10 +65,10 @@ namespace toucan
             });
         addAction(_actions["Time/FramePrevX10"]);
 
-        _actions["Time/FramePrevX100"] = feather_tk::Action::create(
+        _actions["Time/FramePrevX100"] = ftk::Action::create(
             "Previous Frame X100",
-            feather_tk::Key::Left,
-            static_cast<int>(feather_tk::commandKeyModifier),
+            ftk::Key::Left,
+            static_cast<int>(ftk::commandKeyModifier),
             [this]
             {
                 if (_file)
@@ -80,10 +80,10 @@ namespace toucan
             });
         addAction(_actions["Time/FramePrevX100"]);
 
-        _actions["Time/FrameNext"] = feather_tk::Action::create(
+        _actions["Time/FrameNext"] = ftk::Action::create(
             "Next Frame",
             "FrameNext",
-            feather_tk::Key::Right,
+            ftk::Key::Right,
             0,
             [this]
             {
@@ -96,10 +96,10 @@ namespace toucan
             });
         addAction(_actions["Time/FrameNext"]);
 
-        _actions["Time/FrameNextX10"] = feather_tk::Action::create(
+        _actions["Time/FrameNextX10"] = ftk::Action::create(
             "Next Frame X10",
-            feather_tk::Key::Right,
-            static_cast<int>(feather_tk::KeyModifier::Shift),
+            ftk::Key::Right,
+            static_cast<int>(ftk::KeyModifier::Shift),
             [this]
             {
                 if (_file)
@@ -111,10 +111,10 @@ namespace toucan
             });
         addAction(_actions["Time/FrameNextX10"]);
 
-        _actions["Time/FrameNextX100"] = feather_tk::Action::create(
+        _actions["Time/FrameNextX100"] = ftk::Action::create(
             "Next Frame X100",
-            feather_tk::Key::Right,
-            static_cast<int>(feather_tk::commandKeyModifier),
+            ftk::Key::Right,
+            static_cast<int>(ftk::commandKeyModifier),
             [this]
             {
                 if (_file)
@@ -126,10 +126,10 @@ namespace toucan
             });
         addAction(_actions["Time/FrameNextX100"]);
 
-        _actions["Time/FrameEnd"] = feather_tk::Action::create(
+        _actions["Time/FrameEnd"] = ftk::Action::create(
             "End Frame",
             "FrameEnd",
-            feather_tk::Key::Down,
+            ftk::Key::Down,
             0,
             [this]
             {
@@ -144,10 +144,10 @@ namespace toucan
 
         addDivider();
 
-        _actions["Time/ClipNext"] = feather_tk::Action::create(
+        _actions["Time/ClipNext"] = ftk::Action::create(
             "Next Clip",
-            feather_tk::Key::Right,
-            static_cast<int>(feather_tk::KeyModifier::Alt),
+            ftk::Key::Right,
+            static_cast<int>(ftk::KeyModifier::Alt),
             [this]
             {
                 if (_file)
@@ -159,10 +159,10 @@ namespace toucan
             });
         addAction(_actions["Time/ClipNext"]);
 
-        _actions["Time/ClipPrev"] = feather_tk::Action::create(
+        _actions["Time/ClipPrev"] = ftk::Action::create(
             "Previous Clip",
-            feather_tk::Key::Left,
-            static_cast<int>(feather_tk::KeyModifier::Alt),
+            ftk::Key::Left,
+            static_cast<int>(ftk::KeyModifier::Alt),
             [this]
             {
                 if (_file)
@@ -176,9 +176,9 @@ namespace toucan
 
         addDivider();
 
-        _actions["Time/InPointSet"] = feather_tk::Action::create(
+        _actions["Time/InPointSet"] = ftk::Action::create(
             "Set In Point",
-            feather_tk::Key::I,
+            ftk::Key::I,
             0,
             [this]
             {
@@ -190,10 +190,10 @@ namespace toucan
             });
         addAction(_actions["Time/InPointSet"]);
 
-        _actions["Time/InPointReset"] = feather_tk::Action::create(
+        _actions["Time/InPointReset"] = ftk::Action::create(
             "Reset In Point",
-            feather_tk::Key::I,
-            static_cast<int>(feather_tk::KeyModifier::Shift),
+            ftk::Key::I,
+            static_cast<int>(ftk::KeyModifier::Shift),
             [this]
             {
                 if (_file)
@@ -203,9 +203,9 @@ namespace toucan
             });
         addAction(_actions["Time/InPointReset"]);
 
-        _actions["Time/OutPointSet"] = feather_tk::Action::create(
+        _actions["Time/OutPointSet"] = ftk::Action::create(
             "Set Out Point",
-            feather_tk::Key::O,
+            ftk::Key::O,
             0,
             [this]
             {
@@ -217,10 +217,10 @@ namespace toucan
             });
         addAction(_actions["Time/OutPointSet"]);
 
-        _actions["Time/OutPointReset"] = feather_tk::Action::create(
+        _actions["Time/OutPointReset"] = ftk::Action::create(
             "Reset Out Point",
-            feather_tk::Key::O,
-            static_cast<int>(feather_tk::KeyModifier::Shift),
+            ftk::Key::O,
+            static_cast<int>(ftk::KeyModifier::Shift),
             [this]
             {
                 if (_file)
@@ -230,10 +230,10 @@ namespace toucan
             });
         addAction(_actions["Time/OutPointReset"]);
 
-        _actions["Time/InOutPointReset"] = feather_tk::Action::create(
+        _actions["Time/InOutPointReset"] = ftk::Action::create(
             "Reset In/Out Points",
-            feather_tk::Key::P,
-            static_cast<int>(feather_tk::KeyModifier::Shift),
+            ftk::Key::P,
+            static_cast<int>(ftk::KeyModifier::Shift),
             [this]
             {
                 if (_file)
@@ -243,10 +243,10 @@ namespace toucan
             });
         addAction(_actions["Time/InOutPointReset"]);
 
-        _actions["Time/InOutPointSelection"] = feather_tk::Action::create(
+        _actions["Time/InOutPointSelection"] = ftk::Action::create(
             "Set In/Out Points To Selection",
-            feather_tk::Key::P,
-            static_cast<int>(feather_tk::KeyModifier::Shift) | static_cast<int>(feather_tk::commandKeyModifier),
+            ftk::Key::P,
+            static_cast<int>(ftk::KeyModifier::Shift) | static_cast<int>(ftk::commandKeyModifier),
             [this]
             {
                 if (_file)
@@ -270,28 +270,28 @@ namespace toucan
             });
         addAction(_actions["Time/InOutPointSelection"]);
 
-        _fileObserver = feather_tk::ValueObserver<std::shared_ptr<File> >::create(
+        _fileObserver = ftk::ValueObserver<std::shared_ptr<File> >::create(
             app->getFilesModel()->observeCurrent(),
             [this](const std::shared_ptr<File>& file)
             {
                 _file = file;
                 if (_file)
                 {
-                    _timeRangeObserver = feather_tk::ValueObserver<OTIO_NS::TimeRange>::create(
+                    _timeRangeObserver = ftk::ValueObserver<OTIO_NS::TimeRange>::create(
                         _file->getPlaybackModel()->observeTimeRange(),
                         [this](const OTIO_NS::TimeRange& value)
                         {
                             _timeRange = value;
                             _menuUpdate();
                         });
-                    _inOutRangeObserver = feather_tk::ValueObserver<OTIO_NS::TimeRange>::create(
+                    _inOutRangeObserver = ftk::ValueObserver<OTIO_NS::TimeRange>::create(
                         _file->getPlaybackModel()->observeInOutRange(),
                         [this](const OTIO_NS::TimeRange& value)
                         {
                             _inOutRange = value;
                             _menuUpdate();
                         });
-                    _selectionObserver = feather_tk::ListObserver<SelectionItem>::create(
+                    _selectionObserver = ftk::ListObserver<SelectionItem>::create(
                         _file->getSelectionModel()->observeSelection(),
                         [this](const std::vector<SelectionItem>& value)
                         {
@@ -312,16 +312,16 @@ namespace toucan
     {}
 
     std::shared_ptr<TimeMenu> TimeMenu::create(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
         auto out = std::shared_ptr<TimeMenu>(new TimeMenu);
         out->_init(context, app, parent);
         return out;
     }
 
-    const std::map<std::string, std::shared_ptr<feather_tk::Action> >& TimeMenu::getActions() const
+    const std::map<std::string, std::shared_ptr<ftk::Action> >& TimeMenu::getActions() const
     {
         return _actions;
     }

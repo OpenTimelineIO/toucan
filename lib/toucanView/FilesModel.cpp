@@ -15,7 +15,7 @@
 
 namespace toucan
 {
-    FEATHER_TK_ENUM_IMPL(
+    FTK_ENUM_IMPL(
         CompareMode,
         "A",
         "B",
@@ -38,8 +38,8 @@ namespace toucan
     }
 
     FilesModel::FilesModel(
-        const std::shared_ptr<feather_tk::Context>& context,
-        const std::shared_ptr<feather_tk::Settings>& settings,
+        const std::shared_ptr<ftk::Context>& context,
+        const std::shared_ptr<ftk::Settings>& settings,
         const std::shared_ptr<ImageEffectHost>& host) :
         _context(context),
         _settings(settings),
@@ -91,15 +91,15 @@ namespace toucan
             {}
         }
 
-        _files = feather_tk::ObservableList< std::shared_ptr<File> >::create();
-        _add = feather_tk::ObservableValue<int>::create(-1);
-        _remove = feather_tk::ObservableValue<int>::create(-1);
-        _current = feather_tk::ObservableValue< std::shared_ptr<File> >::create(nullptr);
-        _currentIndex = feather_tk::ObservableValue<int>::create(-1);
-        _bFile = feather_tk::ObservableValue<std::shared_ptr<File> >::create();
-        _bIndex = feather_tk::ObservableValue<int>::create(-1);
-        _compareOptions = feather_tk::ObservableValue<CompareOptions>::create(compareOptions);
-        _recentFilesModel = feather_tk::RecentFilesModel::create(context);
+        _files = ftk::ObservableList< std::shared_ptr<File> >::create();
+        _add = ftk::ObservableValue<int>::create(-1);
+        _remove = ftk::ObservableValue<int>::create(-1);
+        _current = ftk::ObservableValue< std::shared_ptr<File> >::create(nullptr);
+        _currentIndex = ftk::ObservableValue<int>::create(-1);
+        _bFile = ftk::ObservableValue<std::shared_ptr<File> >::create();
+        _bIndex = ftk::ObservableValue<int>::create(-1);
+        _compareOptions = ftk::ObservableValue<CompareOptions>::create(compareOptions);
+        _recentFilesModel = ftk::RecentFilesModel::create(context);
         _recentFilesModel->setRecentMax(recentMax);
         _recentFilesModel->setRecent(recent);
     }
@@ -198,27 +198,27 @@ namespace toucan
         _currentTimeObserver.reset();
     }
 
-    std::shared_ptr<feather_tk::IObservableList<std::shared_ptr<File> > > FilesModel::observeFiles() const
+    std::shared_ptr<ftk::IObservableList<std::shared_ptr<File> > > FilesModel::observeFiles() const
     {
         return _files;
     }
 
-    std::shared_ptr<feather_tk::IObservableValue<int> > FilesModel::observeAdd() const
+    std::shared_ptr<ftk::IObservableValue<int> > FilesModel::observeAdd() const
     {
         return _add;
     }
 
-    std::shared_ptr<feather_tk::IObservableValue<int> > FilesModel::observeRemove() const
+    std::shared_ptr<ftk::IObservableValue<int> > FilesModel::observeRemove() const
     {
         return _remove;
     }
 
-    std::shared_ptr<feather_tk::IObservableValue<std::shared_ptr<File> > > FilesModel::observeCurrent() const
+    std::shared_ptr<ftk::IObservableValue<std::shared_ptr<File> > > FilesModel::observeCurrent() const
     {
         return _current;
     }
 
-    std::shared_ptr<feather_tk::IObservableValue<int> > FilesModel::observeCurrentIndex() const
+    std::shared_ptr<ftk::IObservableValue<int> > FilesModel::observeCurrentIndex() const
     {
         return _currentIndex;
     }
@@ -226,7 +226,7 @@ namespace toucan
     void FilesModel::setCurrentIndex(int value)
     {
         const auto& files = _files->get();
-        const int index = feather_tk::clamp(value, 0, static_cast<int>(files.size()) - 1);
+        const int index = ftk::clamp(value, 0, static_cast<int>(files.size()) - 1);
         _current->setIfChanged(index >= 0 ? files[index] : nullptr);
         _currentIndex->setIfChanged(index);
         _fileUpdate();
@@ -265,7 +265,7 @@ namespace toucan
         return _bFile->get();
     }
 
-    std::shared_ptr<feather_tk::IObservableValue<std::shared_ptr<File> > > FilesModel::observeBFile() const
+    std::shared_ptr<ftk::IObservableValue<std::shared_ptr<File> > > FilesModel::observeBFile() const
     {
         return _bFile;
     }
@@ -275,7 +275,7 @@ namespace toucan
         return _bIndex->get();
     }
 
-    std::shared_ptr<feather_tk::IObservableValue<int> > FilesModel::observeBIndex() const
+    std::shared_ptr<ftk::IObservableValue<int> > FilesModel::observeBIndex() const
     {
         return _bIndex;
     }
@@ -283,7 +283,7 @@ namespace toucan
     void FilesModel::setBIndex(int value)
     {
         const auto& files = _files->get();
-        const int index = feather_tk::clamp(value, -1, static_cast<int>(files.size()) - 1);
+        const int index = ftk::clamp(value, -1, static_cast<int>(files.size()) - 1);
         if (_bIndex->setIfChanged(index))
         {
             auto file = _current->get();
@@ -305,7 +305,7 @@ namespace toucan
         return _compareOptions->get();
     }
 
-    std::shared_ptr<feather_tk::IObservableValue<CompareOptions> > FilesModel::observeCompareOptions() const
+    std::shared_ptr<ftk::IObservableValue<CompareOptions> > FilesModel::observeCompareOptions() const
     {
         return _compareOptions;
     }
@@ -321,7 +321,7 @@ namespace toucan
         }
     }
 
-    const std::shared_ptr<feather_tk::RecentFilesModel>& FilesModel::getRecentFilesModel() const
+    const std::shared_ptr<ftk::RecentFilesModel>& FilesModel::getRecentFilesModel() const
     {
         return _recentFilesModel;
     }
@@ -361,7 +361,7 @@ namespace toucan
     {
         if (auto file = _current->get())
         {
-            _currentTimeObserver = feather_tk::ValueObserver<OTIO_NS::RationalTime>::create(
+            _currentTimeObserver = ftk::ValueObserver<OTIO_NS::RationalTime>::create(
                 file->getPlaybackModel()->observeCurrentTime(),
                 [this](const OTIO_NS::RationalTime& value)
                 {

@@ -40,7 +40,7 @@ namespace toucan
     }
 
     ImageGraph::ImageGraph(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::filesystem::path& path,
         const std::shared_ptr<TimelineWrapper>& timelineWrapper) :
         _context(context),
@@ -80,10 +80,10 @@ namespace toucan
                 }
                 catch (const std::exception& e)
                 {
-                    _context.lock()->getSystem<feather_tk::LogSystem>()->print(
+                    _context.lock()->getSystem<ftk::LogSystem>()->print(
                         logPrefix,
                         e.what(),
-                        feather_tk::LogType::Error);
+                        ftk::LogType::Error);
                 }
             }
             else if (auto sequenceRef = dynamic_cast<OTIO_NS::ImageSequenceReference*>(clip->media_reference()))
@@ -112,10 +112,10 @@ namespace toucan
                 }
                 catch (const std::exception& e)
                 {
-                    _context.lock()->getSystem<feather_tk::LogSystem>()->print(
+                    _context.lock()->getSystem<ftk::LogSystem>()->print(
                         logPrefix,
                         e.what(),
-                        feather_tk::LogType::Error);
+                        ftk::LogType::Error);
                 }
             }
             else if (auto generatorRef = dynamic_cast<OTIO_NS::GeneratorReference*>(clip->media_reference()))
@@ -365,10 +365,10 @@ namespace toucan
                     }
                     catch (const std::exception& e)
                     {
-                        _context.lock()->getSystem<feather_tk::LogSystem>()->print(
+                        _context.lock()->getSystem<ftk::LogSystem>()->print(
                             logPrefix,
                             e.what(),
-                            feather_tk::LogType::Error);
+                            ftk::LogType::Error);
                     }
                     _loadCache.add(externalRef, read);
                 }
@@ -408,10 +408,10 @@ namespace toucan
                 }
                 catch (const std::exception& e)
                 {
-                    _context.lock()->getSystem<feather_tk::LogSystem>()->print(
+                    _context.lock()->getSystem<ftk::LogSystem>()->print(
                         logPrefix,
                         e.what(),
-                        feather_tk::LogType::Error);
+                        ftk::LogType::Error);
                 }
                 if (read)
                 {

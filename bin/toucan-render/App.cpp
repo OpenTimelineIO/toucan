@@ -44,13 +44,13 @@ namespace toucan
     }
     
     void App::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         std::vector<std::string>& argv)
     {
-        _cmdLine.input = feather_tk::CmdLineValueArg<std::string>::create(
+        _cmdLine.input = ftk::CmdLineValueArg<std::string>::create(
             "input",
             "Input .otio file.");
-        _cmdLine.output = feather_tk::CmdLineValueArg<std::string>::create(
+        _cmdLine.output = ftk::CmdLineValueArg<std::string>::create(
             "output",
             "Output image or movie file. Use a dash ('-') to write raw frames or y4m to stdout.");
 
@@ -64,37 +64,37 @@ namespace toucan
         {
             y4mList.push_back(spec.first);
         }
-        _cmdLine.videoCodec = feather_tk::CmdLineValueOption<std::string>::create(
+        _cmdLine.videoCodec = ftk::CmdLineValueOption<std::string>::create(
             std::vector<std::string>{ "-vcodec" },
             "Set the video codec.",
             "",
             "MJPEG",
-            feather_tk::join(ffmpeg::getVideoCodecStrings(), ", "));
-        _cmdLine.printStart = feather_tk::CmdLineFlagOption::create(
+            ftk::join(ffmpeg::getVideoCodecStrings(), ", "));
+        _cmdLine.printStart = ftk::CmdLineFlagOption::create(
             std::vector<std::string>{ "-print_start" },
             "Print the timeline start time and exit.");
-        _cmdLine.printDuration = feather_tk::CmdLineFlagOption::create(
+        _cmdLine.printDuration = ftk::CmdLineFlagOption::create(
             std::vector<std::string>{ "-print_duration" },
             "Print the timeline duration and exit.");
-        _cmdLine.printRate = feather_tk::CmdLineFlagOption::create(
+        _cmdLine.printRate = ftk::CmdLineFlagOption::create(
             std::vector<std::string>{ "-print_rate" },
             "Print the timeline frame rate and exit.");
-        _cmdLine.printSize = feather_tk::CmdLineFlagOption::create(
+        _cmdLine.printSize = ftk::CmdLineFlagOption::create(
             std::vector<std::string>{ "-print_size" },
             "Print the timeline image size.");
-        _cmdLine.raw = feather_tk::CmdLineValueOption<std::string>::create(
+        _cmdLine.raw = ftk::CmdLineValueOption<std::string>::create(
             std::vector<std::string>{ "-raw" },
             "Raw pixel format to send to stdout.",
             "",
             std::optional<std::string>(),
-            feather_tk::join(rawList, ", "));
-        _cmdLine.y4m = feather_tk::CmdLineValueOption<std::string>::create(
+            ftk::join(rawList, ", "));
+        _cmdLine.y4m = ftk::CmdLineValueOption<std::string>::create(
             std::vector<std::string>{ "-y4m" },
             "y4m format to send to stdout.",
             "",
             std::optional<std::string>(),
-            feather_tk::join(y4mList, ", "));
-        _cmdLine.verbose = feather_tk::CmdLineFlagOption::create(
+            ftk::join(y4mList, ", "));
+        _cmdLine.verbose = ftk::CmdLineFlagOption::create(
             std::vector<std::string>{ "-v" },
             "Print verbose output.");
 
@@ -141,7 +141,7 @@ namespace toucan
     }
 
     std::shared_ptr<App> App::create(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         std::vector<std::string>& argv)
     {
         auto out = std::shared_ptr<App>(new App);
@@ -320,7 +320,7 @@ namespace toucan
 
         {
             const OTIO_NS::TimeRange timeRange = _timelineWrapper->getTimeRange();
-            const auto r = feather_tk::toRational(timeRange.duration().rate());
+            const auto r = ftk::toRational(timeRange.duration().rate());
             std::stringstream ss;
             ss << " F" << r.first << ":" << r.second;
             s = ss.str();

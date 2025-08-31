@@ -28,11 +28,11 @@ namespace toucan
     class File;
 
     //! Export widget.
-    class ExportWidget : public feather_tk::IWidget
+    class ExportWidget : public ftk::IWidget
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -41,19 +41,19 @@ namespace toucan
 
         //! Create a new widget.
         static std::shared_ptr<ExportWidget> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
 
     private:
         struct SettingsValues
         {
             std::string dir;
             int sizeChoice = 0;
-            feather_tk::Size2I customSize = feather_tk::Size2I(1920, 1080);
+            ftk::Size2I customSize = ftk::Size2I(1920, 1080);
             int currentTab = 0;
             std::string imageBaseName = "render.";
             int imagePadding = 0;
@@ -63,10 +63,10 @@ namespace toucan
             std::string movieCodec = "MJPEG";
         };
 
-        void _initSettings(const std::shared_ptr<feather_tk::Context>&, SettingsValues&);
-        void _initCommonUI(const std::shared_ptr<feather_tk::Context>&, const SettingsValues&);
-        void _initImageUI(const std::shared_ptr<feather_tk::Context>&, const SettingsValues&);
-        void _initMovieUI(const std::shared_ptr<feather_tk::Context>&, const SettingsValues&);
+        void _initSettings(const std::shared_ptr<ftk::Context>&, SettingsValues&);
+        void _initCommonUI(const std::shared_ptr<ftk::Context>&, const SettingsValues&);
+        void _initImageUI(const std::shared_ptr<ftk::Context>&, const SettingsValues&);
+        void _initMovieUI(const std::shared_ptr<ftk::Context>&, const SettingsValues&);
 
         enum class ExportType
         {
@@ -80,7 +80,7 @@ namespace toucan
 
         void _widgetUpdate();
 
-        std::shared_ptr<feather_tk::Settings> _settings;
+        std::shared_ptr<ftk::Settings> _settings;
         std::shared_ptr<ImageEffectHost> _host;
         std::shared_ptr<File> _file;
         OTIO_NS::TimeRange _timeRange;
@@ -91,28 +91,28 @@ namespace toucan
         std::vector<std::string> _movieCodecs;
         std::shared_ptr<ffmpeg::Write> _ffWrite;
 
-        std::shared_ptr<feather_tk::VerticalLayout> _layout;
-        std::shared_ptr<feather_tk::FileEdit> _dirEdit;
-        std::shared_ptr<feather_tk::ComboBox> _sizeComboBox;
-        std::shared_ptr<feather_tk::IntEdit> _widthEdit;
-        std::shared_ptr<feather_tk::IntEdit> _heightEdit;
-        std::shared_ptr<feather_tk::TabWidget> _tabWidget;
-        std::shared_ptr<feather_tk::LineEdit> _imageBaseNameEdit;
-        std::shared_ptr<feather_tk::IntEdit> _imagePaddingEdit;
-        std::shared_ptr<feather_tk::LineEdit> _imageExtensionEdit;
-        std::shared_ptr<feather_tk::Label> _imageFilenameLabel;
-        std::shared_ptr<feather_tk::PushButton> _exportSequenceButton;
-        std::shared_ptr<feather_tk::PushButton> _exportFrameButton;
-        std::shared_ptr<feather_tk::LineEdit> _movieBaseNameEdit;
-        std::shared_ptr<feather_tk::LineEdit> _movieExtensionEdit;
-        std::shared_ptr<feather_tk::ComboBox> _movieCodecComboBox;
-        std::shared_ptr<feather_tk::Label> _movieFilenameLabel;
-        std::shared_ptr<feather_tk::PushButton> _exportMovieButton;
-        std::shared_ptr<feather_tk::ProgressDialog> _dialog;
+        std::shared_ptr<ftk::VerticalLayout> _layout;
+        std::shared_ptr<ftk::FileEdit> _dirEdit;
+        std::shared_ptr<ftk::ComboBox> _sizeComboBox;
+        std::shared_ptr<ftk::IntEdit> _widthEdit;
+        std::shared_ptr<ftk::IntEdit> _heightEdit;
+        std::shared_ptr<ftk::TabWidget> _tabWidget;
+        std::shared_ptr<ftk::LineEdit> _imageBaseNameEdit;
+        std::shared_ptr<ftk::IntEdit> _imagePaddingEdit;
+        std::shared_ptr<ftk::LineEdit> _imageExtensionEdit;
+        std::shared_ptr<ftk::Label> _imageFilenameLabel;
+        std::shared_ptr<ftk::PushButton> _exportSequenceButton;
+        std::shared_ptr<ftk::PushButton> _exportFrameButton;
+        std::shared_ptr<ftk::LineEdit> _movieBaseNameEdit;
+        std::shared_ptr<ftk::LineEdit> _movieExtensionEdit;
+        std::shared_ptr<ftk::ComboBox> _movieCodecComboBox;
+        std::shared_ptr<ftk::Label> _movieFilenameLabel;
+        std::shared_ptr<ftk::PushButton> _exportMovieButton;
+        std::shared_ptr<ftk::ProgressDialog> _dialog;
 
-        std::shared_ptr<feather_tk::Timer> _timer;
+        std::shared_ptr<ftk::Timer> _timer;
 
-        std::shared_ptr<feather_tk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
+        std::shared_ptr<ftk::ValueObserver<std::shared_ptr<File> > > _fileObserver;
     };
 
     //! Export tool.
@@ -120,7 +120,7 @@ namespace toucan
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -129,15 +129,15 @@ namespace toucan
 
         //! Create a new tool.
         static std::shared_ptr<ExportTool> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
 
     private:
-        std::shared_ptr<feather_tk::ScrollWidget> _scrollWidget;
+        std::shared_ptr<ftk::ScrollWidget> _scrollWidget;
         std::shared_ptr<ExportWidget> _widget;
     };
 }

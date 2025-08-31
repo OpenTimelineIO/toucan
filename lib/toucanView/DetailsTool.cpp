@@ -17,35 +17,35 @@
 namespace toucan
 {
     void DetailsWidget::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
         const std::shared_ptr<File>& file,
         const SelectionItem& item,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
         IWidget::_init(context, "toucan::DetailsWidget", parent);
 
         _file = file;
         _item = item;
 
-        _bellows = feather_tk::Bellows::create(context, item.object->name(), shared_from_this());
+        _bellows = ftk::Bellows::create(context, item.object->name(), shared_from_this());
         _bellows->setOpen(true);
-        auto hLayout = feather_tk::HorizontalLayout::create(context);
-        hLayout->setSpacingRole(feather_tk::SizeRole::None);
-        _startFrameButton = feather_tk::ToolButton::create(context, hLayout);
+        auto hLayout = ftk::HorizontalLayout::create(context);
+        hLayout->setSpacingRole(ftk::SizeRole::None);
+        _startFrameButton = ftk::ToolButton::create(context, hLayout);
         _startFrameButton->setIcon("ArrowRight");
         _startFrameButton->setTooltip("Go to the start frame");
         if (item.timeRange.duration().value() > 1.0)
         {
-            _inOutButton = feather_tk::ToolButton::create(context, hLayout);
+            _inOutButton = ftk::ToolButton::create(context, hLayout);
             _inOutButton->setIcon("FrameInOut");
             _inOutButton->setTooltip("Set the in/out points");
         }
         _bellows->setToolWidget(hLayout);
 
-        _layout = feather_tk::GridLayout::create(context);
-        _layout->setRowBackgroundRole(feather_tk::ColorRole::Base);
-        _layout->setSpacingRole(feather_tk::SizeRole::None);
+        _layout = ftk::GridLayout::create(context);
+        _layout->setRowBackgroundRole(ftk::ColorRole::Base);
+        _layout->setSpacingRole(ftk::SizeRole::None);
         _bellows->setWidget(_layout);
 
         OTIO_NS::TimeRange timeRange = item.timeRange;
@@ -71,7 +71,7 @@ namespace toucan
                 });
         }
 
-        _timeUnitsObserver = feather_tk::ValueObserver<TimeUnits>::create(
+        _timeUnitsObserver = ftk::ValueObserver<TimeUnits>::create(
             app->getTimeUnitsModel()->observeTimeUnits(),
             [this](TimeUnits value)
             {
@@ -85,11 +85,11 @@ namespace toucan
     {}
 
     std::shared_ptr<DetailsWidget> DetailsWidget::create(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
         const std::shared_ptr<File>& file,
         const SelectionItem& item,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
         auto out = std::shared_ptr<DetailsWidget>(new DetailsWidget);
         out->_init(context, app, file, item, parent);
@@ -109,16 +109,16 @@ namespace toucan
         _searchUpdate();
     }
 
-    void DetailsWidget::setGeometry(const feather_tk::Box2I& value)
+    void DetailsWidget::setGeometry(const ftk::Box2I& value)
     {
         IWidget::setGeometry(value);
         _bellows->setGeometry(value);
     }
 
-    void DetailsWidget::sizeHintEvent(const feather_tk::SizeHintEvent& event)
+    void DetailsWidget::sizeHintEvent(const ftk::SizeHintEvent& event)
     {
         IWidget::sizeHintEvent(event);
-        _setSizeHint(_bellows->isVisible(false) ? _bellows->getSizeHint() : feather_tk::Size2I());
+        _setSizeHint(_bellows->isVisible(false) ? _bellows->getSizeHint() : ftk::Size2I());
     }
 
     void DetailsWidget::_textUpdate()
@@ -141,7 +141,7 @@ namespace toucan
         {
             _text.push_back(std::make_pair(
                 "Enabled:",
-                feather_tk::Format("{0}").arg(item->enabled())));
+                ftk::Format("{0}").arg(item->enabled())));
             std::string text;
             if (item->source_range().has_value())
             {
@@ -174,14 +174,14 @@ namespace toucan
         for (const auto& text : _text)
         {
             auto context = getContext();
-            auto label = feather_tk::Label::create(context, text.first, _layout);
-            label->setMarginRole(feather_tk::SizeRole::MarginSmall);
+            auto label = ftk::Label::create(context, text.first, _layout);
+            label->setMarginRole(ftk::SizeRole::MarginSmall);
             _layout->setGridPos(label, row, 0);
-            std::shared_ptr<feather_tk::Label> label2;
+            std::shared_ptr<ftk::Label> label2;
             if (!text.second.empty())
             {
-                label2 = feather_tk::Label::create(context, text.second, _layout);
-                label2->setMarginRole(feather_tk::SizeRole::MarginSmall);
+                label2 = ftk::Label::create(context, text.second, _layout);
+                label2->setMarginRole(ftk::SizeRole::MarginSmall);
                 _layout->setGridPos(label2, row, 1);
             }
             _labels.push_back(std::make_pair(label, label2));
@@ -198,8 +198,8 @@ namespace toucan
             if (!_search.empty())
             {
                 visible &=
-                    feather_tk::contains(_text[i].first, _search, feather_tk::CaseCompare::Insensitive) ||
-                    feather_tk::contains(_text[i].second, _search, feather_tk::CaseCompare::Insensitive);
+                    ftk::contains(_text[i].first, _search, ftk::CaseCompare::Insensitive) ||
+                    ftk::contains(_text[i].second, _search, ftk::CaseCompare::Insensitive);
             }
             _labels[i].first->setVisible(visible);
             if (_labels[i].second)
@@ -215,41 +215,41 @@ namespace toucan
     }
 
     void DetailsTool::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
         IToolWidget::_init(context, app, "toucan::DetailsTool", "Details", parent);
 
         _app = app;
 
-        _layout = feather_tk::VerticalLayout::create(context, shared_from_this());
-        _layout->setSpacingRole(feather_tk::SizeRole::None);
+        _layout = ftk::VerticalLayout::create(context, shared_from_this());
+        _layout->setSpacingRole(ftk::SizeRole::None);
 
-        _scrollWidget = feather_tk::ScrollWidget::create(context, feather_tk::ScrollType::Both, _layout);
+        _scrollWidget = ftk::ScrollWidget::create(context, ftk::ScrollType::Both, _layout);
         _scrollWidget->setBorder(false);
-        _scrollWidget->setVStretch(feather_tk::Stretch::Expanding);
+        _scrollWidget->setVStretch(ftk::Stretch::Expanding);
 
-        _scrollLayout = feather_tk::VerticalLayout::create(context);
-        _scrollLayout->setSpacingRole(feather_tk::SizeRole::None);
+        _scrollLayout = ftk::VerticalLayout::create(context);
+        _scrollLayout->setSpacingRole(ftk::SizeRole::None);
         _scrollWidget->setWidget(_scrollLayout);
 
-        feather_tk::Divider::create(context, feather_tk::Orientation::Vertical, _layout);
+        ftk::Divider::create(context, ftk::Orientation::Vertical, _layout);
 
-        _bottomLayout = feather_tk::HorizontalLayout::create(context, _layout);
-        _bottomLayout->setMarginRole(feather_tk::SizeRole::MarginSmall);
-        _bottomLayout->setSpacingRole(feather_tk::SizeRole::SpacingSmall);
+        _bottomLayout = ftk::HorizontalLayout::create(context, _layout);
+        _bottomLayout->setMarginRole(ftk::SizeRole::MarginSmall);
+        _bottomLayout->setSpacingRole(ftk::SizeRole::SpacingSmall);
 
-        _searchBox = feather_tk::SearchBox::create(context, _bottomLayout);
-        _searchBox->setHStretch(feather_tk::Stretch::Expanding);
+        _searchBox = ftk::SearchBox::create(context, _bottomLayout);
+        _searchBox->setHStretch(ftk::Stretch::Expanding);
         _searchBox->setTooltip("Search the JSON text");
 
-        auto hLayout = feather_tk::HorizontalLayout::create(context, _bottomLayout);
-        hLayout->setSpacingRole(feather_tk::SizeRole::SpacingTool);
-        _openButton = feather_tk::ToolButton::create(context, hLayout);
+        auto hLayout = ftk::HorizontalLayout::create(context, _bottomLayout);
+        hLayout->setSpacingRole(ftk::SizeRole::SpacingTool);
+        _openButton = ftk::ToolButton::create(context, hLayout);
         _openButton->setIcon("BellowsOpen");
         _openButton->setTooltip("Open all");
-        _closeButton = feather_tk::ToolButton::create(context, hLayout);
+        _closeButton = ftk::ToolButton::create(context, hLayout);
         _closeButton->setIcon("BellowsClosed");
         _closeButton->setTooltip("Close all");
 
@@ -280,13 +280,13 @@ namespace toucan
                 }
             });
 
-        _fileObserver = feather_tk::ValueObserver<std::shared_ptr<File> >::create(
+        _fileObserver = ftk::ValueObserver<std::shared_ptr<File> >::create(
             app->getFilesModel()->observeCurrent(),
             [this](const std::shared_ptr<File>& file)
             {
                 if (file)
                 {
-                    _selectionObserver = feather_tk::ListObserver<SelectionItem>::create(
+                    _selectionObserver = ftk::ListObserver<SelectionItem>::create(
                         file->getSelectionModel()->observeSelection(),
                         [this, file](const std::vector<SelectionItem>& selection)
                         {
@@ -330,22 +330,22 @@ namespace toucan
     {}
 
     std::shared_ptr<DetailsTool> DetailsTool::create(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
         auto out = std::shared_ptr<DetailsTool>(new DetailsTool);
         out->_init(context, app, parent);
         return out;
     }
 
-    void DetailsTool::setGeometry(const feather_tk::Box2I& value)
+    void DetailsTool::setGeometry(const ftk::Box2I& value)
     {
         IToolWidget::setGeometry(value);
         _layout->setGeometry(value);
     }
 
-    void DetailsTool::sizeHintEvent(const feather_tk::SizeHintEvent& event)
+    void DetailsTool::sizeHintEvent(const ftk::SizeHintEvent& event)
     {
         IToolWidget::sizeHintEvent(event);
         _setSizeHint(_layout->getSizeHint());

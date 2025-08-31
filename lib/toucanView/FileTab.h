@@ -15,11 +15,11 @@ namespace toucan
     class Viewport;
 
     //! Timeline file tab.
-    class FileTab : public feather_tk::IWidget
+    class FileTab : public ftk::IWidget
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<File>&,
             const std::shared_ptr<IWidget>& parent);
@@ -29,18 +29,18 @@ namespace toucan
 
         //! Create a new tab.
         static std::shared_ptr<FileTab> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<File>&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
 
     private:
         std::shared_ptr<Viewport> _viewport;
         std::shared_ptr<HUDWidget> _hudWidget;
-        std::shared_ptr<feather_tk::ValueObserver<GlobalViewOptions> > _viewOptionsObserver;
+        std::shared_ptr<ftk::ValueObserver<GlobalViewOptions> > _viewOptionsObserver;
     };
 }
 

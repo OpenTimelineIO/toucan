@@ -7,5 +7,5 @@
 
 namespace toucan
 {
-    void windowModelTest(const std::shared_ptr<feather_tk::Context>&);
+    void windowModelTest(const std::shared_ptr<ftk::Context>&);
 }

@@ -20,11 +20,11 @@ extern "C"
 
 namespace toucan
 {
-    class App : public feather_tk::IApp
+    class App : public ftk::IApp
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             std::vector<std::string>&);
 
         App();
@@ -33,7 +33,7 @@ namespace toucan
         ~App();
         
         static std::shared_ptr<App> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             std::vector<std::string>&);
 
         void run() override;
@@ -45,18 +45,18 @@ namespace toucan
         
         struct CmdLine
         {
-            std::shared_ptr<feather_tk::CmdLineValueArg<std::string> > input;
-            std::shared_ptr<feather_tk::CmdLineValueArg<std::string> > output;
+            std::shared_ptr<ftk::CmdLineValueArg<std::string> > input;
+            std::shared_ptr<ftk::CmdLineValueArg<std::string> > output;
             bool outputRaw = false;
 
-            std::shared_ptr<feather_tk::CmdLineValueOption<std::string> > videoCodec;
-            std::shared_ptr<feather_tk::CmdLineFlagOption> printStart;
-            std::shared_ptr<feather_tk::CmdLineFlagOption> printDuration;
-            std::shared_ptr<feather_tk::CmdLineFlagOption> printRate;
-            std::shared_ptr<feather_tk::CmdLineFlagOption> printSize;
-            std::shared_ptr<feather_tk::CmdLineValueOption<std::string> > raw;
-            std::shared_ptr<feather_tk::CmdLineValueOption<std::string> > y4m;
-            std::shared_ptr<feather_tk::CmdLineFlagOption> verbose;
+            std::shared_ptr<ftk::CmdLineValueOption<std::string> > videoCodec;
+            std::shared_ptr<ftk::CmdLineFlagOption> printStart;
+            std::shared_ptr<ftk::CmdLineFlagOption> printDuration;
+            std::shared_ptr<ftk::CmdLineFlagOption> printRate;
+            std::shared_ptr<ftk::CmdLineFlagOption> printSize;
+            std::shared_ptr<ftk::CmdLineValueOption<std::string> > raw;
+            std::shared_ptr<ftk::CmdLineValueOption<std::string> > y4m;
+            std::shared_ptr<ftk::CmdLineFlagOption> verbose;
         };
         CmdLine _cmdLine;
 

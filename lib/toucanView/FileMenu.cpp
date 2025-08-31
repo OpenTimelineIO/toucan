@@ -18,26 +18,26 @@
 namespace toucan
 {
     void FileMenu::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
         const std::shared_ptr<MainWindow>& window,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
-        feather_tk::Menu::_init(context, parent);
+        ftk::Menu::_init(context, parent);
 
         _filesModel = app->getFilesModel();
 
         auto appWeak = std::weak_ptr<App>(app);
         auto windowWeak = std::weak_ptr<MainWindow>(window);
-        _actions["File/Open"] = feather_tk::Action::create(
+        _actions["File/Open"] = ftk::Action::create(
             "Open",
             "FileOpen",
-            feather_tk::Key::O,
-            static_cast<int>(feather_tk::commandKeyModifier),
+            ftk::Key::O,
+            static_cast<int>(ftk::commandKeyModifier),
             [this, appWeak, windowWeak]
             {
                 auto context = getContext();
-                auto fileBrowserSystem = context->getSystem<feather_tk::FileBrowserSystem>();
+                auto fileBrowserSystem = context->getSystem<ftk::FileBrowserSystem>();
                 if (_file)
                 {
                     fileBrowserSystem->getModel()->setPath(_file->getPath().parent_path());
@@ -67,20 +67,20 @@ namespace toucan
         _actions["File/Open"]->setTooltip("Open a file");
         addAction(_actions["File/Open"]);
 
-        _actions["File/Close"] = feather_tk::Action::create(
+        _actions["File/Close"] = ftk::Action::create(
             "Close",
             "FileClose",
-            feather_tk::Key::E,
-            static_cast<int>(feather_tk::commandKeyModifier),
+            ftk::Key::E,
+            static_cast<int>(ftk::commandKeyModifier),
             [this] { _filesModel->close(); });
         _actions["File/Close"]->setTooltip("Close the current file");
         addAction(_actions["File/Close"]);
 
-        _actions["File/CloseAll"] = feather_tk::Action::create(
+        _actions["File/CloseAll"] = ftk::Action::create(
             "Close All",
             "FileCloseAll",
-            feather_tk::Key::E,
-            static_cast<int>(feather_tk::KeyModifier::Shift) | static_cast<int>(feather_tk::commandKeyModifier),
+            ftk::Key::E,
+            static_cast<int>(ftk::KeyModifier::Shift) | static_cast<int>(ftk::commandKeyModifier),
             [this] { _filesModel->closeAll(); });
         _actions["File/CloseAll"]->setTooltip("Close all files");
         addAction(_actions["File/CloseAll"]);
@@ -93,17 +93,17 @@ namespace toucan
 
         _menus["Files"] = addSubMenu("Files");
 
-        _actions["File/Next"] = feather_tk::Action::create(
+        _actions["File/Next"] = ftk::Action::create(
             "Next",
-            feather_tk::Key::PageDown,
+            ftk::Key::PageDown,
             0,
             [this] { _filesModel->next(); });
         _actions["File/Next"]->setTooltip("Switch to the next file");
         addAction(_actions["File/Next"]);
 
-        _actions["File/Prev"] = feather_tk::Action::create(
+        _actions["File/Prev"] = ftk::Action::create(
             "Previous",
-            feather_tk::Key::PageUp,
+            ftk::Key::PageUp,
             0,
             [this] { _filesModel->prev(); });
         _actions["File/Prev"]->setTooltip("Switch to the previous file");
@@ -111,10 +111,10 @@ namespace toucan
 
         addDivider();
 
-        _actions["File/Exit"] = feather_tk::Action::create(
+        _actions["File/Exit"] = ftk::Action::create(
             "Exit",
-            feather_tk::Key::Q,
-            static_cast<int>(feather_tk::commandKeyModifier),
+            ftk::Key::Q,
+            static_cast<int>(ftk::commandKeyModifier),
             [appWeak]
             {
                 if (auto app = appWeak.lock())
@@ -124,7 +124,7 @@ namespace toucan
             });
         addAction(_actions["File/Exit"]);
 
-        _filesObserver = feather_tk::ListObserver<std::shared_ptr<File> >::create(
+        _filesObserver = ftk::ListObserver<std::shared_ptr<File> >::create(
             _filesModel->observeFiles(),
             [this](const std::vector<std::shared_ptr<File> >& files)
             {
@@ -132,7 +132,7 @@ namespace toucan
                 _filesActions.clear();
                 for (int i = 0; i < files.size(); ++i)
                 {
-                    auto action = feather_tk::Action::create(
+                    auto action = ftk::Action::create(
                         files[i]->getPath().filename().string(),
                         [this, i]
                         {
@@ -144,7 +144,7 @@ namespace toucan
                 }
             });
 
-        _fileObserver = feather_tk::ValueObserver<std::shared_ptr<File> >::create(
+        _fileObserver = ftk::ValueObserver<std::shared_ptr<File> >::create(
             _filesModel->observeCurrent(),
             [this](const std::shared_ptr<File>& file)
             {
@@ -152,7 +152,7 @@ namespace toucan
                 _menuUpdate();
             });
 
-        _fileIndexObserver = feather_tk::ValueObserver<int>::create(
+        _fileIndexObserver = ftk::ValueObserver<int>::create(
             _filesModel->observeCurrentIndex(),
             [this](int index)
             {
@@ -162,7 +162,7 @@ namespace toucan
                 }
             });
 
-        _recentFilesObserver = feather_tk::ListObserver<std::filesystem::path>::create(
+        _recentFilesObserver = ftk::ListObserver<std::filesystem::path>::create(
             _filesModel->getRecentFilesModel()->observeRecent(),
             [this, appWeak](const std::vector<std::filesystem::path>& files)
             {
@@ -171,7 +171,7 @@ namespace toucan
                 for (auto i = files.rbegin(); i != files.rend(); ++i)
                 {
                     auto file = *i;
-                    auto action = feather_tk::Action::create(
+                    auto action = ftk::Action::create(
                         file.string(),
                         [this, appWeak, file]
                         {
@@ -188,17 +188,17 @@ namespace toucan
     {}
 
     std::shared_ptr<FileMenu> FileMenu::create(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
         const std::shared_ptr<MainWindow>& window,
-        const std::shared_ptr<feather_tk::IWidget>& parent)
+        const std::shared_ptr<ftk::IWidget>& parent)
     {
         auto out = std::shared_ptr<FileMenu>(new FileMenu);
         out->_init(context, app, window, parent);
         return out;
     }
 
-    const std::map<std::string, std::shared_ptr<feather_tk::Action> >& FileMenu::getActions() const
+    const std::map<std::string, std::shared_ptr<ftk::Action> >& FileMenu::getActions() const
     {
         return _actions;
     }

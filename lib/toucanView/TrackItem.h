@@ -16,7 +16,7 @@ namespace toucan
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const ItemData&,
             const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Track>&,
             const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>&,
@@ -27,7 +27,7 @@ namespace toucan
 
         //! Create a new item.
         static std::shared_ptr<TrackItem> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const ItemData&,
             const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Track>&,
             const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>&,
@@ -35,10 +35,10 @@ namespace toucan
 
         void setScale(double) override;
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        feather_tk::Box2I getChildrenClipRect() const override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
-        void drawEvent(const feather_tk::Box2I&, const feather_tk::DrawEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        ftk::Box2I getChildrenClipRect() const override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
+        void drawEvent(const ftk::Box2I&, const ftk::DrawEvent&) override;
 
     protected:
         void _timeUnitsUpdate() override;
@@ -48,9 +48,9 @@ namespace toucan
 
         OTIO_NS::SerializableObject::Retainer<OTIO_NS::Track> _track;
         std::string _text;
-        feather_tk::Color4F _color;
+        ftk::Color4F _color;
 
-        std::shared_ptr<feather_tk::VerticalLayout> _layout;
+        std::shared_ptr<ftk::VerticalLayout> _layout;
         std::shared_ptr<ItemLabel> _label;
         std::shared_ptr<TimeLayout> _markerLayout;
         std::vector<std::shared_ptr<MarkerItem> > _markerItems;
@@ -66,8 +66,8 @@ namespace toucan
 
         struct GeomData
         {
-            feather_tk::Box2I g2;
-            feather_tk::Box2I g3;
+            ftk::Box2I g2;
+            ftk::Box2I g3;
         };
         GeomData _geom;
     };

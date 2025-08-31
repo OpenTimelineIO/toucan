@@ -25,13 +25,13 @@ namespace toucan
         return !(*this == other);
     }
 
-    ViewModel::ViewModel(const std::shared_ptr<feather_tk::Context>& context)
+    ViewModel::ViewModel(const std::shared_ptr<ftk::Context>& context)
     {
-        _zoomIn = feather_tk::ObservableValue<bool>::create(false);
-        _zoomOut = feather_tk::ObservableValue<bool>::create(false);
-        _zoomReset = feather_tk::ObservableValue<bool>::create(false);
-        _frameView = feather_tk::ObservableValue<bool>::create(true);
-        _options = feather_tk::ObservableValue<ViewOptions>::create();
+        _zoomIn = ftk::ObservableValue<bool>::create(false);
+        _zoomOut = ftk::ObservableValue<bool>::create(false);
+        _zoomReset = ftk::ObservableValue<bool>::create(false);
+        _frameView = ftk::ObservableValue<bool>::create(true);
+        _options = ftk::ObservableValue<ViewOptions>::create();
     }
 
     ViewModel::~ViewModel()
@@ -52,17 +52,17 @@ namespace toucan
         _zoomReset->setAlways(true);
     }
 
-    std::shared_ptr<feather_tk::IObservableValue<bool> > ViewModel::observeZoomIn() const
+    std::shared_ptr<ftk::IObservableValue<bool> > ViewModel::observeZoomIn() const
     {
         return _zoomIn;
     }
 
-    std::shared_ptr<feather_tk::IObservableValue<bool> > ViewModel::observeZoomOut() const
+    std::shared_ptr<ftk::IObservableValue<bool> > ViewModel::observeZoomOut() const
     {
         return _zoomOut;
     }
 
-    std::shared_ptr<feather_tk::IObservableValue<bool> > ViewModel::observeZoomReset() const
+    std::shared_ptr<ftk::IObservableValue<bool> > ViewModel::observeZoomReset() const
     {
         return _zoomReset;
     }
@@ -72,7 +72,7 @@ namespace toucan
         return _frameView->get();
     }
 
-    std::shared_ptr<feather_tk::IObservableValue<bool> > ViewModel::observeFrameView() const
+    std::shared_ptr<ftk::IObservableValue<bool> > ViewModel::observeFrameView() const
     {
         return _frameView;
     }
@@ -87,7 +87,7 @@ namespace toucan
         return _options->get();
     }
 
-    std::shared_ptr<feather_tk::IObservableValue<ViewOptions> > ViewModel::observeOptions() const
+    std::shared_ptr<ftk::IObservableValue<ViewOptions> > ViewModel::observeOptions() const
     {
         return _options;
     }
@@ -97,7 +97,7 @@ namespace toucan
         _options->setIfChanged(value);
     }
 
-    FEATHER_TK_ENUM_IMPL(
+    FTK_ENUM_IMPL(
         ViewBackground,
         "Solid",
         "Checkers");
@@ -119,8 +119,8 @@ namespace toucan
     }
 
     GlobalViewModel::GlobalViewModel(
-        const std::shared_ptr<feather_tk::Context>& context,
-        const std::shared_ptr<feather_tk::Settings>& settings) :
+        const std::shared_ptr<ftk::Context>& context,
+        const std::shared_ptr<ftk::Settings>& settings) :
         _settings(settings)
     {
         GlobalViewOptions options;
@@ -142,7 +142,7 @@ namespace toucan
             i = json.find("SolidColor");
             if (i != json.end() && i->is_array() && 4 == i->size())
             {
-                options.solidColor = feather_tk::Color4F(
+                options.solidColor = ftk::Color4F(
                     (*i)[0].get<float>(),
                     (*i)[1].get<float>(),
                     (*i)[2].get<float>(),
@@ -151,7 +151,7 @@ namespace toucan
             i = json.find("CheckersColor0");
             if (i != json.end() && i->is_array() && 4 == i->size())
             {
-                options.checkersColor0 = feather_tk::Color4F(
+                options.checkersColor0 = ftk::Color4F(
                     (*i)[0].get<float>(),
                     (*i)[1].get<float>(),
                     (*i)[2].get<float>(),
@@ -160,7 +160,7 @@ namespace toucan
             i = json.find("CheckersColor1");
             if (i != json.end() && i->is_array() && 4 == i->size())
             {
-                options.checkersColor1 = feather_tk::Color4F(
+                options.checkersColor1 = ftk::Color4F(
                     (*i)[0].get<float>(),
                     (*i)[1].get<float>(),
                     (*i)[2].get<float>(),
@@ -175,7 +175,7 @@ namespace toucan
         catch (const std::exception&)
         {}
 
-        _options = feather_tk::ObservableValue<GlobalViewOptions>::create(options);
+        _options = ftk::ObservableValue<GlobalViewOptions>::create(options);
     }
 
     GlobalViewModel::~GlobalViewModel()
@@ -217,7 +217,7 @@ namespace toucan
         return _options->get();
     }
 
-    std::shared_ptr<feather_tk::IObservableValue<GlobalViewOptions> > GlobalViewModel::observeOptions() const
+    std::shared_ptr<ftk::IObservableValue<GlobalViewOptions> > GlobalViewModel::observeOptions() const
     {
         return _options;
     }

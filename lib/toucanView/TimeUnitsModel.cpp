@@ -15,7 +15,7 @@
 
 namespace toucan
 {
-    FEATHER_TK_ENUM_IMPL(
+    FTK_ENUM_IMPL(
         TimeUnits,
         "Timecode",
         "Frames",
@@ -70,7 +70,7 @@ namespace toucan
 
     std::string toString(const OTIO_NS::TimeRange& timeRange, TimeUnits units)
     {
-        return feather_tk::Format("{0} - {1} : {2} @ {3}").
+        return ftk::Format("{0} - {1} : {2} @ {3}").
             arg(toString(timeRange.start_time(), units)).
             arg(toString(timeRange.end_time_inclusive(), units)).
             arg(toString(timeRange.duration(), units)).
@@ -78,8 +78,8 @@ namespace toucan
     }
 
     TimeUnitsModel::TimeUnitsModel(
-        const std::shared_ptr<feather_tk::Context>& context,
-        const std::shared_ptr<feather_tk::Settings>& settings) :
+        const std::shared_ptr<ftk::Context>& context,
+        const std::shared_ptr<ftk::Settings>& settings) :
         _settings(settings)
     {
         TimeUnits value = TimeUnits::Timecode;
@@ -97,7 +97,7 @@ namespace toucan
         catch (const std::exception&)
         {}
 
-        _timeUnits = feather_tk::ObservableValue<TimeUnits>::create(value);
+        _timeUnits = ftk::ObservableValue<TimeUnits>::create(value);
     }
 
     TimeUnitsModel::~TimeUnitsModel()
@@ -114,7 +114,7 @@ namespace toucan
         return _timeUnits->get();
     }
 
-    std::shared_ptr<feather_tk::IObservableValue<TimeUnits> > TimeUnitsModel::observeTimeUnits() const
+    std::shared_ptr<ftk::IObservableValue<TimeUnits> > TimeUnitsModel::observeTimeUnits() const
     {
         return _timeUnits;
     }

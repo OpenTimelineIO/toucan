@@ -31,7 +31,7 @@ namespace toucan
         uint64_t id = 0;
         OTIO_NS::RationalTime time;
         int height = 0;
-        std::future<std::shared_ptr<feather_tk::Image> > future;
+        std::future<std::shared_ptr<ftk::Image> > future;
     };
 
     //! Thumbnail generator.
@@ -39,7 +39,7 @@ namespace toucan
     {
     public:
         ThumbnailGenerator(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::filesystem::path&,
             const std::shared_ptr<TimelineWrapper>&,
             const std::shared_ptr<ImageEffectHost>&);
@@ -76,7 +76,7 @@ namespace toucan
             const std::shared_ptr<IImageNode>&,
             const OTIO_NS::MediaReference*);
 
-        std::shared_ptr<feather_tk::LogSystem> _logSystem;
+        std::shared_ptr<ftk::LogSystem> _logSystem;
         std::filesystem::path _path;
         std::shared_ptr<TimelineWrapper> _timelineWrapper;
         std::shared_ptr<ImageEffectHost> _host;
@@ -96,7 +96,7 @@ namespace toucan
             const OTIO_NS::MediaReference* ref = nullptr;
             OTIO_NS::RationalTime time;
             int height = 0;
-            std::promise<std::shared_ptr<feather_tk::Image> > promise;
+            std::promise<std::shared_ptr<ftk::Image> > promise;
         };
         uint64_t _requestId = 0;
 

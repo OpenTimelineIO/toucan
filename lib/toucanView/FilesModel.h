@@ -30,7 +30,7 @@ namespace toucan
         Count,
         First = A
     };
-    FEATHER_TK_ENUM(CompareMode);
+    FTK_ENUM(CompareMode);
 
     //! Compare options.
     struct CompareOptions
@@ -48,8 +48,8 @@ namespace toucan
     {
     public:
         FilesModel(
-            const std::shared_ptr<feather_tk::Context>&,
-            const std::shared_ptr<feather_tk::Settings>&,
+            const std::shared_ptr<ftk::Context>&,
+            const std::shared_ptr<ftk::Settings>&,
             const std::shared_ptr<ImageEffectHost>&);
 
         virtual ~FilesModel();
@@ -67,19 +67,19 @@ namespace toucan
         void closeAll();
 
         //! Observe the files.
-        std::shared_ptr<feather_tk::IObservableList<std::shared_ptr<File> > > observeFiles() const;
+        std::shared_ptr<ftk::IObservableList<std::shared_ptr<File> > > observeFiles() const;
 
         //! Observe when a file is added.
-        std::shared_ptr<feather_tk::IObservableValue<int> > observeAdd() const;
+        std::shared_ptr<ftk::IObservableValue<int> > observeAdd() const;
 
         //! Observe when a file is removed.
-        std::shared_ptr<feather_tk::IObservableValue<int> > observeRemove() const;
+        std::shared_ptr<ftk::IObservableValue<int> > observeRemove() const;
 
         //! Observe the current file.
-        std::shared_ptr<feather_tk::IObservableValue<std::shared_ptr<File> > > observeCurrent() const;
+        std::shared_ptr<ftk::IObservableValue<std::shared_ptr<File> > > observeCurrent() const;
 
         //! Observe the current file index.
-        std::shared_ptr<feather_tk::IObservableValue<int> > observeCurrentIndex() const;
+        std::shared_ptr<ftk::IObservableValue<int> > observeCurrentIndex() const;
 
         //! Set the current file index.
         void setCurrentIndex(int);
@@ -94,13 +94,13 @@ namespace toucan
         const std::shared_ptr<File>& getBFile() const;
 
         //! Observe the B file.
-        std::shared_ptr<feather_tk::IObservableValue<std::shared_ptr<File> > > observeBFile() const;
+        std::shared_ptr<ftk::IObservableValue<std::shared_ptr<File> > > observeBFile() const;
 
         //! Get the B file index.
         int getBIndex() const;
 
         //! Observe the B file index.
-        std::shared_ptr<feather_tk::IObservableValue<int> > observeBIndex() const;
+        std::shared_ptr<ftk::IObservableValue<int> > observeBIndex() const;
 
         //! Set the B file index.
         void setBIndex(int);
@@ -109,13 +109,13 @@ namespace toucan
         const CompareOptions& getCompareOptions() const;
 
         //! Observe the compare options.
-        std::shared_ptr<feather_tk::IObservableValue<CompareOptions> > observeCompareOptions() const;
+        std::shared_ptr<ftk::IObservableValue<CompareOptions> > observeCompareOptions() const;
 
         //! Set the compare options.
         void setCompareOptions(const CompareOptions&);
 
         //! Get the recent files model.
-        const std::shared_ptr<feather_tk::RecentFilesModel>& getRecentFilesModel() const;
+        const std::shared_ptr<ftk::RecentFilesModel>& getRecentFilesModel() const;
 
     private:
         std::shared_ptr<File> _getBFile() const;
@@ -123,20 +123,20 @@ namespace toucan
 
         void _fileUpdate();
 
-        std::weak_ptr<feather_tk::Context> _context;
-        std::shared_ptr<feather_tk::Settings> _settings;
+        std::weak_ptr<ftk::Context> _context;
+        std::shared_ptr<ftk::Settings> _settings;
         std::shared_ptr<ImageEffectHost> _host;
-        std::shared_ptr<feather_tk::ObservableList<std::shared_ptr<File> > > _files;
-        std::shared_ptr<feather_tk::ObservableValue<int> > _add;
-        std::shared_ptr<feather_tk::ObservableValue<int> > _remove;
-        std::shared_ptr<feather_tk::ObservableValue<std::shared_ptr<File> > > _current;
-        std::shared_ptr<feather_tk::ObservableValue<int> > _currentIndex;
-        std::shared_ptr<feather_tk::ObservableValue<std::shared_ptr<File> > > _bFile;
-        std::shared_ptr<feather_tk::ObservableValue<int> > _bIndex;
-        std::shared_ptr<feather_tk::ObservableValue<CompareOptions> > _compareOptions;
-        std::shared_ptr<feather_tk::RecentFilesModel> _recentFilesModel;
+        std::shared_ptr<ftk::ObservableList<std::shared_ptr<File> > > _files;
+        std::shared_ptr<ftk::ObservableValue<int> > _add;
+        std::shared_ptr<ftk::ObservableValue<int> > _remove;
+        std::shared_ptr<ftk::ObservableValue<std::shared_ptr<File> > > _current;
+        std::shared_ptr<ftk::ObservableValue<int> > _currentIndex;
+        std::shared_ptr<ftk::ObservableValue<std::shared_ptr<File> > > _bFile;
+        std::shared_ptr<ftk::ObservableValue<int> > _bIndex;
+        std::shared_ptr<ftk::ObservableValue<CompareOptions> > _compareOptions;
+        std::shared_ptr<ftk::RecentFilesModel> _recentFilesModel;
 
-        std::shared_ptr<feather_tk::ValueObserver<OTIO_NS::RationalTime> > _currentTimeObserver;
+        std::shared_ptr<ftk::ValueObserver<OTIO_NS::RationalTime> > _currentTimeObserver;
     };
 }
 

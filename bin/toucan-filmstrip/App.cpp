@@ -12,13 +12,13 @@
 namespace toucan
 {
     void App::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         std::vector<std::string>& argv)
     {
-        _cmdLine.input = feather_tk::CmdLineValueArg<std::string>::create(
+        _cmdLine.input = ftk::CmdLineValueArg<std::string>::create(
             "input",
             "Input .otio file.");
-        _cmdLine.output = feather_tk::CmdLineValueArg<std::string>::create(
+        _cmdLine.output = ftk::CmdLineValueArg<std::string>::create(
             "output",
             "Output image file.");
 
@@ -37,7 +37,7 @@ namespace toucan
     {}
 
     std::shared_ptr<App> App::create(
-        const std::shared_ptr<feather_tk::Context>&context,
+        const std::shared_ptr<ftk::Context>&context,
         std::vector<std::string>&argv)
     {
         auto out = std::shared_ptr<App>(new App);

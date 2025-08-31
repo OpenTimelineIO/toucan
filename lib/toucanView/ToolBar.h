@@ -12,14 +12,14 @@ namespace toucan
     class MainWindow;
 
     //! Tool bar.
-    class ToolBar : public feather_tk::IWidget
+    class ToolBar : public ftk::IWidget
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<MainWindow>&,
-            const std::map<std::string, std::shared_ptr<feather_tk::Action> >&,
+            const std::map<std::string, std::shared_ptr<ftk::Action> >&,
             const std::shared_ptr<IWidget>& parent);
 
     public:
@@ -27,18 +27,18 @@ namespace toucan
 
         //! Create a new tool bar.
         static std::shared_ptr<ToolBar> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<App>&,
             const std::shared_ptr<MainWindow>&,
-            const std::map<std::string, std::shared_ptr<feather_tk::Action> >&,
+            const std::map<std::string, std::shared_ptr<ftk::Action> >&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
 
     private:
-        std::shared_ptr<feather_tk::HorizontalLayout> _layout;
-        std::map<std::string, std::shared_ptr<feather_tk::IWidget> > _toolBars;
+        std::shared_ptr<ftk::HorizontalLayout> _layout;
+        std::map<std::string, std::shared_ptr<ftk::IWidget> > _toolBars;
     };
 }
 

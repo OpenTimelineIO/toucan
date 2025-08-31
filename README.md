@@ -153,7 +153,7 @@ git clone https://github.com/OpenTimelineIO/toucan.git
 ```
 Run the super build:
 ```
-sh toucan/SuperBuild.sh Release
+sh toucan/sbuild-linux.sh
 ```
 Run the viewer application:
 ```
@@ -175,7 +175,7 @@ git clone https://github.com/OpenTimelineIO/toucan.git
 ```
 Run the super build:
 ```
-sh toucan/SuperBuild.sh Release
+sh toucan/sbuild-macos.sh
 ```
 Run the viewer application:
 ```
@@ -198,7 +198,7 @@ git clone https://github.com/OpenTimelineIO/toucan.git
 ```
 Run the super build:
 ```
-toucan\SuperBuild.bat Release
+toucan\sbuild-win.bat
 ```
 Run the viewer application:
 ```

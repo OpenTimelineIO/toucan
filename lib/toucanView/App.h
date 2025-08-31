@@ -18,11 +18,11 @@ namespace toucan
     class WindowModel;
 
     //! Application.
-    class App : public feather_tk::App
+    class App : public ftk::App
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             std::vector<std::string>&);
 
     public:
@@ -30,11 +30,11 @@ namespace toucan
 
         //! Create a new application.
         static std::shared_ptr<App> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             std::vector<std::string>&);
 
         //! Get the settings.
-        const std::shared_ptr<feather_tk::Settings>& getSettings() const;
+        const std::shared_ptr<ftk::Settings>& getSettings() const;
 
         //! Get the time units model.
         const std::shared_ptr<TimeUnitsModel>& getTimeUnitsModel() const;
@@ -55,8 +55,8 @@ namespace toucan
         void open(const std::filesystem::path&);
 
     private:
-        std::shared_ptr<feather_tk::CmdLineValueArg<std::string> > _input;
-        std::shared_ptr<feather_tk::Settings> _settings;
+        std::shared_ptr<ftk::CmdLineValueArg<std::string> > _input;
+        std::shared_ptr<ftk::Settings> _settings;
         std::shared_ptr<TimeUnitsModel> _timeUnitsModel;
         std::shared_ptr<ImageEffectHost> _host;
         std::shared_ptr<FilesModel> _filesModel;

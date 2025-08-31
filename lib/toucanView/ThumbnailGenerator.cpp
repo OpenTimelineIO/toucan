@@ -23,13 +23,13 @@ namespace toucan
         std::stringstream ss;
         ss << ref;
         s.push_back(ss.str());
-        s.push_back(feather_tk::Format("{0}@{1}").arg(time.value()).arg(time.rate()));
-        s.push_back(feather_tk::Format("{0}").arg(height));
-        return feather_tk::join(s, '_');
+        s.push_back(ftk::Format("{0}@{1}").arg(time.value()).arg(time.rate()));
+        s.push_back(ftk::Format("{0}").arg(height));
+        return ftk::join(s, '_');
     }
 
     ThumbnailGenerator::ThumbnailGenerator(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::filesystem::path& path,
         const std::shared_ptr<TimelineWrapper>& timelineWrapper,
         const std::shared_ptr<ImageEffectHost>& host) :
@@ -37,7 +37,7 @@ namespace toucan
         _timelineWrapper(timelineWrapper),
         _host(host)
     {
-        _logSystem = context->getSystem<feather_tk::LogSystem>();
+        _logSystem = context->getSystem<ftk::LogSystem>();
 
         _graph = std::make_shared<ImageGraph>(context, _path, _timelineWrapper);
 
@@ -57,7 +57,7 @@ namespace toucan
                     _logSystem->print(
                         "toucan::ThumbnailGenerator",
                         e.what(),
-                        feather_tk::LogType::Error);
+                        ftk::LogType::Error);
                 }
 
                 while (_thread.running)
@@ -227,7 +227,7 @@ namespace toucan
                     _logSystem->print(
                         "toucan::ThumbnailGenerator",
                         e.what(),
-                        feather_tk::LogType::Error);
+                        ftk::LogType::Error);
                 }
             }
             aspectRequest->promise.set_value(aspect);
@@ -256,53 +256,53 @@ namespace toucan
                 _logSystem->print(
                     "toucan::ThumbnailGenerator",
                     e.what(),
-                    feather_tk::LogType::Error);
+                    ftk::LogType::Error);
             }
 
-            std::shared_ptr<feather_tk::Image> thumbnail;
+            std::shared_ptr<ftk::Image> thumbnail;
             const auto& spec = buf.spec();
             if (spec.width > 0 && spec.height > 0)
             {
                 const float aspect = spec.width / static_cast<float>(spec.height);
-                const feather_tk::Size2I thumbnailSize(request->height * aspect, request->height);
-                feather_tk::ImageInfo info;
+                const ftk::Size2I thumbnailSize(request->height * aspect, request->height);
+                ftk::ImageInfo info;
                 info.size = thumbnailSize;
                 switch (spec.nchannels)
                 {
                 case 1:
                     switch (spec.format.basetype)
                     {
-                    case OIIO::TypeDesc::UINT8: info.type = feather_tk::ImageType::L_U8; break;
-                    case OIIO::TypeDesc::UINT16: info.type = feather_tk::ImageType::L_U16; break;
-                    case OIIO::TypeDesc::HALF: info.type = feather_tk::ImageType::L_F16; break;
-                    case OIIO::TypeDesc::FLOAT: info.type = feather_tk::ImageType::L_F32; break;
+                    case OIIO::TypeDesc::UINT8: info.type = ftk::ImageType::L_U8; break;
+                    case OIIO::TypeDesc::UINT16: info.type = ftk::ImageType::L_U16; break;
+                    case OIIO::TypeDesc::HALF: info.type = ftk::ImageType::L_F16; break;
+                    case OIIO::TypeDesc::FLOAT: info.type = ftk::ImageType::L_F32; break;
                     }
                     break;
                 case 2:
                     switch (spec.format.basetype)
                     {
-                    case OIIO::TypeDesc::UINT8: info.type = feather_tk::ImageType::LA_U8; break;
-                    case OIIO::TypeDesc::UINT16: info.type = feather_tk::ImageType::LA_U16; break;
-                    case OIIO::TypeDesc::HALF: info.type = feather_tk::ImageType::LA_F16; break;
-                    case OIIO::TypeDesc::FLOAT: info.type = feather_tk::ImageType::LA_F32; break;
+                    case OIIO::TypeDesc::UINT8: info.type = ftk::ImageType::LA_U8; break;
+                    case OIIO::TypeDesc::UINT16: info.type = ftk::ImageType::LA_U16; break;
+                    case OIIO::TypeDesc::HALF: info.type = ftk::ImageType::LA_F16; break;
+                    case OIIO::TypeDesc::FLOAT: info.type = ftk::ImageType::LA_F32; break;
                     }
                     break;
                 case 3:
                     switch (spec.format.basetype)
                     {
-                    case OIIO::TypeDesc::UINT8: info.type = feather_tk::ImageType::RGB_U8; break;
-                    case OIIO::TypeDesc::UINT16: info.type = feather_tk::ImageType::RGB_U16; break;
-                    case OIIO::TypeDesc::HALF: info.type = feather_tk::ImageType::RGB_F16; break;
-                    case OIIO::TypeDesc::FLOAT: info.type = feather_tk::ImageType::RGB_F32; break;
+                    case OIIO::TypeDesc::UINT8: info.type = ftk::ImageType::RGB_U8; break;
+                    case OIIO::TypeDesc::UINT16: info.type = ftk::ImageType::RGB_U16; break;
+                    case OIIO::TypeDesc::HALF: info.type = ftk::ImageType::RGB_F16; break;
+                    case OIIO::TypeDesc::FLOAT: info.type = ftk::ImageType::RGB_F32; break;
                     }
                     break;
                 default:
                     switch (spec.format.basetype)
                     {
-                    case OIIO::TypeDesc::UINT8: info.type = feather_tk::ImageType::RGBA_U8; break;
-                    case OIIO::TypeDesc::UINT16: info.type = feather_tk::ImageType::RGBA_U16; break;
-                    case OIIO::TypeDesc::HALF: info.type = feather_tk::ImageType::RGBA_F16; break;
-                    case OIIO::TypeDesc::FLOAT: info.type = feather_tk::ImageType::RGBA_F32; break;
+                    case OIIO::TypeDesc::UINT8: info.type = ftk::ImageType::RGBA_U8; break;
+                    case OIIO::TypeDesc::UINT16: info.type = ftk::ImageType::RGBA_U16; break;
+                    case OIIO::TypeDesc::HALF: info.type = ftk::ImageType::RGBA_F16; break;
+                    case OIIO::TypeDesc::FLOAT: info.type = ftk::ImageType::RGBA_F32; break;
                     }
                     break;
                 }
@@ -310,7 +310,7 @@ namespace toucan
 
                 if (info.isValid())
                 {
-                    thumbnail = feather_tk::Image::create(info);
+                    thumbnail = ftk::Image::create(info);
                     auto resizedBuf = OIIO::ImageBufAlgo::resize(
                         buf,
                         "",

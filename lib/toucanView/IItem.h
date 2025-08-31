@@ -24,7 +24,7 @@ namespace toucan
         std::shared_ptr<App> app;
         std::shared_ptr<File> file;
         std::shared_ptr<ThumbnailGenerator> thumbnailGenerator;
-        std::shared_ptr<feather_tk::LRUCache<std::string, std::shared_ptr<feather_tk::Image> > > thumbnailCache;
+        std::shared_ptr<ftk::LRUCache<std::string, std::shared_ptr<ftk::Image> > > thumbnailCache;
     };
 
     //! Base class for timeline items.
@@ -32,7 +32,7 @@ namespace toucan
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const ItemData&,
             const OTIO_NS::SerializableObject::Retainer<OTIO_NS::SerializableObjectWithMetadata>&,
             const OTIO_NS::TimeRange&,
@@ -46,7 +46,7 @@ namespace toucan
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::SerializableObjectWithMetadata>& getObject() const;
         
         //! Get the item selection rectangle.
-        const feather_tk::Box2I& getSelectionRect() const;
+        const ftk::Box2I& getSelectionRect() const;
 
         //! Get whether the item is selected.
         bool isSelected() const;
@@ -54,23 +54,23 @@ namespace toucan
         //! Set whether the item is selected.
         void setSelected(bool);
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void mousePressEvent(feather_tk::MouseClickEvent&) override;
-        void mouseReleaseEvent(feather_tk::MouseClickEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void mousePressEvent(ftk::MouseClickEvent&) override;
+        void mouseReleaseEvent(ftk::MouseClickEvent&) override;
 
     protected:
         virtual void _timeUnitsUpdate();
-        virtual void _buildMenu(const std::shared_ptr<feather_tk::Menu>&);
+        virtual void _buildMenu(const std::shared_ptr<ftk::Menu>&);
 
         std::weak_ptr<App> _app;
         std::weak_ptr<File> _file;
         OTIO_NS::SerializableObject::Retainer<OTIO_NS::SerializableObjectWithMetadata> _object;
         TimeUnits _timeUnits = TimeUnits::First;
-        feather_tk::Box2I _selectionRect;
+        ftk::Box2I _selectionRect;
         bool _selected = false;
-        std::shared_ptr<feather_tk::Menu> _menu;
+        std::shared_ptr<ftk::Menu> _menu;
 
     private:
-        std::shared_ptr<feather_tk::ValueObserver<TimeUnits> > _timeUnitsObserver;
+        std::shared_ptr<ftk::ValueObserver<TimeUnits> > _timeUnitsObserver;
     };
 }

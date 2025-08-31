@@ -10,11 +10,11 @@
 namespace toucan
 {
     //! Base class for widgets in a time layout.
-    class ITimeWidget : public feather_tk::IWidget
+    class ITimeWidget : public ftk::IWidget
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const OTIO_NS::TimeRange&,
             const std::string& objectName,
             const std::shared_ptr<IWidget>& parent);
@@ -51,7 +51,7 @@ namespace toucan
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const OTIO_NS::TimeRange&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -60,12 +60,12 @@ namespace toucan
 
         //! Create a new layout.
         static std::shared_ptr<TimeLayout> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const OTIO_NS::TimeRange&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
     };
 
     //! Time stack layout.
@@ -73,7 +73,7 @@ namespace toucan
     {
     protected:
         void _init(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const OTIO_NS::TimeRange&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -82,12 +82,12 @@ namespace toucan
 
         //! Create a new layout.
         static std::shared_ptr<TimeStackLayout> create(
-            const std::shared_ptr<feather_tk::Context>&,
+            const std::shared_ptr<ftk::Context>&,
             const OTIO_NS::TimeRange&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
-        void setGeometry(const feather_tk::Box2I&) override;
-        void sizeHintEvent(const feather_tk::SizeHintEvent&) override;
+        void setGeometry(const ftk::Box2I&) override;
+        void sizeHintEvent(const ftk::SizeHintEvent&) override;
 
     private:
         struct SizeData

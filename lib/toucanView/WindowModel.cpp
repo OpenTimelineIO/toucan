@@ -14,7 +14,7 @@
 
 namespace toucan
 {
-    FEATHER_TK_ENUM_IMPL(
+    FTK_ENUM_IMPL(
         WindowComponent,
         "ToolBar",
         "Tools",
@@ -22,8 +22,8 @@ namespace toucan
         "InfoBar");
 
     WindowModel::WindowModel(
-        const std::shared_ptr<feather_tk::Context>& context,
-        const std::shared_ptr<feather_tk::Settings>& settings) :
+        const std::shared_ptr<ftk::Context>& context,
+        const std::shared_ptr<ftk::Settings>& settings) :
         _settings(settings)
     {
         std::map<WindowComponent, bool> components =
@@ -66,9 +66,9 @@ namespace toucan
             {}
         }
 
-        _components = feather_tk::ObservableMap<WindowComponent, bool>::create(components);
-        _thumbnails = feather_tk::ObservableValue<bool>::create(thumbnails);
-        _tooltips = feather_tk::ObservableValue<bool>::create(tooltips);
+        _components = ftk::ObservableMap<WindowComponent, bool>::create(components);
+        _thumbnails = ftk::ObservableValue<bool>::create(thumbnails);
+        _tooltips = ftk::ObservableValue<bool>::create(tooltips);
     }
 
     WindowModel::~WindowModel()
@@ -93,7 +93,7 @@ namespace toucan
         return _components->get();
     }
 
-    std::shared_ptr<feather_tk::IObservableMap<WindowComponent, bool> > WindowModel::observeComponents() const
+    std::shared_ptr<ftk::IObservableMap<WindowComponent, bool> > WindowModel::observeComponents() const
     {
         return _components;
     }
@@ -118,7 +118,7 @@ namespace toucan
         return _thumbnails->get();
     }
 
-    std::shared_ptr<feather_tk::IObservableValue<bool> > WindowModel::observeThumbnails() const
+    std::shared_ptr<ftk::IObservableValue<bool> > WindowModel::observeThumbnails() const
     {
         return _thumbnails;
     }
@@ -133,7 +133,7 @@ namespace toucan
         return _tooltips->get();
     }
 
-    std::shared_ptr<feather_tk::IObservableValue<bool> > WindowModel::observeTooltips() const
+    std::shared_ptr<ftk::IObservableValue<bool> > WindowModel::observeTooltips() const
     {
         return _tooltips;
     }

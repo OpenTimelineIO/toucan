@@ -29,12 +29,12 @@
 namespace toucan
 {
     void MainWindow::_init(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
         const std::string& name,
-        const feather_tk::Size2I& size)
+        const ftk::Size2I& size)
     {
-        feather_tk::Window::_init(context, name, size);
+        ftk::Window::_init(context, name, size);
 
         _app = app;
         _settings = app->getSettings();
@@ -54,15 +54,15 @@ namespace toucan
         {}
         setDisplayScale(displayScale);
 
-        _layout = feather_tk::VerticalLayout::create(context, shared_from_this());
-        _layout->setSpacingRole(feather_tk::SizeRole::None);
+        _layout = ftk::VerticalLayout::create(context, shared_from_this());
+        _layout->setSpacingRole(ftk::SizeRole::None);
 
         _menuBar = MenuBar::create(
             context,
             app,
             std::dynamic_pointer_cast<MainWindow>(shared_from_this()),
             _layout);
-        feather_tk::Divider::create(context, feather_tk::Orientation::Vertical, _layout);
+        ftk::Divider::create(context, ftk::Orientation::Vertical, _layout);
 
         _toolBar = ToolBar::create(
             context,
@@ -70,19 +70,19 @@ namespace toucan
             std::dynamic_pointer_cast<MainWindow>(shared_from_this()),
             _menuBar->getActions(),
             _layout);
-        _toolBarDivider = feather_tk::Divider::create(context, feather_tk::Orientation::Vertical, _layout);
+        _toolBarDivider = ftk::Divider::create(context, ftk::Orientation::Vertical, _layout);
 
-        _vSplitter = feather_tk::Splitter::create(context, feather_tk::Orientation::Vertical, _layout);
+        _vSplitter = ftk::Splitter::create(context, ftk::Orientation::Vertical, _layout);
         _vSplitter->setSplit({ .7F });
-        _vSplitter->setStretch(feather_tk::Stretch::Expanding);
-        _hSplitter = feather_tk::Splitter::create(context, feather_tk::Orientation::Horizontal, _vSplitter);
+        _vSplitter->setStretch(ftk::Stretch::Expanding);
+        _hSplitter = ftk::Splitter::create(context, ftk::Orientation::Horizontal, _vSplitter);
         _hSplitter->setSplit({ .75F });
 
-        _tabWidget = feather_tk::TabWidget::create(context, _hSplitter);
+        _tabWidget = ftk::TabWidget::create(context, _hSplitter);
         _tabWidget->setTabsClosable(true);
-        _tabWidget->setVStretch(feather_tk::Stretch::Expanding);
+        _tabWidget->setVStretch(ftk::Stretch::Expanding);
 
-        _toolWidget = feather_tk::TabWidget::create(context, _hSplitter);
+        _toolWidget = ftk::TabWidget::create(context, _hSplitter);
         _toolWidgets.push_back(CompareTool::create(context, app));
         _toolWidgets.push_back(DetailsTool::create(context, app));
         _toolWidgets.push_back(JSONTool::create(context, app));
@@ -95,17 +95,17 @@ namespace toucan
             _toolWidget->addTab(toolWidget->getText(), toolWidget);
         }
 
-        _playbackLayout = feather_tk::VerticalLayout::create(context, _vSplitter);
-        _playbackLayout->setSpacingRole(feather_tk::SizeRole::None);
+        _playbackLayout = ftk::VerticalLayout::create(context, _vSplitter);
+        _playbackLayout->setSpacingRole(ftk::SizeRole::None);
 
         _playbackBar = PlaybackBar::create(context, app, _playbackLayout);
 
-        auto divider = feather_tk::Divider::create(context, feather_tk::Orientation::Vertical, _playbackLayout);
+        auto divider = ftk::Divider::create(context, ftk::Orientation::Vertical, _playbackLayout);
 
         _timelineWidget = TimelineWidget::create(context, app, _playbackLayout);
-        _timelineWidget->setVStretch(feather_tk::Stretch::Expanding);
+        _timelineWidget->setVStretch(ftk::Stretch::Expanding);
 
-        _infoBarDivider = feather_tk::Divider::create(context, feather_tk::Orientation::Vertical, _layout);
+        _infoBarDivider = ftk::Divider::create(context, ftk::Orientation::Vertical, _layout);
 
         _infoBar = InfoBar::create(context, app, _layout);
 
@@ -127,14 +127,14 @@ namespace toucan
                 }
             });
 
-        _filesObserver = feather_tk::ListObserver<std::shared_ptr<File> >::create(
+        _filesObserver = ftk::ListObserver<std::shared_ptr<File> >::create(
             app->getFilesModel()->observeFiles(),
             [this](const std::vector<std::shared_ptr<File> >& files)
             {
                 _files = files;
             });
 
-        _addObserver = feather_tk::ValueObserver<int>::create(
+        _addObserver = ftk::ValueObserver<int>::create(
             app->getFilesModel()->observeAdd(),
             [this, appWeak](int index)
             {
@@ -145,14 +145,14 @@ namespace toucan
                     auto file = _files[index];
                     auto tab = FileTab::create(context, app, file);
                     _tabWidget->addTab(
-                        feather_tk::elide(file->getPath().filename().string()),
+                        ftk::elide(file->getPath().filename().string()),
                         tab,
                         file->getPath().string());
                     _fileTabs[file] = tab;
                 }
             });
 
-        _removeObserver = feather_tk::ValueObserver<int>::create(
+        _removeObserver = ftk::ValueObserver<int>::create(
             app->getFilesModel()->observeRemove(),
             [this, appWeak](int index)
             {
@@ -168,14 +168,14 @@ namespace toucan
                 }
             });
 
-        _fileObserver = feather_tk::ValueObserver<int>::create(
+        _fileObserver = ftk::ValueObserver<int>::create(
             app->getFilesModel()->observeCurrentIndex(),
             [this](int index)
             {
                 _tabWidget->setCurrentTab(index);
             });
 
-        _componentsObserver = feather_tk::MapObserver<WindowComponent, bool>::create(
+        _componentsObserver = ftk::MapObserver<WindowComponent, bool>::create(
             app->getWindowModel()->observeComponents(),
             [this](const std::map<WindowComponent, bool>& value)
             {
@@ -194,7 +194,7 @@ namespace toucan
                 _infoBar->setVisible(i->second);
             });
 
-        _tooltipsObserver = feather_tk::ValueObserver<bool>::create(
+        _tooltipsObserver = ftk::ValueObserver<bool>::create(
             app->getWindowModel()->observeTooltips(),
             [this](bool value)
             {
@@ -210,34 +210,34 @@ namespace toucan
     }
 
     std::shared_ptr<MainWindow> MainWindow::create(
-        const std::shared_ptr<feather_tk::Context>& context,
+        const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<App>& app,
         const std::string& name,
-        const feather_tk::Size2I& size)
+        const ftk::Size2I& size)
     {
         auto out = std::shared_ptr<MainWindow>(new MainWindow);
         out->_init(context, app, name, size);
         return out;
     }
 
-    void MainWindow::setGeometry(const feather_tk::Box2I& value)
+    void MainWindow::setGeometry(const ftk::Box2I& value)
     {
-        feather_tk::Window::setGeometry(value);
+        ftk::Window::setGeometry(value);
         _layout->setGeometry(value);
     }
 
-    void MainWindow::sizeHintEvent(const feather_tk::SizeHintEvent& event)
+    void MainWindow::sizeHintEvent(const ftk::SizeHintEvent& event)
     {
-        feather_tk::Window::sizeHintEvent(event);
+        ftk::Window::sizeHintEvent(event);
         _setSizeHint(_layout->getSizeHint());
     }
 
-    void MainWindow::keyPressEvent(feather_tk::KeyEvent& event)
+    void MainWindow::keyPressEvent(ftk::KeyEvent& event)
     {
         event.accept = _menuBar->shortcut(event.key, event.modifiers);
     }
 
-    void MainWindow::keyReleaseEvent(feather_tk::KeyEvent& event)
+    void MainWindow::keyReleaseEvent(ftk::KeyEvent& event)
     {
         event.accept = true;
     }
@@ -262,9 +262,9 @@ namespace toucan
                 }
                 if (!errors.empty())
                 {
-                    context->getSystem<feather_tk::DialogSystem>()->message(
+                    context->getSystem<ftk::DialogSystem>()->message(
                         "ERROR",
-                        feather_tk::join(errors, '\n'),
+                        ftk::join(errors, '\n'),
                         getWindow());
                 }
             }
