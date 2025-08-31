@@ -2,7 +2,7 @@ include(ExternalProject)
 include(ExternalProject)
 
 set(lunasvg_GIT_REPOSITORY "https://github.com/sammycage/lunasvg.git")
-set(lunasvg_GIT_TAG "v3.2.1")
+set(lunasvg_GIT_TAG "v3.4.0")
 
 set(lunasvg_ARGS
     ${toucan_EXTERNAL_PROJECT_ARGS}

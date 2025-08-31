@@ -1,7 +1,7 @@
 include(ExternalProject)
 
 set(OpenColorIO_GIT_REPOSITORY "https://github.com/AcademySoftwareFoundation/OpenColorIO.git")
-set(OpenColorIO_GIT_TAG "v2.3.2")
+set(OpenColorIO_GIT_TAG "v2.4.2")
 
 set(OpenColorIO_ARGS
     ${toucan_EXTERNAL_PROJECT_ARGS}

@@ -4,9 +4,6 @@ set(ftk_GIT_REPOSITORY "https://github.com/darbyjohnston/feather-tk.git")
 set(ftk_GIT_TAG "038196681ad5825c431f7da22ff4d873c82b3acd")
 
 set(ftk_DEPS ZLIB nlohmann_json PNG Freetype lunasvg)
-if(toucan_nfd)
-    list(APPEND ftk_DEPS nfd)
-endif()
 
 set(ftk_sbuild_ARGS
     ${toucan_EXTERNAL_PROJECT_ARGS}

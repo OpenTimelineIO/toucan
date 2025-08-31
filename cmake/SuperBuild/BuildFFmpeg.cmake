@@ -98,15 +98,9 @@ set(FFmpeg_CONFIGURE_ARGS
 if(toucan_FFmpeg_MINIMAL)
     list(APPEND FFmpeg_CONFIGURE_ARGS
         --disable-decoders
-        --enable-decoder=aac
-        --enable-decoder=ac3
+        --enable-decoder=apv
         --enable-decoder=av1
-        --enable-decoder=dca
-        --enable-decoder=dnxhd
-        --enable-decoder=eac3
         --enable-decoder=flac
-        --enable-decoder=h264
-        --enable-decoder=hevc
         --enable-decoder=mjpeg
         --enable-decoder=mp3
         --enable-decoder=mpeg2video
@@ -146,22 +140,16 @@ if(toucan_FFmpeg_MINIMAL)
         --enable-decoder=pcm_u32le
         --enable-decoder=pcm_u8
         --enable-decoder=pcm_vidc
-        --enable-decoder=prores
         --enable-decoder=rawvideo
         --enable-decoder=v210
         --enable-decoder=v210x
         --enable-decoder=v308
         --enable-decoder=v408
         --enable-decoder=v410
-        --enable-decoder=vc1
         --enable-decoder=vp9
         --enable-decoder=yuv4
         --disable-encoders
-        --enable-encoder=aac
-        --enable-encoder=ac3
-        --enable-encoder=dnxhd
-        --enable-encoder=eac3
-        --enable-encoder=libsvtav1
+        --enable-encoder=flac
         --enable-encoder=mjpeg
         --enable-encoder=mpeg2video
         --enable-encoder=mpeg4
@@ -196,7 +184,6 @@ if(toucan_FFmpeg_MINIMAL)
         --enable-encoder=pcm_u32le
         --enable-encoder=pcm_u8
         --enable-encoder=pcm_vidc
-        --enable-encoder=prores
         --enable-encoder=rawvideo
         --enable-encoder=v210
         --enable-encoder=v308
@@ -204,22 +191,16 @@ if(toucan_FFmpeg_MINIMAL)
         --enable-encoder=v410
         --enable-encoder=yuv4
         --disable-demuxers
-        --enable-demuxer=aac
-        --enable-demuxer=ac3
         --enable-demuxer=aiff
+        --enable-demuxer=apv
         --enable-demuxer=av1
-        --enable-demuxer=dnxhd
-        --enable-demuxer=dts
-        --enable-demuxer=dtshd
-        --enable-demuxer=eac3
         --enable-demuxer=flac
-        --enable-demuxer=h264
-        --enable-demuxer=hevc
-        --enable-demuxer=imf
         --enable-demuxer=m4v
+        --enable-demuxer=matroska
         --enable-demuxer=mjpeg
         --enable-demuxer=mov
         --enable-demuxer=mp3
+        --enable-demuxer=mp4
         --enable-demuxer=mxf
         --enable-demuxer=pcm_alaw
         --enable-demuxer=pcm_f32be
@@ -248,14 +229,9 @@ if(toucan_FFmpeg_MINIMAL)
         --enable-demuxer=wav
         --enable-demuxer=yuv4mpegpipe
         --disable-muxers
-        --enable-muxer=ac3
         --enable-muxer=aiff
-        --enable-muxer=dnxhd
-        --enable-muxer=dts
-        --enable-muxer=eac3
+        --enable-muxer=apv
         --enable-muxer=flac
-        --enable-muxer=h264
-        --enable-muxer=hevc
         --enable-muxer=m4v
         --enable-muxer=mjpeg
         --enable-muxer=mov
@@ -287,14 +263,9 @@ if(toucan_FFmpeg_MINIMAL)
         --enable-muxer=wav
         --enable-muxer=yuv4mpegpipe
         --disable-parsers
-        --enable-parser=aac
-        --enable-parser=ac3
+        --enable-parser=apv
         --enable-parser=av1
-        --enable-parser=dnxhd
-        --enable-parser=dolby_e
         --enable-parser=flac
-        --enable-parser=h264
-        --enable-parser=hevc
         --enable-parser=mjpeg
         --enable-parser=mpeg4video
         --enable-parser=mpegaudio
@@ -308,9 +279,9 @@ if(toucan_FFmpeg_MINIMAL)
         --enable-protocol=httpproxy
         --enable-protocol=https
         --enable-protocol=md5
-        --enable-protocol=pipe
+        --enable-protocol=tcp
         --enable-protocol=tls
-        --disable-filters)
+        --enable-protocol=udp)
 endif()
 if(NOT WIN32)
     list(APPEND FFmpeg_CONFIGURE_ARGS
@@ -379,34 +350,34 @@ else()
     set(FFmpeg_INSTALL make install)
     if(APPLE)
         list(APPEND FFmpeg_INSTALL
-            COMMAND install_name_tool -id @rpath/libavcodec.61.19.100.dylib ${CMAKE_INSTALL_PREFIX}/lib/libavcodec.61.dylib
-            COMMAND install_name_tool -id @rpath/libavdevice.61.3.100.dylib ${CMAKE_INSTALL_PREFIX}/lib/libavdevice.61.dylib
-            COMMAND install_name_tool -id @rpath/libavformat.61.7.100.dylib ${CMAKE_INSTALL_PREFIX}/lib/libavformat.61.dylib
-            COMMAND install_name_tool -id @rpath/libavutil.59.39.100.dylib ${CMAKE_INSTALL_PREFIX}/lib/libavutil.59.dylib
-            COMMAND install_name_tool -id @rpath/libswresample.5.3.100.dylib ${CMAKE_INSTALL_PREFIX}/lib/libswresample.5.dylib
-            COMMAND install_name_tool -id @rpath/libswscale.8.3.100.dylib ${CMAKE_INSTALL_PREFIX}/lib/libswscale.8.dylib
+            COMMAND install_name_tool -id @rpath/libavcodec.62.11.100.dylib ${CMAKE_INSTALL_PREFIX}/lib/libavcodec.62.dylib
+            COMMAND install_name_tool -id @rpath/libavdevice.62.1.100.dylib ${CMAKE_INSTALL_PREFIX}/lib/libavdevice.62.dylib
+            COMMAND install_name_tool -id @rpath/libavformat.62.3.100.dylib ${CMAKE_INSTALL_PREFIX}/lib/libavformat.62.dylib
+            COMMAND install_name_tool -id @rpath/libavutil.60.8.100.dylib ${CMAKE_INSTALL_PREFIX}/lib/libavutil.60.dylib
+            COMMAND install_name_tool -id @rpath/libswresample.6.1.100.dylib ${CMAKE_INSTALL_PREFIX}/lib/libswresample.6.dylib
+            COMMAND install_name_tool -id @rpath/libswscale.9.1.100.dylib ${CMAKE_INSTALL_PREFIX}/lib/libswscale.9.dylib
             COMMAND install_name_tool
-                -change ${CMAKE_INSTALL_PREFIX}/lib/libswresample.5.dylib @rpath/libswresample.5.dylib
-                -change ${CMAKE_INSTALL_PREFIX}/lib/libavutil.59.dylib @rpath/libavutil.59.dylib
-                ${CMAKE_INSTALL_PREFIX}/lib/libavcodec.61.19.100.dylib
+                -change ${CMAKE_INSTALL_PREFIX}/lib/libswresample.6.dylib @rpath/libswresample.6.dylib
+                -change ${CMAKE_INSTALL_PREFIX}/lib/libavutil.60.dylib @rpath/libavutil.60.dylib
+                ${CMAKE_INSTALL_PREFIX}/lib/libavcodec.62.11.100.dylib
             COMMAND install_name_tool
-                -change ${CMAKE_INSTALL_PREFIX}/lib/libswscale.8.dylib @rpath/libswscale.8.dylib
-                -change ${CMAKE_INSTALL_PREFIX}/lib/libavformat.61.dylib @rpath/libavformat.61.dylib
-                -change ${CMAKE_INSTALL_PREFIX}/lib/libavcodec.61.dylib @rpath/libavcodec.61.dylib
-                -change ${CMAKE_INSTALL_PREFIX}/lib/libswresample.5.dylib @rpath/libswresample.5.dylib
-                -change ${CMAKE_INSTALL_PREFIX}/lib/libavutil.59.dylib @rpath/libavutil.59.dylib
-                ${CMAKE_INSTALL_PREFIX}/lib/libavdevice.61.3.100.dylib
+                -change ${CMAKE_INSTALL_PREFIX}/lib/libswscale.9.dylib @rpath/libswscale.9.dylib
+                -change ${CMAKE_INSTALL_PREFIX}/lib/libavformat.62.dylib @rpath/libavformat.62.dylib
+                -change ${CMAKE_INSTALL_PREFIX}/lib/libavcodec.62.dylib @rpath/libavcodec.62.dylib
+                -change ${CMAKE_INSTALL_PREFIX}/lib/libswresample.6.dylib @rpath/libswresample.6.dylib
+                -change ${CMAKE_INSTALL_PREFIX}/lib/libavutil.60.dylib @rpath/libavutil.60.dylib
+                ${CMAKE_INSTALL_PREFIX}/lib/libavdevice.62.1.100.dylib
             COMMAND install_name_tool
-                -change ${CMAKE_INSTALL_PREFIX}/lib/libavcodec.61.dylib @rpath/libavcodec.61.dylib
-                -change ${CMAKE_INSTALL_PREFIX}/lib/libswresample.5.dylib @rpath/libswresample.5.dylib
-                -change ${CMAKE_INSTALL_PREFIX}/lib/libavutil.59.dylib @rpath/libavutil.59.dylib
-                ${CMAKE_INSTALL_PREFIX}/lib/libavformat.61.7.100.dylib
+                -change ${CMAKE_INSTALL_PREFIX}/lib/libavcodec.62.dylib @rpath/libavcodec.62.dylib
+                -change ${CMAKE_INSTALL_PREFIX}/lib/libswresample.6.dylib @rpath/libswresample.6.dylib
+                -change ${CMAKE_INSTALL_PREFIX}/lib/libavutil.60.dylib @rpath/libavutil.60.dylib
+                ${CMAKE_INSTALL_PREFIX}/lib/libavformat.62.3.100.dylib
             COMMAND install_name_tool
-                -change ${CMAKE_INSTALL_PREFIX}/lib/libavutil.59.dylib @rpath/libavutil.59.dylib
-                ${CMAKE_INSTALL_PREFIX}/lib/libswresample.5.3.100.dylib
+                -change ${CMAKE_INSTALL_PREFIX}/lib/libavutil.60.dylib @rpath/libavutil.60.dylib
+                ${CMAKE_INSTALL_PREFIX}/lib/libswresample.6.1.100.dylib
             COMMAND install_name_tool
-                -change ${CMAKE_INSTALL_PREFIX}/lib/libavutil.59.dylib @rpath/libavutil.59.dylib
-                ${CMAKE_INSTALL_PREFIX}/lib/libswscale.8.3.100.dylib)
+                -change ${CMAKE_INSTALL_PREFIX}/lib/libavutil.60.dylib @rpath/libavutil.60.dylib
+                ${CMAKE_INSTALL_PREFIX}/lib/libswscale.9.1.100.dylib)
     endif()
 endif()
 
@@ -414,7 +385,7 @@ ExternalProject_Add(
     FFmpeg
     PREFIX ${CMAKE_CURRENT_BINARY_DIR}/FFmpeg
     DEPENDS ${FFmpeg_DEPS}
-    URL https://ffmpeg.org/releases/ffmpeg-7.1.tar.bz2
+    URL https://ffmpeg.org/releases/ffmpeg-8.0.tar.bz2
     CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env PKG_CONFIG_PATH=${CMAKE_INSTALL_PREFIX}/lib/pkgconfig ${FFmpeg_CONFIGURE}
     BUILD_COMMAND ${FFmpeg_BUILD}
     INSTALL_COMMAND ${FFmpeg_INSTALL}
