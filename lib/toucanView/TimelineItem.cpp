@@ -322,7 +322,7 @@ namespace toucan
     void TimelineItem::mousePressEvent(ftk::MouseClickEvent& event)
     {
         IItem::mousePressEvent(event);
-        if (0 == event.button &&
+        if (1 == event.button &&
             (0 == event.modifiers ||
                 static_cast<int>(ftk::KeyModifier::Shift) == event.modifiers ||
                 static_cast<int>(ftk::commandKeyModifier) == event.modifiers))

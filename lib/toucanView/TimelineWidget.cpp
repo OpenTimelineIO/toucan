@@ -233,7 +233,7 @@ namespace toucan
     void TimelineWidget::mousePressEvent(ftk::MouseClickEvent& event)
     {
         IWidget::mousePressEvent(event);
-        if (0 == event.button &&
+        if (1 == event.button &&
             static_cast<int>(ftk::KeyModifier::Alt) == event.modifiers)
         {
             event.accept = true;

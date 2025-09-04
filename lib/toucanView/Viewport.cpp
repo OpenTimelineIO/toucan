@@ -492,7 +492,7 @@ namespace toucan
     void Viewport::mousePressEvent(ftk::MouseClickEvent& event)
     {
         IWidget::mousePressEvent(event);
-        if (0 == event.button && 0 == event.modifiers)
+        if (1 == event.button && 0 == event.modifiers)
         {
             event.accept = true;
             setFrameView(false);

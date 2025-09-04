@@ -67,8 +67,8 @@ namespace toucan
     void IItem::mousePressEvent(ftk::MouseClickEvent& event)
     {
         ITimeWidget::mousePressEvent(event);
-        if ((1 == event.button && 0 == event.modifiers) ||
-            (0 == event.button && static_cast<int>(ftk::KeyModifier::Super) == event.modifiers))
+        if ((3 == event.button && 0 == event.modifiers) ||
+            (1 == event.button && static_cast<int>(ftk::KeyModifier::Super) == event.modifiers))
         {
             event.accept = true;
             _menu = ftk::Menu::create(getContext());
