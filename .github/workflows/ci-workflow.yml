@@ -10,6 +10,9 @@ jobs:
   linux-build:
     runs-on: ubuntu-latest
 
+    env:
+      FFMPEG_MINIMAL: ON
+
     steps:
     - uses: actions/checkout@v4
       with:
@@ -34,6 +37,9 @@ jobs:
 
   linux-package:
     runs-on: ubuntu-latest
+
+    env:
+      FFMPEG_MINIMAL: ON
 
     steps:
     - uses: actions/checkout@v4
@@ -73,6 +79,9 @@ jobs:
   macos-13-build:
     runs-on: macos-13
 
+    env:
+      FFMPEG_MINIMAL: ON
+
     steps:
     - uses: actions/checkout@v4
       with:
@@ -97,6 +106,9 @@ jobs:
   macos-build:
     runs-on: macos-latest
 
+    env:
+      FFMPEG_MINIMAL: ON
+
     steps:
     - uses: actions/checkout@v4
       with:
@@ -120,6 +132,9 @@ jobs:
 
   macos-package:
     runs-on: macos-latest
+
+    env:
+      FFMPEG_MINIMAL: ON
 
     steps:
     - uses: actions/checkout@v4
@@ -158,6 +173,9 @@ jobs:
   windows-build:
     runs-on: windows-latest
 
+    env:
+      FFMPEG_MINIMAL: ON
+
     steps:
     - uses: actions/checkout@v4
       with:
@@ -187,6 +205,9 @@ jobs:
 
   windows-package:
     runs-on: windows-latest
+
+    env:
+      FFMPEG_MINIMAL: ON
 
     steps:
     - uses: actions/checkout@v4
