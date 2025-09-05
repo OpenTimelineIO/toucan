@@ -457,9 +457,9 @@ namespace toucan
                         g.min.x +
                         t / duration * w,
                         _size.scrollPos.y +
-                        g.min.y +
-                        _size.fontMetrics.lineHeight,
+                        g.min.y,
                         _size.border,
+                        _size.fontMetrics.lineHeight +
                         _size.margin * 2);
                     if (intersects(box, drawRect))
                     {
@@ -517,7 +517,7 @@ namespace toucan
                 {
                     event.render->drawMesh(
                         mesh,
-                        event.style->getColorRole(ftk::ColorRole::Button));
+                        event.style->getColorRole(ftk::ColorRole::TextDisabled));
                 }
             }
         }
