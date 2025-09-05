@@ -255,24 +255,36 @@ namespace toucan
             clip->set_source_range(read->getTimeRange());
         }
         else if (ImageReadNode::hasExtension(path.extension().string()) ||
+            SVGReadNode::hasExtension(path.extension().string()) ||
             SequenceReadNode::hasExtension(path.extension().string()))
         {
             const auto sequence = getSequence(path);
             const auto split = splitFileNameNumber(sequence.front().stem().string());
             if (split.second.empty())
             {
-                auto read = std::make_shared<ImageReadNode>(path, nullptr);
-                _timeline = OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>(new OTIO_NS::Timeline);
-                OTIO_NS::SerializableObject::Retainer<OTIO_NS::Track> track(new OTIO_NS::Track("Video"));
-                _timeline->tracks()->append_child(track);
-                OTIO_NS::SerializableObject::Retainer<OTIO_NS::Clip> clip(new OTIO_NS::Clip);
-                track->append_child(clip);
-                OTIO_NS::SerializableObject::Retainer<OTIO_NS::ExternalReference> ref(
-                    new OTIO_NS::ExternalReference(path.string()));
-                clip->set_media_reference(ref);
-                clip->set_source_range(OTIO_NS::TimeRange(
-                    OTIO_NS::RationalTime(0.0, 24.0),
-                    OTIO_NS::RationalTime(1.0, 24.0)));
+                std::shared_ptr<IReadNode> read;
+                if (ImageReadNode::hasExtension(path.extension().u8string()))
+                {
+                    read = std::make_shared<ImageReadNode>(path, nullptr);
+                }
+                else if (SVGReadNode::hasExtension(path.extension().u8string()))
+                {
+                    read = std::make_shared<SVGReadNode>(path, nullptr);
+                }
+                if (read)
+                {
+                    _timeline = OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>(new OTIO_NS::Timeline);
+                    OTIO_NS::SerializableObject::Retainer<OTIO_NS::Track> track(new OTIO_NS::Track("Video"));
+                    _timeline->tracks()->append_child(track);
+                    OTIO_NS::SerializableObject::Retainer<OTIO_NS::Clip> clip(new OTIO_NS::Clip);
+                    track->append_child(clip);
+                    OTIO_NS::SerializableObject::Retainer<OTIO_NS::ExternalReference> ref(
+                        new OTIO_NS::ExternalReference(path.string()));
+                    clip->set_media_reference(ref);
+                    clip->set_source_range(OTIO_NS::TimeRange(
+                        OTIO_NS::RationalTime(0.0, 24.0),
+                        OTIO_NS::RationalTime(1.0, 24.0)));
+                }
             }
             else
             {

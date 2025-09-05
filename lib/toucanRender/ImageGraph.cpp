@@ -64,6 +64,10 @@ namespace toucan
                     {
                         read = std::make_shared<MovieReadNode>(path, nullptr, mem);
                     }
+                    else if (SVGReadNode::hasExtension(path.extension().string()))
+                    {
+                        read = std::make_shared<SVGReadNode>(path, nullptr, mem);
+                    }
                     else
                     {
                         read = std::make_shared<ImageReadNode>(path, nullptr, mem);
@@ -357,6 +361,10 @@ namespace toucan
                         if (MovieReadNode::hasExtension(path.extension().string()))
                         {
                             read = std::make_shared<MovieReadNode>(path, externalRef, mem);
+                        }
+                        else if (SVGReadNode::hasExtension(path.extension().string()))
+                        {
+                            read = std::make_shared<SVGReadNode>(path, externalRef, mem);
                         }
                         else
                         {

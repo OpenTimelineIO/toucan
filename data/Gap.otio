@@ -25,7 +25,7 @@
                                     "value": 0
                                 }
                             },
-                            "target_url": "Letter_A.png"
+                            "target_url": "Letter_A.svg"
                         },
                         "source_range": {
                             "OTIO_SCHEMA": "TimeRange.1",
@@ -76,7 +76,7 @@
                                     "value": 0
                                 }
                             },
-                            "target_url": "Letter_C.png"
+                            "target_url": "Letter_C.svg"
                         },
                         "source_range": {
                             "OTIO_SCHEMA": "TimeRange.1",

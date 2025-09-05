@@ -9,6 +9,8 @@
 
 #include <opentimelineio/mediaReference.h>
 
+#include <lunasvg/lunasvg.h>
+
 #include <OpenImageIO/filesystem.h>
 
 #include <filesystem>
@@ -45,8 +47,8 @@ namespace toucan
         ImageReadNode(
             const std::filesystem::path&,
             const OTIO_NS::MediaReference*,
-            const MemoryReference& = {},
-            const std::vector<std::shared_ptr<IImageNode> >& = {});
+            const MemoryReference & = {},
+            const std::vector<std::shared_ptr<IImageNode> > & = {});
 
         virtual ~ImageReadNode();
 
@@ -62,7 +64,31 @@ namespace toucan
         std::filesystem::path _path;
         std::shared_ptr<OIIO::Filesystem::IOMemReader> _memoryReader;
         std::unique_ptr<OIIO::ImageInput> _input;
-        OTIO_NS::TimeRange _timeRange;
+    };
+
+    //! SVG read node.
+    class SVGReadNode : public IReadNode
+    {
+    public:
+        SVGReadNode(
+            const std::filesystem::path&,
+            const OTIO_NS::MediaReference*,
+            const MemoryReference& = {},
+            const std::vector<std::shared_ptr<IImageNode> >& = {});
+
+        virtual ~SVGReadNode();
+
+        std::string getLabel() const override;
+
+        OIIO::ImageBuf exec() override;
+
+        static std::vector<std::string> getExtensions();
+
+        static bool hasExtension(const std::string&);
+
+    private:
+        std::filesystem::path _path;
+        std::unique_ptr<lunasvg::Document> _svg;
     };
 
     //! Image sequence read node.

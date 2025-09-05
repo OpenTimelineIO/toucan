@@ -46,6 +46,8 @@ namespace toucan
                 std::vector<std::string> extensions;
                 std::vector<std::string> extensionsTmp = ImageReadNode::getExtensions();
                 extensions.insert(extensions.end(), extensionsTmp.begin(), extensionsTmp.end());
+                extensionsTmp = SVGReadNode::getExtensions();
+                extensions.insert(extensions.end(), extensionsTmp.begin(), extensionsTmp.end());
                 extensionsTmp = SequenceReadNode::getExtensions();
                 extensions.insert(extensions.end(), extensionsTmp.begin(), extensionsTmp.end());
                 extensionsTmp = MovieReadNode::getExtensions();

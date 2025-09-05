@@ -122,6 +122,86 @@ namespace toucan
         return i != extensions.end();
     }
 
+    SVGReadNode::SVGReadNode(
+        const std::filesystem::path& path,
+        const OTIO_NS::MediaReference* ref,
+        const MemoryReference& memoryReference,
+        const std::vector<std::shared_ptr<IImageNode> >& inputs) :
+        IReadNode(ref, "SVGRead", inputs),
+        _path(path)
+    {
+        if (memoryReference.isValid())
+        {
+            _svg = lunasvg::Document::loadFromData(
+                reinterpret_cast<const char*>(memoryReference.getData()),
+                memoryReference.getSize());
+        }
+        else
+        {
+            _svg = lunasvg::Document::loadFromFile(path.u8string());
+        }
+        if (!_svg)
+        {
+            std::stringstream ss;
+            ss << "Cannot open file: " << _path.string();
+            throw std::runtime_error(ss.str());
+        }
+        _spec = OIIO::ImageSpec(
+            _svg->width(),
+            _svg->height(),
+            4,
+            OIIO::TypeDesc::BASETYPE::UINT8);
+    }
+
+    SVGReadNode::~SVGReadNode()
+    {}
+
+    std::string SVGReadNode::getLabel() const
+    {
+        std::stringstream ss;
+        ss << "Read: " << _path.filename().string();
+        return ss.str();
+    }
+
+    OIIO::ImageBuf SVGReadNode::exec()
+    {
+        OIIO::ImageBuf out;
+        
+        const int w = _svg->width();
+        const int h = _svg->height();
+        auto bitmap = _svg->renderToBitmap(w, h, 0x00000000);
+        if (!bitmap.isNull())
+        {
+            out = OIIO::ImageBuf(_spec);
+            for (int y = 0; y < h; ++y)
+            {
+                uint8_t* imageP = reinterpret_cast<uint8_t*>(out.localpixels()) + y * w * 4;
+                const uint8_t* bitmapP = bitmap.data() + y * w * 4;
+                for (int x = 0; x < w; ++x, imageP += 4, bitmapP += 4)
+                {
+                    imageP[0] = bitmapP[2];
+                    imageP[1] = bitmapP[1];
+                    imageP[2] = bitmapP[0];
+                    imageP[3] = bitmapP[3];
+                }
+            }
+        }
+
+        return out;
+    }
+
+    std::vector<std::string> SVGReadNode::getExtensions()
+    {
+        return std::vector<std::string>({ ".svg" });
+    }
+
+    bool SVGReadNode::hasExtension(const std::string& value)
+    {
+        const std::vector<std::string> extensions = getExtensions();
+        const auto i = std::find(extensions.begin(), extensions.end(), toLower(value));
+        return i != extensions.end();
+    }
+
     SequenceReadNode::SequenceReadNode(
         const std::string& base,
         const std::string& namePrefix,

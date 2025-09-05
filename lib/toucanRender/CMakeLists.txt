@@ -48,6 +48,7 @@ set(LIBS_PUBLIC
     ftk::feather-tk-core
     OTIO::opentimelineio
     OTIO::opentime
+    lunasvg::lunasvg
     OpenImageIO::OpenImageIO
     MINIZIP::minizip)
 if(CMAKE_COMPILER_IS_GNUCXX AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9)
