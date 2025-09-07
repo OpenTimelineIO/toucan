@@ -5,6 +5,8 @@
 
 #include <toucanRender/MemoryMap.h>
 
+#include <opentimelineio/externalReference.h>
+#include <opentimelineio/imageSequenceReference.h>
 #include <opentimelineio/timeline.h>
 
 #include <filesystem>
@@ -13,6 +15,9 @@
 
 namespace toucan
 {
+    class IReadNode;
+    class ReadFactory;
+
     //! Timeline wrapper that supports .otiod and .otioz files.
     class TimelineWrapper : public std::enable_shared_from_this<TimelineWrapper>
     {
@@ -30,6 +35,10 @@ namespace toucan
         const MemoryReferences& getMemoryReferences() const;
         MemoryReference getMemoryReference(const std::string& url) const;
 
+        std::shared_ptr<IReadNode> getReadNode(OTIO_NS::ExternalReference*);
+
+        std::shared_ptr<IReadNode> getReadNode(OTIO_NS::ImageSequenceReference*);
+
     private:
         std::filesystem::path _path;
         //std::filesystem::path _tmpPath;
@@ -37,5 +46,6 @@ namespace toucan
         MemoryReferences _memoryReferences;
         OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline> _timeline;
         OTIO_NS::TimeRange _timeRange;
+        std::shared_ptr<ReadFactory> _readFactory;
     };
 }

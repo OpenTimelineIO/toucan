@@ -74,15 +74,9 @@ namespace toucan
             nullptr);
     }
 
-    OIIO::ImageBuf ImageEffectNode::exec()
+    OIIO::ImageBuf ImageEffectNode::exec(const OTIO_NS::RationalTime& t)
     {
         OIIO::ImageBuf out;
-
-        OTIO_NS::RationalTime offsetTime = _time;
-        if (!_timeOffset.is_invalid_time())
-        {
-            offsetTime -= _timeOffset;
-        }
 
         // Initialize the images.
         std::vector<OIIO::ImageBuf> inputs;
@@ -104,8 +98,7 @@ namespace toucan
             !_inputs.empty() &&
             _inputs[0])
         {
-            _inputs[0]->setTime(offsetTime);
-            inputs.push_back(_inputs[0]->exec());
+            inputs.push_back(_inputs[0]->exec(t));
             auto spec = inputs[0].spec();
             if (size.x > 0 && size.y > 0)
             {
@@ -122,10 +115,8 @@ namespace toucan
             _inputs[0] &&
             _inputs[1])
         {
-            _inputs[0]->setTime(offsetTime);
-            inputs.push_back(_inputs[0]->exec());
-            _inputs[1]->setTime(offsetTime);
-            inputs.push_back(_inputs[1]->exec());
+            inputs.push_back(_inputs[0]->exec(t));
+            inputs.push_back(_inputs[1]->exec(t));
             auto spec = inputs[0].spec();
             if (size.x > 0 && size.y > 0)
             {
@@ -143,7 +134,7 @@ namespace toucan
         if (spec.width > 0 && spec.height > 0)
         {
             PropertySet args;
-            args.setDouble(kOfxPropTime, 0, offsetTime.value());
+            args.setDouble(kOfxPropTime, 0, t.value());
             OfxRectI bounds;
             bounds.x1 = 0;
             bounds.x2 = spec.width;

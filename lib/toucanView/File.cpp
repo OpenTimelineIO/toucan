@@ -142,8 +142,7 @@ namespace toucan
         if (_currentNode->get())
         {
             const OTIO_NS::TimeRange& timeRange = _playbackModel->getTimeRange();
-            _currentNode->get()->setTime(_currentTime - timeRange.start_time());
-            _imageBuf = _currentNode->get()->exec();
+            _imageBuf = _currentNode->get()->exec(_currentTime - timeRange.start_time());
 
             const auto& spec = _imageBuf.spec();
             ftk::ImageType imageType = ftk::ImageType::None;

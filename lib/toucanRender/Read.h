@@ -7,6 +7,8 @@
 #include <toucanRender/ImageNode.h>
 #include <toucanRender/MemoryMap.h>
 
+#include <feather-tk/core/LRUCache.h>
+
 #include <opentimelineio/mediaReference.h>
 
 #include <lunasvg/lunasvg.h>
@@ -21,21 +23,15 @@ namespace toucan
     class IReadNode : public IImageNode
     {
     public:
-        IReadNode(
-            const OTIO_NS::MediaReference*,
-            const std::string& name,
-            const std::vector<std::shared_ptr<IImageNode> >& = {});
+        IReadNode(const std::string& name);
 
         virtual ~IReadNode() = 0;
-
-        const OTIO_NS::MediaReference* getRef() const;
 
         const OIIO::ImageSpec& getSpec() const;
 
         const OTIO_NS::TimeRange& getTimeRange() const;
 
     protected:
-        const OTIO_NS::MediaReference* _ref = nullptr;
         OIIO::ImageSpec _spec;
         OTIO_NS::TimeRange _timeRange;
     };
@@ -46,49 +42,20 @@ namespace toucan
     public:
         ImageReadNode(
             const std::filesystem::path&,
-            const OTIO_NS::MediaReference*,
-            const MemoryReference & = {},
-            const std::vector<std::shared_ptr<IImageNode> > & = {});
+            const MemoryReference& = {});
 
         virtual ~ImageReadNode();
 
         std::string getLabel() const override;
 
-        OIIO::ImageBuf exec() override;
+        OIIO::ImageBuf exec(const OTIO_NS::RationalTime&) override;
 
         static std::vector<std::string> getExtensions();
-
-        static bool hasExtension(const std::string&);
 
     private:
         std::filesystem::path _path;
         std::shared_ptr<OIIO::Filesystem::IOMemReader> _memoryReader;
         std::unique_ptr<OIIO::ImageInput> _input;
-    };
-
-    //! SVG read node.
-    class SVGReadNode : public IReadNode
-    {
-    public:
-        SVGReadNode(
-            const std::filesystem::path&,
-            const OTIO_NS::MediaReference*,
-            const MemoryReference& = {},
-            const std::vector<std::shared_ptr<IImageNode> >& = {});
-
-        virtual ~SVGReadNode();
-
-        std::string getLabel() const override;
-
-        OIIO::ImageBuf exec() override;
-
-        static std::vector<std::string> getExtensions();
-
-        static bool hasExtension(const std::string&);
-
-    private:
-        std::filesystem::path _path;
-        std::unique_ptr<lunasvg::Document> _svg;
     };
 
     //! Image sequence read node.
@@ -102,20 +69,16 @@ namespace toucan
             int startFrame,
             int frameStep,
             double rate,
-            int frameZerPadding,
-            const OTIO_NS::MediaReference*,
-            const MemoryReferences& = {},
-            const std::vector<std::shared_ptr<IImageNode> >& = {});
+            int frameZeroPadding,
+            const MemoryReferences& = {});
 
         virtual ~SequenceReadNode();
 
         std::string getLabel() const override;
 
-        OIIO::ImageBuf exec() override;
+        OIIO::ImageBuf exec(const OTIO_NS::RationalTime&) override;
 
         static std::vector<std::string> getExtensions();
-
-        static bool hasExtension(const std::string&);
 
     private:
         std::string _base;
@@ -128,29 +91,79 @@ namespace toucan
         MemoryReferences _memoryReferences;
     };
 
+    //! SVG read node.
+    class SVGReadNode : public IReadNode
+    {
+    public:
+        SVGReadNode(
+            const std::filesystem::path&,
+            const MemoryReference& = {});
+
+        virtual ~SVGReadNode();
+
+        std::string getLabel() const override;
+
+        OIIO::ImageBuf exec(const OTIO_NS::RationalTime&) override;
+
+        static std::vector<std::string> getExtensions();
+
+    private:
+        std::filesystem::path _path;
+        std::unique_ptr<lunasvg::Document> _svg;
+    };
+
     //! Movie read node.
     class MovieReadNode : public IReadNode
     {
     public:
         MovieReadNode(
             const std::filesystem::path&,
-            const OTIO_NS::MediaReference*,
-            const MemoryReference& = {},
-            const std::vector<std::shared_ptr<IImageNode> >& = {});
+            const MemoryReference& = {});
 
         virtual ~MovieReadNode();
 
         std::string getLabel() const override;
 
-        OIIO::ImageBuf exec() override;
+        OIIO::ImageBuf exec(const OTIO_NS::RationalTime&) override;
 
         static std::vector<std::string> getExtensions();
-
-        static bool hasExtension(const std::string&);
 
     private:
         std::filesystem::path _path;
         std::shared_ptr<OIIO::Filesystem::IOMemReader> _memoryReader;
         std::unique_ptr<ffmpeg::Read> _ffRead;
     };
+
+    //! Read factory.
+    class ReadFactory : public std::enable_shared_from_this<ReadFactory>
+    {
+    public:
+        ReadFactory();
+
+        //! Get a read node.
+        std::shared_ptr<IReadNode> getReadNode(
+            OTIO_NS::MediaReference*,
+            const std::filesystem::path&,
+            const MemoryReference& = {});
+
+        //! Get a read node.
+        std::shared_ptr<IReadNode> getReadNode(
+            OTIO_NS::MediaReference*,
+            const std::string& base,
+            const std::string& namePrefix,
+            const std::string& nameSuffix,
+            int startFrame,
+            int frameStep,
+            double rate,
+            int frameZerPadding,
+            const MemoryReferences& = {});
+
+    private:
+        ftk::LRUCache<OTIO_NS::MediaReference*, std::shared_ptr<IReadNode> > _cache;
+    };
+
+    //! Is the extension in the list?
+    bool hasExtension(
+        const std::string& extension,
+        const std::vector<std::string>& extensions);
 }

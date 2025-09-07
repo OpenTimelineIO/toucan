@@ -3,6 +3,7 @@
 
 #include "Read.h"
 
+#include "TimelineWrapper.h"
 #include "Util.h"
 
 #include <OpenImageIO/imagebufalgo.h>
@@ -11,21 +12,12 @@
 
 namespace toucan
 {
-    IReadNode::IReadNode(
-        const OTIO_NS::MediaReference* ref,
-        const std::string& name,
-        const std::vector<std::shared_ptr<IImageNode> >& inputs) :
-        IImageNode(name, inputs),
-        _ref(ref)
+    IReadNode::IReadNode(const std::string& name) :
+        IImageNode(name)
     {}
 
     IReadNode::~IReadNode()
     {}
-
-    const OTIO_NS::MediaReference* IReadNode::getRef() const
-    {
-        return _ref;
-    }
 
     const OIIO::ImageSpec& IReadNode::getSpec() const
     {
@@ -39,10 +31,8 @@ namespace toucan
 
     ImageReadNode::ImageReadNode(
         const std::filesystem::path& path,
-        const OTIO_NS::MediaReference* ref,
-        const MemoryReference& memoryReference,
-        const std::vector<std::shared_ptr<IImageNode> >& inputs) :
-        IReadNode(ref, "ImageRead", inputs),
+        const MemoryReference& memoryReference) :
+        IReadNode("ImageRead"),
         _path(path),
         _memoryReader(getMemoryReader(memoryReference))
     {
@@ -71,7 +61,7 @@ namespace toucan
         return ss.str();
     }
 
-    OIIO::ImageBuf ImageReadNode::exec()
+    OIIO::ImageBuf ImageReadNode::exec(const OTIO_NS::RationalTime&)
     {
         OIIO::ImageBuf out;
 
@@ -112,94 +102,7 @@ namespace toucan
 
     std::vector<std::string> ImageReadNode::getExtensions()
     {
-        return std::vector<std::string>({ ".exr", ".tif", ".tiff", ".jpg", ".jpeg", ".png" });
-    }
-
-    bool ImageReadNode::hasExtension(const std::string& value)
-    {
-        const std::vector<std::string> extensions = getExtensions();
-        const auto i = std::find(extensions.begin(), extensions.end(), toLower(value));
-        return i != extensions.end();
-    }
-
-    SVGReadNode::SVGReadNode(
-        const std::filesystem::path& path,
-        const OTIO_NS::MediaReference* ref,
-        const MemoryReference& memoryReference,
-        const std::vector<std::shared_ptr<IImageNode> >& inputs) :
-        IReadNode(ref, "SVGRead", inputs),
-        _path(path)
-    {
-        if (memoryReference.isValid())
-        {
-            _svg = lunasvg::Document::loadFromData(
-                reinterpret_cast<const char*>(memoryReference.getData()),
-                memoryReference.getSize());
-        }
-        else
-        {
-            _svg = lunasvg::Document::loadFromFile(path.u8string());
-        }
-        if (!_svg)
-        {
-            std::stringstream ss;
-            ss << "Cannot open file: " << _path.string();
-            throw std::runtime_error(ss.str());
-        }
-        _spec = OIIO::ImageSpec(
-            _svg->width(),
-            _svg->height(),
-            4,
-            OIIO::TypeDesc::BASETYPE::UINT8);
-    }
-
-    SVGReadNode::~SVGReadNode()
-    {}
-
-    std::string SVGReadNode::getLabel() const
-    {
-        std::stringstream ss;
-        ss << "Read: " << _path.filename().string();
-        return ss.str();
-    }
-
-    OIIO::ImageBuf SVGReadNode::exec()
-    {
-        OIIO::ImageBuf out;
-        
-        const int w = _svg->width();
-        const int h = _svg->height();
-        auto bitmap = _svg->renderToBitmap(w, h, 0x00000000);
-        if (!bitmap.isNull())
-        {
-            out = OIIO::ImageBuf(_spec);
-            for (int y = 0; y < h; ++y)
-            {
-                uint8_t* imageP = reinterpret_cast<uint8_t*>(out.localpixels()) + y * w * 4;
-                const uint8_t* bitmapP = bitmap.data() + y * w * 4;
-                for (int x = 0; x < w; ++x, imageP += 4, bitmapP += 4)
-                {
-                    imageP[0] = bitmapP[2];
-                    imageP[1] = bitmapP[1];
-                    imageP[2] = bitmapP[0];
-                    imageP[3] = bitmapP[3];
-                }
-            }
-        }
-
-        return out;
-    }
-
-    std::vector<std::string> SVGReadNode::getExtensions()
-    {
-        return std::vector<std::string>({ ".svg" });
-    }
-
-    bool SVGReadNode::hasExtension(const std::string& value)
-    {
-        const std::vector<std::string> extensions = getExtensions();
-        const auto i = std::find(extensions.begin(), extensions.end(), toLower(value));
-        return i != extensions.end();
+        return { ".exr", ".tif", ".tiff", ".jpg", ".jpeg", ".png" };
     }
 
     SequenceReadNode::SequenceReadNode(
@@ -210,10 +113,8 @@ namespace toucan
         int frameStep,
         double rate,
         int frameZeroPadding,
-        const OTIO_NS::MediaReference* ref,
-        const MemoryReferences& memoryReferences,
-        const std::vector<std::shared_ptr<IImageNode> >& inputs) :
-        IReadNode(ref, "SequenceRead", inputs),
+        const MemoryReferences& memoryReferences) :
+        IReadNode("SequenceRead"),
         _base(base),
         _namePrefix(namePrefix),
         _nameSuffix(nameSuffix),
@@ -260,22 +161,15 @@ namespace toucan
         return ss.str();
     }
 
-    OIIO::ImageBuf SequenceReadNode::exec()
+    OIIO::ImageBuf SequenceReadNode::exec(const OTIO_NS::RationalTime& t)
     {
         OIIO::ImageBuf out;
-
-        // Get the time.
-        OTIO_NS::RationalTime offsetTime = _time;
-        if (!_timeOffset.is_invalid_time())
-        {
-            offsetTime -= _timeOffset;
-        }
 
         // Open the sequence file.
         const std::string url = getSequenceFrame(
             _base,
             _namePrefix,
-            offsetTime.floor().to_frames(),
+            t.to_frames(),
             _frameZeroPadding,
             _nameSuffix);
         std::unique_ptr<OIIO::Filesystem::IOMemReader> memoryReader;
@@ -323,22 +217,84 @@ namespace toucan
 
     std::vector<std::string> SequenceReadNode::getExtensions()
     {
-        return std::vector<std::string>({ ".exr", ".tif", ".png" });
+        return { ".exr", ".tif", ".tiff", ".jpg", ".jpeg", ".png" };
     }
 
-    bool SequenceReadNode::hasExtension(const std::string& value)
+    SVGReadNode::SVGReadNode(
+        const std::filesystem::path& path,
+        const MemoryReference& memoryReference) :
+        IReadNode("SVGRead"),
+        _path(path)
     {
-        const std::vector<std::string> extensions = getExtensions();
-        const auto i = std::find(extensions.begin(), extensions.end(), toLower(value));
-        return i != extensions.end();
+        if (memoryReference.isValid())
+        {
+            _svg = lunasvg::Document::loadFromData(
+                reinterpret_cast<const char*>(memoryReference.getData()),
+                memoryReference.getSize());
+        }
+        else
+        {
+            _svg = lunasvg::Document::loadFromFile(path.u8string());
+        }
+        if (!_svg)
+        {
+            std::stringstream ss;
+            ss << "Cannot open file: " << _path.string();
+            throw std::runtime_error(ss.str());
+        }
+        _spec = OIIO::ImageSpec(
+            _svg->width(),
+            _svg->height(),
+            4,
+            OIIO::TypeDesc::BASETYPE::UINT8);
+    }
+
+    SVGReadNode::~SVGReadNode()
+    {}
+
+    std::string SVGReadNode::getLabel() const
+    {
+        std::stringstream ss;
+        ss << "Read: " << _path.filename().string();
+        return ss.str();
+    }
+
+    OIIO::ImageBuf SVGReadNode::exec(const OTIO_NS::RationalTime&)
+    {
+        OIIO::ImageBuf out;
+        
+        const int w = _svg->width();
+        const int h = _svg->height();
+        auto bitmap = _svg->renderToBitmap(w, h, 0x00000000);
+        if (!bitmap.isNull())
+        {
+            out = OIIO::ImageBuf(_spec);
+            for (int y = 0; y < h; ++y)
+            {
+                uint8_t* imageP = reinterpret_cast<uint8_t*>(out.localpixels()) + y * w * 4;
+                const uint8_t* bitmapP = bitmap.data() + y * w * 4;
+                for (int x = 0; x < w; ++x, imageP += 4, bitmapP += 4)
+                {
+                    imageP[0] = bitmapP[2];
+                    imageP[1] = bitmapP[1];
+                    imageP[2] = bitmapP[0];
+                    imageP[3] = bitmapP[3];
+                }
+            }
+        }
+
+        return out;
+    }
+
+    std::vector<std::string> SVGReadNode::getExtensions()
+    {
+        return { ".svg" };
     }
 
     MovieReadNode::MovieReadNode(
         const std::filesystem::path& path,
-        const OTIO_NS::MediaReference* ref,
-        const MemoryReference& memoryReference,
-        const std::vector<std::shared_ptr<IImageNode> >& inputs) :
-        IReadNode(ref, "MovieReadNode", inputs),
+        const MemoryReference& memoryReference) :
+        IReadNode("MovieReadNode"),
         _path(path),
         _memoryReader(getMemoryReader(memoryReference))
     {
@@ -357,19 +313,12 @@ namespace toucan
         return ss.str();
     }
 
-    OIIO::ImageBuf MovieReadNode::exec()
+    OIIO::ImageBuf MovieReadNode::exec(const OTIO_NS::RationalTime& t)
     {
         OIIO::ImageBuf out;
 
-        // Get the time.
-        OTIO_NS::RationalTime offsetTime = _time;
-        if (!_timeOffset.is_invalid_time())
-        {
-            offsetTime -= _timeOffset;
-        }
-
         // Read the image.
-        out = _ffRead->getImage(offsetTime);
+        out = _ffRead->getImage(t);
 
         const auto& spec = out.spec();
         if (3 == spec.nchannels)
@@ -386,13 +335,68 @@ namespace toucan
 
     std::vector<std::string> MovieReadNode::getExtensions()
     {
-        return std::vector<std::string>({ ".mov", ".mp4", ".m4v", ".y4m" });
+        return { ".mov", ".mp4", ".m4v", ".y4m" };
     }
 
-    bool MovieReadNode::hasExtension(const std::string& value)
+    ReadFactory::ReadFactory()
     {
-        const std::vector<std::string> extensions = getExtensions();
-        const auto i = std::find(extensions.begin(), extensions.end(), toLower(value));
+        _cache.setMax(10);
+    }
+
+    std::shared_ptr<IReadNode> ReadFactory::getReadNode(
+        OTIO_NS::MediaReference* ref,
+        const std::filesystem::path& path,
+        const MemoryReference& mem)
+    {
+        std::shared_ptr<IReadNode> out;
+        if (hasExtension(path.extension().string(), MovieReadNode::getExtensions()))
+        {
+            out = std::make_shared<MovieReadNode>(path, mem);
+        }
+        else if (hasExtension(path.extension().string(), ImageReadNode::getExtensions()))
+        {
+            out = std::make_shared<ImageReadNode>(path, mem);
+        }
+        else if (hasExtension(path.extension().string(), SVGReadNode::getExtensions()))
+        {
+            out = std::make_shared<SVGReadNode>(path, mem);
+        }
+        return out;
+    }
+
+    std::shared_ptr<IReadNode> ReadFactory::getReadNode(
+        OTIO_NS::MediaReference*,
+        const std::string& base,
+        const std::string& namePrefix,
+        const std::string& nameSuffix,
+        int startFrame,
+        int frameStep,
+        double rate,
+        int frameZeroPadding,
+        const MemoryReferences& mem)
+    {
+        std::shared_ptr<IReadNode> out;
+        if (hasExtension(nameSuffix, SequenceReadNode::getExtensions()))
+        {
+            out = std::make_shared<SequenceReadNode>(
+                base,
+                namePrefix,
+                nameSuffix,
+                startFrame,
+                frameStep,
+                rate,
+                frameZeroPadding,
+                mem);
+        }
+        return out;
+
+    }
+
+    bool hasExtension(
+        const std::string& extension,
+        const std::vector<std::string>& extensions)
+    {
+        const auto i = std::find(extensions.begin(), extensions.end(), toLower(extension));
         return i != extensions.end();
     }
 }

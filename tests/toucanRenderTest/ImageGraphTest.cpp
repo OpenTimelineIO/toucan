@@ -62,7 +62,7 @@ namespace toucan
                 if (auto op = graph->exec(host, time))
                 {
                     // Execute the image operation graph.
-                    const auto buf = op->exec();
+                    const auto buf = op->exec(time);
 
                     // Save the image.
                     const std::string fileName = getSequenceFrame(

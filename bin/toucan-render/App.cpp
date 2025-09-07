@@ -200,7 +200,7 @@ namespace toucan
 
         // Open the movie file.
         std::shared_ptr<ffmpeg::Write> ffWrite;
-        if (MovieReadNode::hasExtension(outputPath.extension().string()))
+        if (hasExtension(outputPath.extension().string(), MovieReadNode::getExtensions()))
         {
             ffmpeg::VideoCodec videoCodec = ffmpeg::VideoCodec::MJPEG;
             if (_cmdLine.videoCodec->hasValue())
@@ -232,7 +232,7 @@ namespace toucan
             if (auto node = _graph->exec(_host, time))
             {
                 // Execute the graph.
-                const auto buf = node->exec();
+                const auto buf = node->exec(time);
 
                 // Save the image.
                 if (!_cmdLine.outputRaw)

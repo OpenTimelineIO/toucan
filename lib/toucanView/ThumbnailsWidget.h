@@ -6,6 +6,8 @@
 #include <toucanView/ThumbnailGenerator.h>
 #include <toucanView/TimeLayout.h>
 
+#include <feather-tk/core/LRUCache.h>
+
 #include <opentimelineio/clip.h>
 
 namespace toucan

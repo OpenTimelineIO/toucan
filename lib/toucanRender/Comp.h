@@ -21,7 +21,7 @@ namespace toucan
         //! Set whether images are resized before compositing.
         void setResize(bool);
 
-        OIIO::ImageBuf exec() override;
+        OIIO::ImageBuf exec(const OTIO_NS::RationalTime&) override;
 
     private:
         bool _premult = false;

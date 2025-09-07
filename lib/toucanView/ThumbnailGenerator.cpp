@@ -214,8 +214,7 @@ namespace toucan
             {
                 try
                 {
-                    node->setTime(aspectRequest->time - _timelineWrapper->getTimeRange().start_time());
-                    const OIIO::ImageBuf buf = node->exec();
+                    const OIIO::ImageBuf buf = node->exec(aspectRequest->time - _timelineWrapper->getTimeRange().start_time());
                     const OIIO::ImageSpec& spec = buf.spec();
                     if (spec.height > 0)
                     {
@@ -241,14 +240,10 @@ namespace toucan
                 if (request->ref)
                 {
                     node = _findNode(node, request->ref);
-                    if (node)
-                    {
-                        node->setTime(request->time - _timelineWrapper->getTimeRange().start_time());
-                    }
                 }
                 if (node)
                 {
-                    buf = node->exec();
+                    buf = node->exec(request->time - _timelineWrapper->getTimeRange().start_time());
                 }
             }
             catch (const std::exception& e)
@@ -348,25 +343,6 @@ namespace toucan
         const OTIO_NS::MediaReference* ref)
     {
         std::shared_ptr<IImageNode> out;
-        if (node)
-        {
-            auto read = std::dynamic_pointer_cast<IReadNode>(node);
-            if (read && read->getRef() == ref)
-            {
-                out = node;
-            }
-            else
-            {
-                for (const auto& input : node->getInputs())
-                {
-                    out = _findNode(input, ref);
-                    if (out)
-                    {
-                        break;
-                    }
-                }
-            }
-        }
         return out;
     }
 }

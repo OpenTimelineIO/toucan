@@ -13,15 +13,13 @@ namespace toucan
     public:
         LinearTimeWarpNode(
             double timeScalar,
-            const OTIO_NS::TimeRange&,
             const std::vector<std::shared_ptr<IImageNode> >& = {});
 
         virtual ~LinearTimeWarpNode();
         
-        OIIO::ImageBuf exec() override;
+        OIIO::ImageBuf exec(const OTIO_NS::RationalTime&) override;
 
     private:
         double _timeScalar = 1.F;
-        OTIO_NS::TimeRange _timeRange;
     };
 }

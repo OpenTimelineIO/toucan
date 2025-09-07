@@ -48,8 +48,6 @@ namespace toucan
         _timelineWrapper(timelineWrapper),
         _timeRange(timelineWrapper->getTimeRange())
     {
-        _loadCache.setMax(10);
-
         // Get the image information from the first video clip.
         for (auto clip : getVideoClips(_timelineWrapper->getTimeline()))
         {
@@ -57,21 +55,7 @@ namespace toucan
             {
                 try
                 {
-                    const std::filesystem::path path = _timelineWrapper->getMediaPath(externalRef->target_url());
-                    const MemoryReference mem = _timelineWrapper->getMemoryReference(externalRef->target_url());
-                    std::shared_ptr<IReadNode> read;
-                    if (MovieReadNode::hasExtension(path.extension().string()))
-                    {
-                        read = std::make_shared<MovieReadNode>(path, nullptr, mem);
-                    }
-                    else if (SVGReadNode::hasExtension(path.extension().string()))
-                    {
-                        read = std::make_shared<SVGReadNode>(path, nullptr, mem);
-                    }
-                    else
-                    {
-                        read = std::make_shared<ImageReadNode>(path, nullptr, mem);
-                    }
+                    auto read = _timelineWrapper->getReadNode(externalRef);
                     const auto& spec = read->getSpec();
                     if (spec.width > 0)
                     {
@@ -94,16 +78,7 @@ namespace toucan
             {
                 try
                 {
-                    auto read = std::make_shared<SequenceReadNode>(
-                        _timelineWrapper->getMediaPath(sequenceRef->target_url_base()),
-                        sequenceRef->name_prefix(),
-                        sequenceRef->name_suffix(),
-                        sequenceRef->start_frame(),
-                        sequenceRef->frame_step(),
-                        sequenceRef->rate(),
-                        sequenceRef->frame_zero_padding(),
-                        nullptr,
-                        _timelineWrapper->getMemoryReferences());
+                    auto read = _timelineWrapper->getReadNode(sequenceRef);
                     const auto& spec = read->getSpec();
                     if (spec.width > 0)
                     {
@@ -207,9 +182,6 @@ namespace toucan
             node = _effects(host, stack->trimmed_range(), effects, node);
         }
 
-        // Set the time.
-        node->setTime(time - _timeRange.start_time());
-
         return node;
     }
 
@@ -220,7 +192,8 @@ namespace toucan
     {
         std::shared_ptr<IImageNode> out;
 
-        // Find the items for the given time.
+        // Find the item for the given time. The previous and next items are
+        // also tracked for handling transitions.
         OTIO_NS::SerializableObject::Retainer<OTIO_NS::Item> item;
         OTIO_NS::SerializableObject::Retainer<OTIO_NS::Composable> prev;
         OTIO_NS::SerializableObject::Retainer<OTIO_NS::Composable> prev2;
@@ -274,27 +247,26 @@ namespace toucan
                             (time - trimmedRangeInParent.value().start_time()).value() /
                             trimmedRangeInParent.value().duration().value();
 
+                        auto a = _item(
+                            host,
+                            prevItem->trimmed_range_in_parent().value(),
+                            track->transformed_time(time, prevItem),
+                            prevItem);
+
                         auto metaData = prevTransition->metadata();
                         metaData["value"] = value;
                         auto node = host->createNode(
                             metaData,
-                            prevTransition->transition_type());
+                            prevTransition->transition_type(),
+                            { a, out });
                         if (!node)
                         {
                             node = host->createNode(
                                 metaData,
-                                "toucan:Dissolve");
+                                "toucan:Dissolve",
+                                { a, out });
                         }
-                        if (node)
-                        {
-                            auto a = _item(
-                                host,
-                                prevItem->trimmed_range_in_parent().value(),
-                                track->transformed_time(time, prevItem),
-                                prevItem);
-                            node->setInputs({ a, out });
-                            out = node;
-                        }
+                        out = node;
                     }
                 }
             }
@@ -309,27 +281,26 @@ namespace toucan
                             (time - trimmedRangeInParent.value().start_time()).value() /
                             trimmedRangeInParent.value().duration().value();
 
+                        auto b = _item(
+                            host,
+                            nextItem->trimmed_range_in_parent().value(),
+                            track->transformed_time(time, nextItem),
+                            nextItem);
+
                         auto metaData = nextTransition->metadata();
                         metaData["value"] = value;
                         auto node = host->createNode(
                             metaData,
-                            nextTransition->transition_type());
+                            nextTransition->transition_type(),
+                            { out, b });
                         if (!node)
                         {
                             node = host->createNode(
                                 metaData,
-                                "toucan:Dissolve");
+                                "toucan:Dissolve",
+                                { out, b });
                         }
-                        if (node)
-                        {
-                            auto b = _item(
-                                host,
-                                nextItem->trimmed_range_in_parent().value(),
-                                track->transformed_time(time, nextItem),
-                                nextItem);
-                            node->setInputs({ out, b });
-                            out = node;
-                        }
+                        out = node;
                     }
                 }
             }
@@ -352,67 +323,9 @@ namespace toucan
             if (auto externalRef = dynamic_cast<OTIO_NS::ExternalReference*>(clip->media_reference()))
             {
                 std::shared_ptr<IReadNode> read;
-                if (!_loadCache.get(externalRef, read))
-                {
-                    try
-                    {
-                        const std::filesystem::path path = _timelineWrapper->getMediaPath(externalRef->target_url());
-                        const MemoryReference mem = _timelineWrapper->getMemoryReference(externalRef->target_url());
-                        if (MovieReadNode::hasExtension(path.extension().string()))
-                        {
-                            read = std::make_shared<MovieReadNode>(path, externalRef, mem);
-                        }
-                        else if (SVGReadNode::hasExtension(path.extension().string()))
-                        {
-                            read = std::make_shared<SVGReadNode>(path, externalRef, mem);
-                        }
-                        else
-                        {
-                            read = std::make_shared<ImageReadNode>(path, externalRef, mem);
-                        }
-                    }
-                    catch (const std::exception& e)
-                    {
-                        _context.lock()->getSystem<ftk::LogSystem>()->print(
-                            logPrefix,
-                            e.what(),
-                            ftk::LogType::Error);
-                    }
-                    _loadCache.add(externalRef, read);
-                }
-                if (read)
-                {
-                    OTIO_NS::RationalTime timeOffset = -item->trimmed_range().start_time();
-
-                    //! \bug Workaround for when the available range does not match
-                    //! the range in the media.
-                    const OTIO_NS::TimeRange& timeRange = read->getTimeRange();
-                    const auto availableOpt = externalRef->available_range();
-                    if (availableOpt.has_value() &&
-                        !availableOpt.value().start_time().strictly_equal(timeRange.start_time()))
-                    {
-                        timeOffset += availableOpt.value().start_time() - timeRange.start_time();
-                    }
-
-                    read->setTimeOffset(timeOffset);
-                }
-                out = read;
-            }
-            else if (auto sequenceRef = dynamic_cast<OTIO_NS::ImageSequenceReference*>(clip->media_reference()))
-            {
-                std::shared_ptr<SequenceReadNode> read;
                 try
                 {
-                    read = std::make_shared<SequenceReadNode>(
-                        _timelineWrapper->getMediaPath(sequenceRef->target_url_base()),
-                        sequenceRef->name_prefix(),
-                        sequenceRef->name_suffix(),
-                        sequenceRef->start_frame(),
-                        sequenceRef->frame_step(),
-                        sequenceRef->rate(),
-                        sequenceRef->frame_zero_padding(),
-                        sequenceRef,
-                        _timelineWrapper->getMemoryReferences());
+                    read = _timelineWrapper->getReadNode(externalRef);
                 }
                 catch (const std::exception& e)
                 {
@@ -421,9 +334,21 @@ namespace toucan
                         e.what(),
                         ftk::LogType::Error);
                 }
-                if (read)
+                out = read;
+            }
+            else if (auto sequenceRef = dynamic_cast<OTIO_NS::ImageSequenceReference*>(clip->media_reference()))
+            {
+                std::shared_ptr<IReadNode> read;
+                try
                 {
-                    read->setTimeOffset(-item->trimmed_range().start_time());
+                    read = _timelineWrapper->getReadNode(sequenceRef);
+                }
+                catch (const std::exception& e)
+                {
+                    _context.lock()->getSystem<ftk::LogSystem>()->print(
+                        logPrefix,
+                        e.what(),
+                        ftk::LogType::Error);
                 }
                 out = read;
             }
@@ -448,12 +373,6 @@ namespace toucan
             out = _effects(host, item->trimmed_range(), effects, out);
         }
 
-        // Set the time offset.
-        if (out)
-        {
-            out->setTimeOffset(out->getTimeOffset() + trimmedRangeInParent.start_time());
-        }
-
         return out;
     }
 
@@ -470,7 +389,6 @@ namespace toucan
             {
                 auto linearTimeWarpNode = std::make_shared<LinearTimeWarpNode>(
                     static_cast<float>(linearTimeWarp->time_scalar()),
-                    trimmedRange,
                     std::vector<std::shared_ptr<IImageNode> >{ out });
                 out = linearTimeWarpNode;
             }
