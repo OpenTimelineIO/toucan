@@ -5,7 +5,6 @@
 
 #include "PlaybackModel.h"
 #include "SelectionModel.h"
-#include "ThumbnailGenerator.h"
 #include "ViewModel.h"
 
 #include <toucanRender/TimelineWrapper.h>
@@ -31,12 +30,6 @@ namespace toucan
         _viewModel = std::make_shared<ViewModel>(context);
 
         _selectionModel = std::make_shared<SelectionModel>();
-
-        _thumbnailGenerator = std::make_shared<ThumbnailGenerator>(
-            context,
-            _path.parent_path(),
-            _timelineWrapper,
-            _host);
 
         _currentImage = ftk::ObservableValue<std::shared_ptr<ftk::Image> >::create();
 
@@ -93,11 +86,6 @@ namespace toucan
         return _selectionModel;
     }
 
-    const std::shared_ptr<ThumbnailGenerator>& File::getThumbnailGenerator() const
-    {
-        return _thumbnailGenerator;
-    }
-
     const IMATH_NAMESPACE::V2i& File::getImageSize() const
     {
         return _graph->getImageSize();
@@ -142,7 +130,8 @@ namespace toucan
         if (_currentNode->get())
         {
             const OTIO_NS::TimeRange& timeRange = _playbackModel->getTimeRange();
-            _imageBuf = _currentNode->get()->exec(_currentTime - timeRange.start_time());
+            _currentNode->get()->setTime(_currentTime - timeRange.start_time());
+            _imageBuf = _currentNode->get()->exec();
 
             const auto& spec = _imageBuf.spec();
             ftk::ImageType imageType = ftk::ImageType::None;

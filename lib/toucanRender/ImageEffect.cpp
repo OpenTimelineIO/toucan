@@ -74,7 +74,7 @@ namespace toucan
             nullptr);
     }
 
-    OIIO::ImageBuf ImageEffectNode::exec(const OTIO_NS::RationalTime& t)
+    OIIO::ImageBuf ImageEffectNode::exec()
     {
         OIIO::ImageBuf out;
 
@@ -98,7 +98,7 @@ namespace toucan
             !_inputs.empty() &&
             _inputs[0])
         {
-            inputs.push_back(_inputs[0]->exec(t));
+            inputs.push_back(_inputs[0]->exec());
             auto spec = inputs[0].spec();
             if (size.x > 0 && size.y > 0)
             {
@@ -115,8 +115,8 @@ namespace toucan
             _inputs[0] &&
             _inputs[1])
         {
-            inputs.push_back(_inputs[0]->exec(t));
-            inputs.push_back(_inputs[1]->exec(t));
+            inputs.push_back(_inputs[0]->exec());
+            inputs.push_back(_inputs[1]->exec());
             auto spec = inputs[0].spec();
             if (size.x > 0 && size.y > 0)
             {
@@ -134,7 +134,7 @@ namespace toucan
         if (spec.width > 0 && spec.height > 0)
         {
             PropertySet args;
-            args.setDouble(kOfxPropTime, 0, t.value());
+            args.setDouble(kOfxPropTime, 0, _time.value());
             OfxRectI bounds;
             bounds.x1 = 0;
             bounds.x2 = spec.width;

@@ -50,7 +50,7 @@ namespace toucan
 
         virtual ~ImageEffectNode();
 
-        OIIO::ImageBuf exec(const OTIO_NS::RationalTime&) override;
+        OIIO::ImageBuf exec() override;
 
     private:
         ImageEffectPlugin& _plugin;

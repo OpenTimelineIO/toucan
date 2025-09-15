@@ -30,6 +30,11 @@ namespace toucan
         return _inputs;
     }
 
+    void IImageNode::setTime(const OTIO_NS::RationalTime& value)
+    {
+        _time = value;
+    }
+
     std::vector<std::string> IImageNode::graph(const std::string& name)
     {
         std::vector<std::string> out;

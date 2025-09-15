@@ -60,14 +60,14 @@ namespace toucan
     void MarkerItem::_init(
         const std::shared_ptr<ftk::Context>& context,
         const ItemData& data,
-        const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Marker>& marker,
+        const OTIO_NS::Marker* marker,
         const OTIO_NS::TimeRange& timeRange,
         const std::shared_ptr<IWidget>& parent)
     {
         IItem::_init(
             context,
             data,
-            OTIO_NS::dynamic_retainer_cast<OTIO_NS::SerializableObjectWithMetadata>(marker),
+            marker,
             timeRange,
             "toucan::MarkerItem",
             parent);
@@ -90,7 +90,7 @@ namespace toucan
     std::shared_ptr<MarkerItem> MarkerItem::create(
         const std::shared_ptr<ftk::Context>& context,
         const ItemData& data,
-        const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Marker>& marker,
+        const OTIO_NS::Marker* marker,
         const OTIO_NS::TimeRange& timeRange,
         const std::shared_ptr<IWidget>& parent)
     {

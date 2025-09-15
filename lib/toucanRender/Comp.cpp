@@ -26,13 +26,13 @@ namespace toucan
         _resize = resize;
     }
 
-    OIIO::ImageBuf CompNode::exec(const OTIO_NS::RationalTime& t)
+    OIIO::ImageBuf CompNode::exec()
     {
         OIIO::ImageBuf buf;
         if (_inputs.size() > 1 && _inputs[0] && _inputs[1])
         {
-            auto fgBuf = _inputs[0]->exec(t);
-            buf = _inputs[1]->exec(t);
+            auto fgBuf = _inputs[0]->exec();
+            buf = _inputs[1]->exec();
             const auto fgSpec = fgBuf.spec();
             if (_premult &&
                 fgSpec.width > 0 &&
@@ -74,7 +74,7 @@ namespace toucan
         }
         else if (1 == _inputs.size() && _inputs[0])
         {
-            buf = _inputs[0]->exec(t);
+            buf = _inputs[0]->exec();
             if (_premult)
             {
                 buf = OIIO::ImageBufAlgo::premult(buf);

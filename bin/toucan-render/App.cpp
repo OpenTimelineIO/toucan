@@ -232,7 +232,7 @@ namespace toucan
             if (auto node = _graph->exec(_host, time))
             {
                 // Execute the graph.
-                const auto buf = node->exec(time);
+                const auto buf = node->exec();
 
                 // Save the image.
                 if (!_cmdLine.outputRaw)

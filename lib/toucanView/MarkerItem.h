@@ -22,7 +22,7 @@ namespace toucan
         void _init(
             const std::shared_ptr<ftk::Context>&,
             const ItemData&,
-            const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Marker>&,
+            const OTIO_NS::Marker*,
             const OTIO_NS::TimeRange&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -33,7 +33,7 @@ namespace toucan
         static std::shared_ptr<MarkerItem> create(
             const std::shared_ptr<ftk::Context>&,
             const ItemData&,
-            const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Marker>&,
+            const OTIO_NS::Marker*,
             const OTIO_NS::TimeRange&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
@@ -47,7 +47,8 @@ namespace toucan
     private:
         void _textUpdate();
 
-        OTIO_NS::SerializableObject::Retainer<OTIO_NS::Marker> _marker;
+        const OTIO_NS::Timeline* _timeline = nullptr;
+        const OTIO_NS::Marker* _marker = nullptr;
         std::string _text;
         ftk::Color4F _color;
 

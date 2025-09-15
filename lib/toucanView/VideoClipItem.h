@@ -21,8 +21,7 @@ namespace toucan
         void _init(
             const std::shared_ptr<ftk::Context>&,
             const ItemData&,
-            const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Clip>&,
-            const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>&,
+            const OTIO_NS::Clip*,
             const ftk::Color4F&,
             const std::shared_ptr<IWidget>& parent);
 
@@ -33,8 +32,7 @@ namespace toucan
         static std::shared_ptr<VideoClipItem> create(
             const std::shared_ptr<ftk::Context>&,
             const ItemData&,
-            const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Clip>&,
-            const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>&,
+            const OTIO_NS::Clip*,
             const ftk::Color4F&,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
@@ -52,7 +50,7 @@ namespace toucan
     private:
         void _textUpdate();
 
-        OTIO_NS::SerializableObject::Retainer<OTIO_NS::Clip> _clip;
+        const OTIO_NS::Clip* _clip = nullptr;
         std::string _text;
         ftk::Color4F _color;
         std::string _url;

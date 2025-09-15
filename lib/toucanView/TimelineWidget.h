@@ -16,6 +16,7 @@ namespace toucan
     class App;
     class File;
     class TimelineItem;
+    class ThumbnailGenerator;
 
     //! Timeline widget.
     class TimelineWidget : public ftk::IWidget
@@ -82,6 +83,7 @@ namespace toucan
         std::shared_ptr<ftk::ObservableValue<bool> > _frameView;
         bool _sizeInit = true;
         std::optional<TimelineViewState> _viewState;
+        std::shared_ptr<ThumbnailGenerator> _thumbnailGenerator;
 
         std::shared_ptr<ftk::ScrollWidget> _scrollWidget;
         std::shared_ptr<TimelineItem> _timelineItem;

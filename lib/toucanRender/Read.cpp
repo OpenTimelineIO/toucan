@@ -61,7 +61,7 @@ namespace toucan
         return ss.str();
     }
 
-    OIIO::ImageBuf ImageReadNode::exec(const OTIO_NS::RationalTime&)
+    OIIO::ImageBuf ImageReadNode::exec()
     {
         OIIO::ImageBuf out;
 
@@ -161,7 +161,7 @@ namespace toucan
         return ss.str();
     }
 
-    OIIO::ImageBuf SequenceReadNode::exec(const OTIO_NS::RationalTime& t)
+    OIIO::ImageBuf SequenceReadNode::exec()
     {
         OIIO::ImageBuf out;
 
@@ -169,7 +169,7 @@ namespace toucan
         const std::string url = getSequenceFrame(
             _base,
             _namePrefix,
-            t.to_frames(),
+            _time.to_frames(),
             _frameZeroPadding,
             _nameSuffix);
         std::unique_ptr<OIIO::Filesystem::IOMemReader> memoryReader;
@@ -259,7 +259,7 @@ namespace toucan
         return ss.str();
     }
 
-    OIIO::ImageBuf SVGReadNode::exec(const OTIO_NS::RationalTime&)
+    OIIO::ImageBuf SVGReadNode::exec()
     {
         OIIO::ImageBuf out;
         
@@ -313,12 +313,12 @@ namespace toucan
         return ss.str();
     }
 
-    OIIO::ImageBuf MovieReadNode::exec(const OTIO_NS::RationalTime& t)
+    OIIO::ImageBuf MovieReadNode::exec()
     {
         OIIO::ImageBuf out;
 
         // Read the image.
-        out = _ffRead->getImage(t);
+        out = _ffRead->getImage(_time);
 
         const auto& spec = out.spec();
         if (3 == spec.nchannels)
@@ -338,13 +338,7 @@ namespace toucan
         return { ".mov", ".mp4", ".m4v", ".y4m" };
     }
 
-    ReadFactory::ReadFactory()
-    {
-        _cache.setMax(10);
-    }
-
-    std::shared_ptr<IReadNode> ReadFactory::getReadNode(
-        OTIO_NS::MediaReference* ref,
+    std::shared_ptr<IReadNode> createReadNode(
         const std::filesystem::path& path,
         const MemoryReference& mem)
     {
@@ -364,8 +358,7 @@ namespace toucan
         return out;
     }
 
-    std::shared_ptr<IReadNode> ReadFactory::getReadNode(
-        OTIO_NS::MediaReference*,
+    std::shared_ptr<IReadNode> createReadNode(
         const std::string& base,
         const std::string& namePrefix,
         const std::string& nameSuffix,

@@ -10,7 +10,7 @@
 
 namespace toucan
 {
-    class SelectionModel;
+    class StackItem;
 
     //! Timeline item.
     class TimelineItem : public IItem
@@ -43,12 +43,7 @@ namespace toucan
         void setInOutRange(const OTIO_NS::TimeRange&);
 
         void setGeometry(const ftk::Box2I&) override;
-        void tickEvent(
-            bool parentsVisible,
-            bool parentsEnabled,
-            const ftk::TickEvent&) override;
         void sizeHintEvent(const ftk::SizeHintEvent&) override;
-        void drawEvent(const ftk::Box2I&, const ftk::DrawEvent&) override;
         void drawOverlayEvent(const ftk::Box2I&, const ftk::DrawEvent&) override;
         void mouseMoveEvent(ftk::MouseMoveEvent&) override;
         void mousePressEvent(ftk::MouseClickEvent&) override;
@@ -79,16 +74,13 @@ namespace toucan
             const std::shared_ptr<ftk::IWidget>&,
             const std::vector<SelectionItem>&);
 
-        OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline> _timeline;
+        const OTIO_NS::Timeline* _timeline = nullptr;
         OTIO_NS::TimeRange _timeRange;
         OTIO_NS::RationalTime _currentTime = OTIO_NS::RationalTime(-1.0, -1.0);
         std::function<void(const OTIO_NS::RationalTime&)> _currentTimeCallback;
         OTIO_NS::TimeRange _inOutRange;
         std::shared_ptr<SelectionModel> _selectionModel;
-        bool _thumbnails = true;
-        std::shared_ptr<ThumbnailGenerator> _thumbnailGenerator;
-        std::list<ThumbnailRequest> _thumbnailRequests;
-        std::shared_ptr<ftk::LRUCache<std::string, std::shared_ptr<ftk::Image> > > _thumbnailCache;
+        std::shared_ptr<StackItem> _stackItem;
 
         struct SizeData
         {
@@ -117,6 +109,5 @@ namespace toucan
         MouseData _mouse;
 
         std::shared_ptr<ftk::ListObserver<SelectionItem > > _selectionObserver;
-        std::shared_ptr<ftk::ValueObserver<bool> > _thumbnailsObserver;
     };
 }

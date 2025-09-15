@@ -3,6 +3,7 @@
 
 #include "StackItem.h"
 
+#include "File.h"
 #include "TrackItem.h"
 
 #include <feather-tk/ui/DrawUtil.h>
@@ -13,24 +14,21 @@ namespace toucan
     void StackItem::_init(
         const std::shared_ptr<ftk::Context>& context,
         const ItemData& data,
-        const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Stack>& stack,
-        const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>& timeline ,
+        const OTIO_NS::Stack* stack,
         const std::shared_ptr<IWidget>& parent)
     {
+        auto timelineWrapper = data.file->getTimelineWrapper();
         OTIO_NS::TimeRange timeRange = stack->trimmed_range();
-        if (timeline->global_start_time().has_value())
-        {
-            timeRange = OTIO_NS::TimeRange(
-                timeline->global_start_time().value() + timeRange.start_time(),
-                timeRange.duration());
-        }
+        timeRange = OTIO_NS::TimeRange(
+            timelineWrapper->getTimeRange().start_time() + timeRange.start_time(),
+            timeRange.duration());
         timeRange = OTIO_NS::TimeRange(
             timeRange.start_time().round(),
             timeRange.duration().round());
         IItem::_init(
             context,
             data,
-            OTIO_NS::dynamic_retainer_cast<OTIO_NS::SerializableObjectWithMetadata>(stack),
+            stack,
             timeRange,
             "toucan::StackItem",
             parent);
@@ -53,18 +51,15 @@ namespace toucan
             _markerLayout = TimeLayout::create(context, timeRange, _layout);
             for (const auto& marker : markers)
             {
-                OTIO_NS::TimeRange markerTimeRange = marker->marked_range();
-                if (timeline->global_start_time().has_value())
-                {
-                    markerTimeRange = OTIO_NS::TimeRange(
-                        timeline->global_start_time().value() + markerTimeRange.start_time(),
-                        markerTimeRange.duration());
-                }
+                OTIO_NS::TimeRange markerRange = marker->marked_range();
+                markerRange = OTIO_NS::TimeRange(
+                    timelineWrapper->getTimeRange().start_time() + markerRange.start_time(),
+                    markerRange.duration());
                 auto markerItem = MarkerItem::create(
                     context,
                     data,
                     marker,
-                    markerTimeRange,
+                    markerRange,
                     _markerLayout);
                 _markerItems.push_back(markerItem);
             }
@@ -79,7 +74,6 @@ namespace toucan
                     context,
                     data,
                     track,
-                    timeline,
                     _timeLayout);
             }
         }
@@ -93,12 +87,11 @@ namespace toucan
     std::shared_ptr<StackItem> StackItem::create(
         const std::shared_ptr<ftk::Context>& context,
         const ItemData& data,
-        const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Stack>& stack,
-        const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>& timeline,
+        const OTIO_NS::Stack* stack,
         const std::shared_ptr<IWidget>& parent)
     {
         auto out = std::make_shared<StackItem>();
-        out->_init(context, data, stack, timeline, parent);
+        out->_init(context, data, stack, parent);
         return out;
     }
 

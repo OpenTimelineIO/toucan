@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include <toucanRender/ImageEffectHost.h>
-#include <toucanRender/ImageGraph.h>
 #include <toucanRender/TimelineWrapper.h>
 
 #include <feather-tk/core/Image.h>
@@ -40,19 +38,9 @@ namespace toucan
     public:
         ThumbnailGenerator(
             const std::shared_ptr<ftk::Context>&,
-            const std::filesystem::path&,
-            const std::shared_ptr<TimelineWrapper>&,
-            const std::shared_ptr<ImageEffectHost>&);
+            const std::shared_ptr<TimelineWrapper>&);
 
         ~ThumbnailGenerator();
-
-        //! Get the timeline aspect ratio.
-        float getAspect() const;
-
-        //! Get a timeline thumbnail.
-        ThumbnailRequest getThumbnail(
-            const OTIO_NS::RationalTime&,
-            int height);
 
         //! Get a media aspect ratio.
         std::future<float> getAspect(
@@ -72,16 +60,8 @@ namespace toucan
         void _run();
         void _cancel();
 
-        std::shared_ptr<IImageNode> _findNode(
-            const std::shared_ptr<IImageNode>&,
-            const OTIO_NS::MediaReference*);
-
         std::shared_ptr<ftk::LogSystem> _logSystem;
-        std::filesystem::path _path;
         std::shared_ptr<TimelineWrapper> _timelineWrapper;
-        std::shared_ptr<ImageEffectHost> _host;
-        std::shared_ptr<ImageGraph> _graph;
-        float _aspect = 1.F;
 
         struct AspectRequest
         {

@@ -439,7 +439,7 @@ namespace toucan
     {
         if (auto node = _graph->exec(_host, _time))
         {
-            auto buf = node->exec(_time);
+            auto buf = node->exec();
             if (_outputSize != _imageSize)
             {
                 buf = OIIO::ImageBufAlgo::resize(

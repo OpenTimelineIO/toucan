@@ -8,7 +8,7 @@
 namespace toucan
 {
     //! Linear time warp node.
-    class LinearTimeWarpNode : public IImageNode
+    /*class LinearTimeWarpNode : public IImageNode
     {
     public:
         LinearTimeWarpNode(
@@ -21,5 +21,5 @@ namespace toucan
 
     private:
         double _timeScalar = 1.F;
-    };
+    };*/
 }

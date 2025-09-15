@@ -18,8 +18,7 @@ namespace toucan
         void _init(
             const std::shared_ptr<ftk::Context>&,
             const ItemData&,
-            const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Stack>&,
-            const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>&,
+            const OTIO_NS::Stack*,
             const std::shared_ptr<IWidget>& parent);
 
     public:
@@ -29,8 +28,7 @@ namespace toucan
         static std::shared_ptr<StackItem> create(
             const std::shared_ptr<ftk::Context>&,
             const ItemData&,
-            const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Stack>&,
-            const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>&,
+            const OTIO_NS::Stack*,
             const std::shared_ptr<IWidget>& parent = nullptr);
 
         void setScale(double) override;
@@ -46,7 +44,8 @@ namespace toucan
     private:
         void _textUpdate();
 
-        OTIO_NS::SerializableObject::Retainer<OTIO_NS::Stack> _stack;
+        const OTIO_NS::Timeline* _timeline = nullptr;
+        const OTIO_NS::Stack* _stack = nullptr;
         std::string _text;
         ftk::Color4F _color;
 

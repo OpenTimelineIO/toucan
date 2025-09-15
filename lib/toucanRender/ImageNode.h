@@ -33,8 +33,11 @@ namespace toucan
         //! Get the inputs.
         const std::vector<std::shared_ptr<IImageNode> >& getInputs() const;
 
+        //! Set the time.
+        void setTime(const OTIO_NS::RationalTime&);
+
         //! Execute the image operation.
-        virtual OIIO::ImageBuf exec(const OTIO_NS::RationalTime&) = 0;
+        virtual OIIO::ImageBuf exec() = 0;
 
         //! Generate a Grapviz graph
         std::vector<std::string> graph(const std::string& name);
@@ -47,5 +50,6 @@ namespace toucan
 
         std::string _name;
         std::vector<std::shared_ptr<IImageNode> > _inputs;
+        OTIO_NS::RationalTime _time;
     };
 }

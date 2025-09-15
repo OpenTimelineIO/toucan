@@ -46,6 +46,7 @@ namespace toucan
                     viewState.scale = _scale;
                     viewState.frameView = _frameView->get();
                     _file->getPlaybackModel()->setViewState(viewState);
+                    _thumbnailGenerator.reset();
                 }
                 _file = file;
                 if (file)
@@ -61,10 +62,15 @@ namespace toucan
                         _sizeInit = true;
                     }
 
+                    auto context = getContext();
+                    _thumbnailGenerator = std::make_shared<ThumbnailGenerator>(
+                        context,
+                        file->getTimelineWrapper());
+
                     ItemData data;
                     data.app = appWeak.lock();
                     data.file = file;
-                    data.thumbnailGenerator = file->getThumbnailGenerator();
+                    data.thumbnailGenerator = _thumbnailGenerator;
                     data.thumbnailCache = std::make_shared<ftk::LRUCache<std::string, std::shared_ptr<ftk::Image> > >();
                     data.thumbnailCache->setMax(1000);
                     _timelineItem = TimelineItem::create(getContext(), data);

@@ -5,7 +5,7 @@
 
 namespace toucan
 {
-    LinearTimeWarpNode::LinearTimeWarpNode(
+    /*LinearTimeWarpNode::LinearTimeWarpNode(
         double timeScalar,
         const std::vector<std::shared_ptr<IImageNode> >& inputs) :
         IImageNode("LinearTimeWarp", inputs),
@@ -24,5 +24,5 @@ namespace toucan
             buf = _inputs[0]->exec(scaledTime);
         }
         return buf;
-    }
+    }*/
 }

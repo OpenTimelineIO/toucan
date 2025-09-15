@@ -17,7 +17,6 @@ namespace toucan
 {
     class PlaybackModel;
     class SelectionModel;
-    class ThumbnailGenerator;
     class ViewModel;
 
     //! Timeline file.
@@ -49,9 +48,6 @@ namespace toucan
         //! Get the selection model.
         const std::shared_ptr<SelectionModel>& getSelectionModel() const;
 
-        //! Get the thumbnail generator.
-        const std::shared_ptr<ThumbnailGenerator>& getThumbnailGenerator() const;
-
         //! Get the image size.
         const IMATH_NAMESPACE::V2i& getImageSize() const;
 
@@ -82,7 +78,6 @@ namespace toucan
         std::shared_ptr<PlaybackModel> _playbackModel;
         std::shared_ptr<ViewModel> _viewModel;
         std::shared_ptr<SelectionModel> _selectionModel;
-        std::shared_ptr<ThumbnailGenerator> _thumbnailGenerator;
         std::shared_ptr<ftk::ObservableValue<std::shared_ptr<ftk::Image> > > _currentImage;
         OTIO_NS::RationalTime _currentTime;
 

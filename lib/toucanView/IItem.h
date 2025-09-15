@@ -34,7 +34,7 @@ namespace toucan
         void _init(
             const std::shared_ptr<ftk::Context>&,
             const ItemData&,
-            const OTIO_NS::SerializableObject::Retainer<OTIO_NS::SerializableObjectWithMetadata>&,
+            const OTIO_NS::SerializableObjectWithMetadata*,
             const OTIO_NS::TimeRange&,
             const std::string& objectName,
             const std::shared_ptr<IWidget>& parent);
@@ -43,7 +43,7 @@ namespace toucan
         virtual ~IItem() = 0;
 
         //! Get the OTIO object.
-        const OTIO_NS::SerializableObject::Retainer<OTIO_NS::SerializableObjectWithMetadata>& getObject() const;
+        const OTIO_NS::SerializableObjectWithMetadata* getObject() const;
         
         //! Get the item selection rectangle.
         const ftk::Box2I& getSelectionRect() const;
@@ -63,8 +63,8 @@ namespace toucan
         virtual void _buildMenu(const std::shared_ptr<ftk::Menu>&);
 
         std::weak_ptr<App> _app;
-        std::weak_ptr<File> _file;
-        OTIO_NS::SerializableObject::Retainer<OTIO_NS::SerializableObjectWithMetadata> _object;
+        std::shared_ptr<File> _file;
+        const OTIO_NS::SerializableObjectWithMetadata* _object = nullptr;
         TimeUnits _timeUnits = TimeUnits::First;
         ftk::Box2I _selectionRect;
         bool _selected = false;

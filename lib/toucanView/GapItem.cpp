@@ -3,6 +3,8 @@
 
 #include "GapItem.h"
 
+#include "File.h"
+
 #include <feather-tk/ui/DrawUtil.h>
 
 namespace toucan
@@ -10,23 +12,23 @@ namespace toucan
     void GapItem::_init(
         const std::shared_ptr<ftk::Context>& context,
         const ItemData& data,
-        const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Gap>& gap,
-        const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>& timeline,
+        const OTIO_NS::Gap* gap,
         const std::shared_ptr<IWidget>& parent)
     {
+        auto timelineWrapper = data.file->getTimelineWrapper();
         OTIO_NS::TimeRange timeRange = gap->transformed_time_range(
             gap->trimmed_range(),
-            timeline->tracks());
-        if (timeline->global_start_time().has_value())
-        {
-            timeRange = OTIO_NS::TimeRange(
-                timeline->global_start_time().value() + timeRange.start_time(),
-                timeRange.duration());
-        }
+            timelineWrapper->getTimeline()->tracks());
+        timeRange = OTIO_NS::TimeRange(
+            timelineWrapper->getTimeRange().start_time() + timeRange.start_time(),
+            timeRange.duration());
+        timeRange = OTIO_NS::TimeRange(
+            timeRange.start_time().round(),
+            timeRange.duration().round());
         IItem::_init(
             context,
             data,
-            OTIO_NS::dynamic_retainer_cast<OTIO_NS::SerializableObjectWithMetadata>(gap),
+            gap,
             timeRange,
             "toucan::ClipItem",
             parent);
@@ -51,13 +53,10 @@ namespace toucan
             {
                 OTIO_NS::TimeRange markerTimeRange = gap->transformed_time_range(
                     marker->marked_range(),
-                    timeline->tracks());
-                if (timeline->global_start_time().has_value())
-                {
-                    markerTimeRange = OTIO_NS::TimeRange(
-                        timeline->global_start_time().value() + markerTimeRange.start_time(),
-                        markerTimeRange.duration());
-                }
+                    timelineWrapper->getTimeline()->tracks());
+                markerTimeRange = OTIO_NS::TimeRange(
+                    timelineWrapper->getTimeRange().start_time() + markerTimeRange.start_time(),
+                    markerTimeRange.duration());
                 auto markerItem = MarkerItem::create(
                     context,
                     data,
@@ -77,12 +76,11 @@ namespace toucan
     std::shared_ptr<GapItem> GapItem::create(
         const std::shared_ptr<ftk::Context>& context,
         const ItemData& data,
-        const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Gap>& gap,
-        const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>& timeline,
+        const OTIO_NS::Gap* gap,
         const std::shared_ptr<IWidget>& parent)
     {
         auto out = std::make_shared<GapItem>();
-        out->_init(context, data, gap, timeline, parent);
+        out->_init(context, data, gap, parent);
         return out;
     }
 

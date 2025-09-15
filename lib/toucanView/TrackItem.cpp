@@ -4,6 +4,7 @@
 #include "TrackItem.h"
 
 #include "AudioClipItem.h"
+#include "File.h"
 #include "GapItem.h"
 #include "VideoClipItem.h"
 
@@ -15,26 +16,23 @@ namespace toucan
     void TrackItem::_init(
         const std::shared_ptr<ftk::Context>& context,
         const ItemData& data,
-        const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Track>& track,
-        const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>& timeline,
+        const OTIO_NS::Track* track,
         const std::shared_ptr<IWidget>& parent)
     {
+        auto timelineWrapper = data.file->getTimelineWrapper();
         OTIO_NS::TimeRange timeRange = track->transformed_time_range(
             track->trimmed_range(),
-            timeline->tracks());
-        if (timeline->global_start_time().has_value())
-        {
-            timeRange = OTIO_NS::TimeRange(
-                timeline->global_start_time().value() + timeRange.start_time(),
-                timeRange.duration());
-        }
+            timelineWrapper->getTimeline()->tracks());
+        timeRange = OTIO_NS::TimeRange(
+            timelineWrapper->getTimeRange().start_time() + timeRange.start_time(),
+            timeRange.duration());
         timeRange = OTIO_NS::TimeRange(
             timeRange.start_time().round(),
             timeRange.duration().round());
         IItem::_init(
             context,
             data,
-            OTIO_NS::dynamic_retainer_cast<OTIO_NS::SerializableObjectWithMetadata>(track),
+            track,
             timeRange,
             "toucan::TrackItem",
             parent);
@@ -59,20 +57,17 @@ namespace toucan
             _markerLayout = TimeLayout::create(context, timeRange, _layout);
             for (const auto& marker : markers)
             {
-                OTIO_NS::TimeRange markerTimeRange = track->transformed_time_range(
+                OTIO_NS::TimeRange markerRange = track->transformed_time_range(
                     marker->marked_range(),
-                    timeline->tracks());
-                if (timeline->global_start_time().has_value())
-                {
-                    markerTimeRange = OTIO_NS::TimeRange(
-                        timeline->global_start_time().value() + markerTimeRange.start_time(),
-                        markerTimeRange.duration());
-                }
+                    timelineWrapper->getTimeline()->tracks());
+                markerRange = OTIO_NS::TimeRange(
+                    timelineWrapper->getTimeRange().start_time() + markerRange.start_time(),
+                    markerRange.duration());
                 auto markerItem = MarkerItem::create(
                     context,
                     data,
                     marker,
-                    markerTimeRange,
+                    markerRange,
                     _markerLayout);
                 _markerItems.push_back(markerItem);
             }
@@ -89,7 +84,6 @@ namespace toucan
                         context,
                         data,
                         clip,
-                        timeline,
                         ftk::Color4F(.4F, .4F, .6F),
                         _timeLayout);
                 }
@@ -99,7 +93,6 @@ namespace toucan
                         context,
                         data,
                         clip,
-                        timeline,
                         ftk::Color4F(.4F, .6F, .4F),
                         _timeLayout);
                 }
@@ -110,7 +103,6 @@ namespace toucan
                     context,
                     data,
                     gap,
-                    timeline,
                     _timeLayout);
             }
         }
@@ -124,12 +116,11 @@ namespace toucan
     std::shared_ptr<TrackItem> TrackItem::create(
         const std::shared_ptr<ftk::Context>& context,
         const ItemData& data,
-        const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Track>& track,
-        const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>& timeline,
+        const OTIO_NS::Track* track,
         const std::shared_ptr<IWidget>& parent)
     {
         auto out = std::make_shared<TrackItem>();
-        out->_init(context, data, track, timeline, parent);
+        out->_init(context, data, track, parent);
         return out;
     }
 

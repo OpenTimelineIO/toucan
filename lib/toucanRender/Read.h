@@ -7,11 +7,9 @@
 #include <toucanRender/ImageNode.h>
 #include <toucanRender/MemoryMap.h>
 
-#include <feather-tk/core/LRUCache.h>
+#include <lunasvg/lunasvg.h>
 
 #include <opentimelineio/mediaReference.h>
-
-#include <lunasvg/lunasvg.h>
 
 #include <OpenImageIO/filesystem.h>
 
@@ -48,7 +46,7 @@ namespace toucan
 
         std::string getLabel() const override;
 
-        OIIO::ImageBuf exec(const OTIO_NS::RationalTime&) override;
+        OIIO::ImageBuf exec() override;
 
         static std::vector<std::string> getExtensions();
 
@@ -76,7 +74,7 @@ namespace toucan
 
         std::string getLabel() const override;
 
-        OIIO::ImageBuf exec(const OTIO_NS::RationalTime&) override;
+        OIIO::ImageBuf exec() override;
 
         static std::vector<std::string> getExtensions();
 
@@ -103,7 +101,7 @@ namespace toucan
 
         std::string getLabel() const override;
 
-        OIIO::ImageBuf exec(const OTIO_NS::RationalTime&) override;
+        OIIO::ImageBuf exec() override;
 
         static std::vector<std::string> getExtensions();
 
@@ -124,7 +122,7 @@ namespace toucan
 
         std::string getLabel() const override;
 
-        OIIO::ImageBuf exec(const OTIO_NS::RationalTime&) override;
+        OIIO::ImageBuf exec() override;
 
         static std::vector<std::string> getExtensions();
 
@@ -134,33 +132,21 @@ namespace toucan
         std::unique_ptr<ffmpeg::Read> _ffRead;
     };
 
-    //! Read factory.
-    class ReadFactory : public std::enable_shared_from_this<ReadFactory>
-    {
-    public:
-        ReadFactory();
+    //! Create a read node.
+    std::shared_ptr<IReadNode> createReadNode(
+        const std::filesystem::path&,
+        const MemoryReference& = {});
 
-        //! Get a read node.
-        std::shared_ptr<IReadNode> getReadNode(
-            OTIO_NS::MediaReference*,
-            const std::filesystem::path&,
-            const MemoryReference& = {});
-
-        //! Get a read node.
-        std::shared_ptr<IReadNode> getReadNode(
-            OTIO_NS::MediaReference*,
-            const std::string& base,
-            const std::string& namePrefix,
-            const std::string& nameSuffix,
-            int startFrame,
-            int frameStep,
-            double rate,
-            int frameZerPadding,
-            const MemoryReferences& = {});
-
-    private:
-        ftk::LRUCache<OTIO_NS::MediaReference*, std::shared_ptr<IReadNode> > _cache;
-    };
+    //! Create a read node.
+    std::shared_ptr<IReadNode> createReadNode(
+        const std::string& base,
+        const std::string& namePrefix,
+        const std::string& nameSuffix,
+        int startFrame,
+        int frameStep,
+        double rate,
+        int frameZerPadding,
+        const MemoryReferences& = {});
 
     //! Is the extension in the list?
     bool hasExtension(

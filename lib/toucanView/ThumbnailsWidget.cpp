@@ -12,17 +12,26 @@ namespace toucan
 {
     void ThumbnailsWidget::_init(
         const std::shared_ptr<ftk::Context>& context,
-        const OTIO_NS::SerializableObject::Retainer<OTIO_NS::MediaReference>& ref,
+        const std::shared_ptr<TimelineWrapper>& timelineWrapper,
+        const OTIO_NS::Clip* clip,
+        const OTIO_NS::MediaReference* ref,
         const std::shared_ptr<ThumbnailGenerator>& thumbnailGenerator,
         const std::shared_ptr<ftk::LRUCache<std::string, std::shared_ptr<ftk::Image> > >& thumbnailCache,
         const OTIO_NS::TimeRange& timeRange,
         const std::shared_ptr<IWidget>& parent)
     {
         ITimeWidget::_init(context, timeRange, "toucan::ThumbnailsWidget", parent);
+        
+        _timelineWrapper = timelineWrapper;
+        _clip = clip;
         _ref = ref;
         _thumbnailGenerator = thumbnailGenerator;
         _thumbnailCache = thumbnailCache;
-        _thumbnailAspectRequest = _thumbnailGenerator->getAspect(ref, timeRange.start_time());
+
+        const OTIO_NS::RationalTime t = _timelineWrapper->getTimeline()->tracks()->transformed_time(
+            timeRange.start_time(),
+            _clip) - _timelineWrapper->getTimeRange().start_time();
+        _thumbnailAspectRequest = _thumbnailGenerator->getAspect(ref, t);
     }
     
     ThumbnailsWidget::~ThumbnailsWidget()
@@ -30,15 +39,32 @@ namespace toucan
 
     std::shared_ptr<ThumbnailsWidget> ThumbnailsWidget::create(
         const std::shared_ptr<ftk::Context>& context,
-        const OTIO_NS::SerializableObject::Retainer<OTIO_NS::MediaReference>& ref,
+        const std::shared_ptr<TimelineWrapper>& timelineWrapper,
+        const OTIO_NS::Clip* clip,
+        const OTIO_NS::MediaReference* ref,
         const std::shared_ptr<ThumbnailGenerator>& thumbnailGenerator,
         const std::shared_ptr<ftk::LRUCache<std::string, std::shared_ptr<ftk::Image> > >& thumbnailCache,
         const OTIO_NS::TimeRange& timeRange,
         const std::shared_ptr<IWidget>& parent)
     {
         auto out = std::make_shared<ThumbnailsWidget>();
-        out->_init(context, ref, thumbnailGenerator, thumbnailCache, timeRange, parent);
+        out->_init(context, timelineWrapper, clip, ref, thumbnailGenerator, thumbnailCache, timeRange, parent);
         return out;
+    }
+
+    void ThumbnailsWidget::setScale(double value)
+    {
+        const bool changed = value != _scale;
+        ITimeWidget::setScale(value);
+        if (changed)
+        {
+            std::vector<uint64_t> cancel;
+            for (const auto& request : _thumbnailRequests)
+            {
+                cancel.push_back(request.id);
+            }
+            _thumbnailGenerator->cancelThumbnails(cancel);
+        }
     }
 
     void ThumbnailsWidget::tickEvent(
@@ -105,7 +131,9 @@ namespace toucan
             const ftk::Box2I g2(x, y, thumbnailWidth, _size.thumbnailHeight);
             if (ftk::intersects(g2, drawRect))
             {
-                const OTIO_NS::RationalTime t = posToTime(x);
+                const OTIO_NS::RationalTime t = _timelineWrapper->getTimeline()->tracks()->transformed_time(
+                    posToTime(x),
+                    _clip) - _timelineWrapper->getTimeRange().start_time();
                 std::shared_ptr<ftk::Image> image;
                 const std::string cacheKey = getThumbnailCacheKey(_ref, t, _size.thumbnailHeight);
                 if (_thumbnailCache->get(cacheKey, image))
@@ -141,7 +169,9 @@ namespace toucan
         auto i = _thumbnailRequests.begin();
         while (i != _thumbnailRequests.end())
         {
-            const int x = timeToPos(i->time);
+            const int x = timeToPos(
+                _timelineWrapper->getTimeRange().start_time() +
+                _clip->transformed_time(i->time, _timelineWrapper->getTimeline()->tracks()));
             const ftk::Box2I g2(x, y, thumbnailWidth, _size.thumbnailHeight);
             if (!ftk::intersects(g2, drawRect))
             {

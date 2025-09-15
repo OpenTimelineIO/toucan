@@ -19,27 +19,24 @@ namespace toucan
     void VideoClipItem::_init(
         const std::shared_ptr<ftk::Context>& context,
         const ItemData& data,
-        const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Clip>& clip,
-        const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>& timeline,
+        const OTIO_NS::Clip* clip,
         const ftk::Color4F& color,
         const std::shared_ptr<IWidget>& parent)
     {
+        auto timelineWrapper = data.file->getTimelineWrapper();
         OTIO_NS::TimeRange timeRange = clip->transformed_time_range(
             clip->trimmed_range(),
-            timeline->tracks());
-        if (timeline->global_start_time().has_value())
-        {
-            timeRange = OTIO_NS::TimeRange(
-                timeline->global_start_time().value() + timeRange.start_time(),
-                timeRange.duration());
-        }
+            timelineWrapper->getTimeline()->tracks());
+        timeRange = OTIO_NS::TimeRange(
+            timelineWrapper->getTimeRange().start_time() + timeRange.start_time(),
+            timeRange.duration());
         timeRange = OTIO_NS::TimeRange(
             timeRange.start_time().round(),
             timeRange.duration().round());
         IItem::_init(
             context,
             data,
-            OTIO_NS::dynamic_retainer_cast<OTIO_NS::SerializableObjectWithMetadata>(clip),
+            clip,
             timeRange,
             "toucan::VideoClipItem",
             parent);
@@ -58,6 +55,8 @@ namespace toucan
 
         _thumbnailsWidget = ThumbnailsWidget::create(
             context,
+            timelineWrapper,
+            _clip,
             _clip->media_reference(),
             data.thumbnailGenerator,
             data.thumbnailCache,
@@ -74,13 +73,10 @@ namespace toucan
                 OTIO_NS::TimeRange markerRange(
                     marker->marked_range().start_time() + trimmedRange.start_time(),
                     marker->marked_range().duration());
-                markerRange = clip->transformed_time_range(markerRange, timeline->tracks());
-                if (timeline->global_start_time().has_value())
-                {
-                    markerRange = OTIO_NS::TimeRange(
-                        timeline->global_start_time().value() + markerRange.start_time(),
-                        markerRange.duration());
-                }
+                markerRange = clip->transformed_time_range(markerRange, timelineWrapper->getTimeline()->tracks());
+                markerRange = OTIO_NS::TimeRange(
+                    timelineWrapper->getTimeRange().start_time() + markerRange.start_time(),
+                    markerRange.duration());
                 auto markerItem = MarkerItem::create(
                     context,
                     data,
@@ -107,13 +103,12 @@ namespace toucan
     std::shared_ptr<VideoClipItem> VideoClipItem::create(
         const std::shared_ptr<ftk::Context>& context,
         const ItemData& data,
-        const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Clip>& clip,
-        const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>& timeline,
+        const OTIO_NS::Clip* clip,
         const ftk::Color4F& color,
         const std::shared_ptr<IWidget>& parent)
     {
         auto out = std::make_shared<VideoClipItem>();
-        out->_init(context, data, clip, timeline, color, parent);
+        out->_init(context, data, clip, color, parent);
         return out;
     }
 
@@ -180,8 +175,7 @@ namespace toucan
                 "Open Media",
                 [this, externalReference]
                 {
-                    auto file = _file.lock();
-                    const std::filesystem::path path = file->getTimelineWrapper()->getMediaPath(externalReference->target_url());
+                    const std::filesystem::path path = _file->getTimelineWrapper()->getMediaPath(externalReference->target_url());
                     auto app = _app.lock();
                     app->open(path);
                 });
@@ -194,9 +188,8 @@ namespace toucan
                 "Open Image Sequence",
                 [this, sequenceRef]
                 {
-                    auto file = _file.lock();
                     const std::string path = getSequenceFrame(
-                        file->getTimelineWrapper()->getMediaPath(sequenceRef->target_url_base()),
+                        _file->getTimelineWrapper()->getMediaPath(sequenceRef->target_url_base()),
                         sequenceRef->name_prefix(),
                         sequenceRef->start_frame(),
                         sequenceRef->frame_zero_padding(),

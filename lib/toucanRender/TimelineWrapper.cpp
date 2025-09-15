@@ -72,6 +72,7 @@ namespace toucan
         const std::string extension = ftk::toLower(_path.extension().string());
         if (".otio" == extension)
         {
+            // Open an .otio file.
             OTIO_NS::ErrorStatus errorStatus;
             _timeline = OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>(
                 dynamic_cast<OTIO_NS::Timeline*>(OTIO_NS::Timeline::from_json_file(_path.string(), &errorStatus)));
@@ -82,6 +83,7 @@ namespace toucan
         }
         else if (".otiod" == extension)
         {
+            // Open an otiod archive.
             _path = _path / "content.otio";
             OTIO_NS::ErrorStatus errorStatus;
             _timeline = OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>(
@@ -93,6 +95,7 @@ namespace toucan
         }
         else if (".otioz" == extension)
         {
+            // Open an otioz archive.
             /*
             // Create a temp directory.
             _tmpPath = makeUniqueTemp();
@@ -243,8 +246,10 @@ namespace toucan
         }
         else if (hasExtension(extension, MovieReadNode::getExtensions()))
         {
+            // Open a movie file and create a timeline for it.
             auto read = std::make_shared<MovieReadNode>(path);
             _timeline = OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>(new OTIO_NS::Timeline);
+            _timeline->set_global_start_time(read->getTimeRange().start_time());
             OTIO_NS::SerializableObject::Retainer<OTIO_NS::Track> track(new OTIO_NS::Track("Video"));
             _timeline->tracks()->append_child(track);
             OTIO_NS::SerializableObject::Retainer<OTIO_NS::Clip> clip(new OTIO_NS::Clip);
@@ -262,6 +267,7 @@ namespace toucan
             const auto split = splitFileNameNumber(sequence.front().stem().string());
             if (split.second.empty())
             {
+                // Open an image file and create a timeline for it.
                 _timeline = OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>(new OTIO_NS::Timeline);
                 OTIO_NS::SerializableObject::Retainer<OTIO_NS::Track> track(new OTIO_NS::Track("Video"));
                 _timeline->tracks()->append_child(track);
@@ -276,6 +282,7 @@ namespace toucan
             }
             else
             {
+                // Open an image sequence and create a timeline for it.
                 const std::string base = sequence.front().parent_path().string();
                 const std::string prefix = split.first;
                 const std::string suffix = sequence.front().extension().string();
@@ -307,8 +314,6 @@ namespace toucan
                 globalStartTime.value() :
                 OTIO_NS::RationalTime(0.0, _timeline->duration().rate()),
             _timeline->duration());
-
-        _readFactory = std::make_shared<ReadFactory>();
     }
 
     TimelineWrapper::~TimelineWrapper()
@@ -317,6 +322,11 @@ namespace toucan
         //{
         //    std::filesystem::remove_all(_tmpPath);
         //}
+    }
+
+    const std::filesystem::path& TimelineWrapper::getPath() const
+    {
+        return _path;
     }
 
     const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Timeline>& TimelineWrapper::getTimeline() const
@@ -351,37 +361,34 @@ namespace toucan
         return out;
     }
 
-    const MemoryReferences& TimelineWrapper::getMemoryReferences() const
+    std::shared_ptr<IReadNode> TimelineWrapper::createReadNode(const OTIO_NS::MediaReference* ref)
     {
-        return _memoryReferences;
+        std::shared_ptr<IReadNode> out;
+        if (auto externalRef = dynamic_cast<const OTIO_NS::ExternalReference*>(ref))
+        {
+            const std::string path = getMediaPath(externalRef->target_url());
+            const MemoryReference mem = _getMemoryReference(externalRef->target_url());
+            out = toucan::createReadNode(path, mem);
+        }
+        else if (auto seqRef = dynamic_cast<const OTIO_NS::ImageSequenceReference*>(ref))
+        {
+            const std::string path = getMediaPath(seqRef->target_url_base());
+            out = toucan::createReadNode(
+                path,
+                seqRef->name_prefix(),
+                seqRef->name_suffix(),
+                seqRef->start_frame(),
+                seqRef->frame_step(),
+                seqRef->rate(),
+                seqRef->frame_zero_padding(),
+                _memoryReferences);
+        }
+        return out;
     }
 
-    MemoryReference TimelineWrapper::getMemoryReference(const std::string& url) const
+    MemoryReference TimelineWrapper::_getMemoryReference(const std::string& url) const
     {
         const auto i = _memoryReferences.find(url);
         return i != _memoryReferences.end() ? i->second : MemoryReference();
-    }
-
-    std::shared_ptr<IReadNode> TimelineWrapper::getReadNode(OTIO_NS::ExternalReference* ref)
-    {
-        const std::string path = getMediaPath(ref->target_url());
-        const MemoryReference mem = getMemoryReference(ref->target_url());
-        return _readFactory->getReadNode(ref, path, mem);
-    }
-
-    std::shared_ptr<IReadNode> TimelineWrapper::getReadNode(OTIO_NS::ImageSequenceReference* ref)
-    {
-        const std::string path = getMediaPath(ref->target_url_base());
-        const MemoryReferences mem = getMemoryReferences();
-        return _readFactory->getReadNode(
-            ref,
-            path,
-            ref->name_prefix(),
-            ref->name_suffix(),
-            ref->start_frame(),
-            ref->frame_step(),
-            ref->rate(),
-            ref->frame_zero_padding(),
-            mem);
     }
 }
