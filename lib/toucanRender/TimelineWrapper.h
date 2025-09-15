@@ -6,7 +6,6 @@
 #include <toucanRender/MemoryMap.h>
 
 #include <opentimelineio/externalReference.h>
-#include <opentimelineio/imageSequenceReference.h>
 #include <opentimelineio/timeline.h>
 
 #include <filesystem>

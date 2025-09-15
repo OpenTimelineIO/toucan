@@ -49,9 +49,12 @@ namespace toucan
             bool parentsEnabled,
             const ftk::TickEvent&) override;
         void sizeHintEvent(const ftk::SizeHintEvent&) override;
+        void clipEvent(const ftk::Box2I&, bool clipped) override;
         void drawEvent(const ftk::Box2I&, const ftk::DrawEvent&) override;
 
     private:
+        void _cancelThumbnails();
+
         std::shared_ptr<TimelineWrapper> _timelineWrapper;
         const OTIO_NS::Clip* _clip = nullptr;
         const OTIO_NS::MediaReference* _ref = nullptr;

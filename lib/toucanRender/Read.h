@@ -9,8 +9,6 @@
 
 #include <lunasvg/lunasvg.h>
 
-#include <opentimelineio/mediaReference.h>
-
 #include <OpenImageIO/filesystem.h>
 
 #include <filesystem>

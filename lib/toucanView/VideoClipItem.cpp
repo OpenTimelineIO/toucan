@@ -115,6 +115,7 @@ namespace toucan
     void VideoClipItem::setScale(double value)
     {
         IItem::setScale(value);
+        _thumbnailsWidget->setScale(value);
         if (_markerLayout)
         {
             _markerLayout->setScale(value);

@@ -37,6 +37,7 @@ namespace toucan
         _logSystem = context->getSystem<ftk::LogSystem>();
 
         _thread.running = true;
+        _thread.readCache.setMax(100);
         _thread.thread = std::thread(
             [this]
             {
@@ -204,17 +205,22 @@ namespace toucan
         if (request)
         {
             std::shared_ptr<IReadNode> read;
-            try
+            if (!_thread.readCache.get(request->ref, read))
             {
-                read = _timelineWrapper->createReadNode(request->ref);
+                try
+                {
+                    read = _timelineWrapper->createReadNode(request->ref);
+                    _thread.readCache.add(request->ref, read);
+                }
+                catch (const std::exception& e)
+                {
+                    _logSystem->print(
+                        "toucan::ThumbnailGenerator",
+                        e.what(),
+                        ftk::LogType::Error);
+                }
             }
-            catch (const std::exception& e)
-            {
-                _logSystem->print(
-                    "toucan::ThumbnailGenerator",
-                    e.what(),
-                    ftk::LogType::Error);
-            }
+
             OIIO::ImageBuf buf;
             if (read)
             {

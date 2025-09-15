@@ -48,6 +48,8 @@ namespace toucan
         _timelineWrapper(timelineWrapper),
         _timeRange(timelineWrapper->getTimeRange())
     {
+        _readCache.setMax(100);
+
         // Get the image information from the first video clip.
         for (auto clip : getVideoClips(_timelineWrapper->getTimeline()))
         {
@@ -325,45 +327,55 @@ namespace toucan
         OTIO_NS::RationalTime t = time;
         if (auto clip = OTIO_NS::dynamic_retainer_cast<OTIO_NS::Clip>(item))
         {
-            // Get the media reference.
-            if (auto externalRef = dynamic_cast<OTIO_NS::ExternalReference*>(clip->media_reference()))
+            auto mediaRef = clip->media_reference();
+            if (auto externalRef = dynamic_cast<OTIO_NS::ExternalReference*>(mediaRef))
             {
-                try
+                std::shared_ptr<IReadNode> read;
+                if (!_readCache.get(externalRef, read))
                 {
-                    auto read = _timelineWrapper->createReadNode(externalRef);
-
-                    //! \bug Workaround for files that are missing timecode.
-                    if (t > read->getTimeRange().end_time_inclusive())
+                    try
                     {
-                        const OTIO_NS::TimeRange available = clip->available_range();
-                        t -= available.start_time();
+                        read = _timelineWrapper->createReadNode(externalRef);
+                        _readCache.add(externalRef, read);
                     }
+                    catch (const std::exception& e)
+                    {
+                        _context.lock()->getSystem<ftk::LogSystem>()->print(
+                            logPrefix,
+                            e.what(),
+                            ftk::LogType::Error);
+                    }
+                }
 
-                    out = read;
-                }
-                catch (const std::exception& e)
+                //! \bug Workaround for files that are missing timecode.
+                if (t > read->getTimeRange().end_time_inclusive())
                 {
-                    _context.lock()->getSystem<ftk::LogSystem>()->print(
-                        logPrefix,
-                        e.what(),
-                        ftk::LogType::Error);
+                    t -= clip->available_range().start_time();
                 }
+
+                out = read;
             }
-            else if (auto sequenceRef = dynamic_cast<OTIO_NS::ImageSequenceReference*>(clip->media_reference()))
+            else if (auto sequenceRef = dynamic_cast<OTIO_NS::ImageSequenceReference*>(mediaRef))
             {
-                try
+                std::shared_ptr<IReadNode> read;
+                if (!_readCache.get(clip->media_reference(), read))
                 {
-                    out = _timelineWrapper->createReadNode(sequenceRef);
+                    try
+                    {
+                        out = _timelineWrapper->createReadNode(sequenceRef);
+                        _readCache.add(sequenceRef, read);
+                    }
+                    catch (const std::exception& e)
+                    {
+                        _context.lock()->getSystem<ftk::LogSystem>()->print(
+                            logPrefix,
+                            e.what(),
+                            ftk::LogType::Error);
+                    }
                 }
-                catch (const std::exception& e)
-                {
-                    _context.lock()->getSystem<ftk::LogSystem>()->print(
-                        logPrefix,
-                        e.what(),
-                        ftk::LogType::Error);
-                }
+                out = read;
             }
-            else if (auto generatorRef = dynamic_cast<OTIO_NS::GeneratorReference*>(clip->media_reference()))
+            else if (auto generatorRef = dynamic_cast<OTIO_NS::GeneratorReference*>(mediaRef))
             {
                 out = host->createNode(
                     generatorRef->parameters(),

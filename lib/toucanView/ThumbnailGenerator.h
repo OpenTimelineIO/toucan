@@ -6,6 +6,7 @@
 #include <toucanRender/TimelineWrapper.h>
 
 #include <feather-tk/core/Image.h>
+#include <feather-tk/core/LRUCache.h>
 #include <feather-tk/core/LogSystem.h>
 
 #include <atomic>
@@ -96,6 +97,7 @@ namespace toucan
             std::condition_variable cv;
             std::thread thread;
             std::atomic<bool> running;
+            ftk::LRUCache<const OTIO_NS::MediaReference*, std::shared_ptr<IReadNode> > readCache;
         };
         Thread _thread;
     };

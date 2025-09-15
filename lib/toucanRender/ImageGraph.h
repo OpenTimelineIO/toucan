@@ -7,6 +7,7 @@
 #include <toucanRender/TimelineWrapper.h>
 
 #include <feather-tk/core/Context.h>
+#include <feather-tk/core/LRUCache.h>
 
 #include <opentimelineio/mediaReference.h>
 #include <opentimelineio/track.h>
@@ -65,5 +66,6 @@ namespace toucan
         IMATH_NAMESPACE::V2i _imageSize = IMATH_NAMESPACE::V2i(0, 0);
         int _imageChannels = 0;
         std::string _imageDataType;
+        ftk::LRUCache<const OTIO_NS::MediaReference*, std::shared_ptr<IReadNode> > _readCache;
     };
 }

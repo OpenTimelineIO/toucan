@@ -55,12 +55,7 @@ namespace toucan
         ITimeWidget::setScale(value);
         if (changed)
         {
-            std::vector<uint64_t> cancel;
-            for (const auto& request : _thumbnailRequests)
-            {
-                cancel.push_back(request.id);
-            }
-            _thumbnailGenerator->cancelThumbnails(cancel);
+            _cancelThumbnails();
         }
     }
 
@@ -112,6 +107,15 @@ namespace toucan
             _thumbnailGenerator->cancelThumbnails(ids);
         }
         _setSizeHint(ftk::Size2I(0, _size.thumbnailHeight));
+    }
+
+    void ThumbnailsWidget::clipEvent(const ftk::Box2I& clipRect, bool clipped)
+    {
+        ITimeWidget::clipEvent(clipRect, clipped);
+        if (clipped)
+        {
+            _cancelThumbnails();
+        }
     }
     
     void ThumbnailsWidget::drawEvent(
@@ -181,6 +185,17 @@ namespace toucan
                 ++i;
             }
         }
+        _thumbnailGenerator->cancelThumbnails(cancel);
+    }
+
+    void ThumbnailsWidget::_cancelThumbnails()
+    {
+        std::vector<uint64_t> cancel;
+        for (const auto& request : _thumbnailRequests)
+        {
+            cancel.push_back(request.id);
+        }
+        _thumbnailRequests.clear();
         _thumbnailGenerator->cancelThumbnails(cancel);
     }
 }
