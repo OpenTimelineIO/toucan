@@ -28,10 +28,7 @@ namespace toucan
         _thumbnailGenerator = thumbnailGenerator;
         _thumbnailCache = thumbnailCache;
 
-        const OTIO_NS::RationalTime t = _timelineWrapper->getTimeline()->tracks()->transformed_time(
-            timeRange.start_time(),
-            _clip) - _timelineWrapper->getTimeRange().start_time();
-        _thumbnailAspectRequest = _thumbnailGenerator->getAspect(ref, t);
+        _thumbnailAspectRequest = _thumbnailGenerator->getAspect(ref);
     }
     
     ThumbnailsWidget::~ThumbnailsWidget()
@@ -159,6 +156,7 @@ namespace toucan
                         _thumbnailRequests.push_back(_thumbnailGenerator->getThumbnail(
                             _ref,
                             t,
+                            _clip->available_range(),
                             _size.thumbnailHeight));
                     }
                 }

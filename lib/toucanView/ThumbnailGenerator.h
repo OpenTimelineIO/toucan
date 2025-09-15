@@ -43,14 +43,16 @@ namespace toucan
         ~ThumbnailGenerator();
 
         //! Get a media aspect ratio.
-        std::future<float> getAspect(
-            const OTIO_NS::MediaReference*,
-            const OTIO_NS::RationalTime&);
+        std::future<float> getAspect(const OTIO_NS::MediaReference*);
 
         //! Get a media thumbnail.
+        //!
+        //! \bug The availableRange parameter is a workaround for files that
+        //! are missing timecode.
         ThumbnailRequest getThumbnail(
             const OTIO_NS::MediaReference*,
             const OTIO_NS::RationalTime&,
+            const OTIO_NS::TimeRange& availableRange,
             int height);
 
         //! Cancel thumbnail requests.
@@ -66,7 +68,6 @@ namespace toucan
         struct AspectRequest
         {
             const OTIO_NS::MediaReference* ref = nullptr;
-            OTIO_NS::RationalTime time;
             std::promise<float> promise;
         };
 
@@ -75,6 +76,7 @@ namespace toucan
             uint64_t id = 0;
             const OTIO_NS::MediaReference* ref = nullptr;
             OTIO_NS::RationalTime time;
+            OTIO_NS::TimeRange availableRange;
             int height = 0;
             std::promise<std::shared_ptr<ftk::Image> > promise;
         };

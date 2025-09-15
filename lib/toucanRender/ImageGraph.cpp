@@ -322,6 +322,7 @@ namespace toucan
     {
         std::shared_ptr<IImageNode> out;
 
+        OTIO_NS::RationalTime t = time;
         if (auto clip = OTIO_NS::dynamic_retainer_cast<OTIO_NS::Clip>(item))
         {
             // Get the media reference.
@@ -329,7 +330,16 @@ namespace toucan
             {
                 try
                 {
-                    out = _timelineWrapper->createReadNode(externalRef);
+                    auto read = _timelineWrapper->createReadNode(externalRef);
+
+                    //! \bug Workaround for files that are missing timecode.
+                    if (t > read->getTimeRange().end_time_inclusive())
+                    {
+                        const OTIO_NS::TimeRange available = clip->available_range();
+                        t -= available.start_time();
+                    }
+
+                    out = read;
                 }
                 catch (const std::exception& e)
                 {
@@ -368,7 +378,7 @@ namespace toucan
         }
         if (out)
         {
-            out->setTime(time);
+            out->setTime(t);
         }
 
         // Get the effects.

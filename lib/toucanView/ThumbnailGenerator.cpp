@@ -62,12 +62,10 @@ namespace toucan
     }
 
     std::future<float> ThumbnailGenerator::getAspect(
-        const OTIO_NS::MediaReference* ref,
-        const OTIO_NS::RationalTime& time)
+        const OTIO_NS::MediaReference* ref)
     {
         auto request = std::make_shared<AspectRequest>();
         request->ref = ref;
-        request->time = time;
         auto out = request->promise.get_future();
         bool valid = false;
         {
@@ -92,6 +90,7 @@ namespace toucan
     ThumbnailRequest ThumbnailGenerator::getThumbnail(
         const OTIO_NS::MediaReference* ref,
         const OTIO_NS::RationalTime& time,
+        const OTIO_NS::TimeRange& availableRange,
         int height)
     {
         _requestId++;
@@ -99,6 +98,7 @@ namespace toucan
         request->id = _requestId;
         request->ref = ref;
         request->time = time;
+        request->availableRange = availableRange;
         request->height = height;
         ThumbnailRequest out;
         out.id = _requestId;
@@ -191,7 +191,7 @@ namespace toucan
             float aspect = 0.F;
             if (read)
             {
-                read->setTime(aspectRequest->time);
+                read->setTime(read->getTimeRange().start_time());
                 const OIIO::ImageBuf buf = read->exec();
                 const OIIO::ImageSpec& spec = buf.spec();
                 if (spec.height > 0)
@@ -218,7 +218,14 @@ namespace toucan
             OIIO::ImageBuf buf;
             if (read)
             {
-                read->setTime(request->time);
+                //! \bug Workaround for files that are missing timecode.
+                OTIO_NS::RationalTime t = request->time;
+                if (t > read->getTimeRange().end_time_inclusive())
+                {
+                    t -= request->availableRange.start_time();
+                }
+
+                read->setTime(t);
                 buf = read->exec();
             }
 
