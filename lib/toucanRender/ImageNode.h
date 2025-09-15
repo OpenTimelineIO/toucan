@@ -33,6 +33,9 @@ namespace toucan
         //! Get the inputs.
         const std::vector<std::shared_ptr<IImageNode> >& getInputs() const;
 
+        //! Set the inputs.
+        void setInputs(const std::vector<std::shared_ptr<IImageNode> >&);
+
         //! Set the time.
         void setTime(const OTIO_NS::RationalTime&);
 

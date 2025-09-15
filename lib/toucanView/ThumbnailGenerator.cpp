@@ -226,7 +226,8 @@ namespace toucan
             {
                 //! \bug Workaround for files that are missing timecode.
                 OTIO_NS::RationalTime t = request->time;
-                if (t > read->getTimeRange().end_time_inclusive())
+                if (request->availableRange.start_time() !=
+                    read->getTimeRange().start_time())
                 {
                     t -= request->availableRange.start_time();
                 }

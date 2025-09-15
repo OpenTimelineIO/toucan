@@ -47,7 +47,14 @@ namespace toucan
             {
                 if (_callback)
                 {
-                    _callback(static_cast<TimeAction>(index));
+                    TimeAction action = TimeAction::FrameStart;
+                    switch (index)
+                    {
+                    case 1: action = TimeAction::FramePrev; break;
+                    case 2: action = TimeAction::FrameNext; break;
+                    case 3: action = TimeAction::FrameEnd; break;
+                    }
+                    _callback(action);
                 }
             });
     }
