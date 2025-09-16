@@ -1,7 +1,7 @@
 include(ExternalProject)
 
 set(OpenImageIO_GIT_REPOSITORY "https://github.com/AcademySoftwareFoundation/OpenImageIO.git")
-set(OpenImageIO_GIT_TAG "v3.0.9.1")
+set(OpenImageIO_GIT_TAG "v3.0.10.0")
 
 set(OpenImageIO_DEPS)
 if(toucan_PNG)
