@@ -25,6 +25,7 @@ jobs:
         echo "LD_LIBRARY_PATH=$PWD/install-Debug/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
         sudo apt-get update
         sudo apt-get install xorg-dev libglu1-mesa-dev mesa-common-dev mesa-utils xvfb
+        cmake --version
 
     - name: Build
       run: sh toucan/sbuild-linux.sh Debug
@@ -53,6 +54,7 @@ jobs:
         echo "LD_LIBRARY_PATH=$PWD/install-Release/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
         sudo apt-get update
         sudo apt-get install xorg-dev libglu1-mesa-dev mesa-common-dev mesa-utils xvfb
+        cmake --version
 
     - name: Build
       run: sh toucan/sbuild-linux.sh
@@ -149,6 +151,7 @@ jobs:
       run: |
         echo "$PWD/install-Debug/bin" >> $GITHUB_PATH
         echo "DYLD_LIBRARY_PATH=$PWD/install-Debug/lib:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
+        cmake --version
 
     - name: Build
       run: bash toucan/sbuild-macos.sh
@@ -192,6 +195,7 @@ jobs:
         echo %CD%\install-Debug\bin>> %GITHUB_PATH%
         echo %CD%\install-Debug\lib>> %GITHUB_PATH%
         echo CTEST_OUTPUT_ON_FAILURE=1 >> %GITHUB_ENV%
+        cmake --version
 
     - name: Build
       shell: cmd
@@ -224,6 +228,7 @@ jobs:
       run: |
         echo %CD%\install-Debug\bin>> %GITHUB_PATH%
         echo %CD%\install-Debug\lib>> %GITHUB_PATH%
+        cmake --version
 
     - name: Build
       shell: cmd
