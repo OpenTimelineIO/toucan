@@ -449,7 +449,7 @@ namespace toucan
                 const double s = linearTimeWarp->time_scalar();
                 time = OTIO_NS::RationalTime(
                     (time - timeRange.start_time()).value() * s,
-                    time.rate());
+                    time.rate()).round();
             }
             else
             {
