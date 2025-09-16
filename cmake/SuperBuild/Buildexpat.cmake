@@ -1,7 +1,7 @@
 include(ExternalProject)
 
 set(expat_GIT_REPOSITORY "https://github.com/libexpat/libexpat.git")
-set(expat_GIT_TAG "R_2_5_0")
+set(expat_GIT_TAG "R_2_6_0")
 
 set(expat_ARGS
     ${toucan_EXTERNAL_PROJECT_ARGS}
