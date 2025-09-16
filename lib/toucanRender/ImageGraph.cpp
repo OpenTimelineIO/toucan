@@ -151,15 +151,11 @@ namespace toucan
         metaData["color"] = vecToAny(IMATH_NAMESPACE::V4f(0.F, 0.F, 0.F, 1.F));
         std::shared_ptr<IImageNode> node = host->createNode(metaData, "toucan:Fill");
 
-        // Get the stack effects.
+        // Apply time warps.
         auto stack = _timelineWrapper->getTimeline()->tracks();
         const auto& stackEffects = stack->effects();
-        std::vector<std::shared_ptr<IImageNode> > stackEffectsNodes;
         OTIO_NS::RationalTime t = time - _timeRange.start_time();
-        if (!stackEffects.empty())
-        {
-            stackEffectsNodes = _effects(host, t, stack->available_range(), stackEffects);
-        }
+        t = _timeWarps(t, stack->available_range(), stackEffects);
 
         // Loop over the tracks.
         for (const auto& i : stack->children())
@@ -168,24 +164,19 @@ namespace toucan
             {
                 if (track->kind() == OTIO_NS::Track::Kind::video && !track->find_clips().empty())
                 {
-                    // Get the effects.
-                    const auto& effects = track->effects();
-                    std::vector<std::shared_ptr<IImageNode> > effectsNodes;
+                    // Apply time warps.
+                    const auto& trackEffects = track->effects();
                     OTIO_NS::RationalTime t2 = t;
-                    if (!effects.empty())
+                    if (!trackEffects.empty())
                     {
-                        effectsNodes = _effects(host, t2, track->available_range(), effects);
+                        t2 = _timeWarps(t2, track->available_range(), trackEffects);
                     }
 
                     // Process this track.
                     auto trackNode = _track(host, t2, track);
 
-                    // Add the effects.
-                    if (!effectsNodes.empty())
-                    {
-                        effectsNodes.front()->setInputs({ trackNode });
-                        trackNode = effectsNodes.back();
-                    }
+                    // Add the track effects.
+                    trackNode = _effects(host, t2, trackEffects, trackNode);
 
                     // Composite this track over the previous track.
                     std::vector<std::shared_ptr<IImageNode> > nodes;
@@ -205,11 +196,7 @@ namespace toucan
         }
 
         // Add the stack effects.
-        if (!stackEffectsNodes.empty())
-        {
-            stackEffectsNodes.front()->setInputs({ node });
-            node = stackEffectsNodes.back();
-        }
+        node = _effects(host, t, stackEffects, node);
 
         return node;
     }
@@ -344,13 +331,9 @@ namespace toucan
 
         OTIO_NS::RationalTime t = time;
 
-        // Get the effects.
+        // Apply time warps.
         const auto& effects = item->effects();
-        std::vector<std::shared_ptr<IImageNode> > effectsNodes;
-        if (!effects.empty())
-        {
-            effectsNodes = _effects(host, t, item->available_range(), effects);
-        }
+        t = _timeWarps(t, item->available_range(), effects);
 
         // Get the media.
         if (auto clip = OTIO_NS::dynamic_retainer_cast<OTIO_NS::Clip>(item))
@@ -426,45 +409,45 @@ namespace toucan
         }
 
         // Add the effects.
-        if (!effectsNodes.empty())
-        {
-            effectsNodes.front()->setInputs({ out });
-            out = effectsNodes.back();
-        }
+        out = _effects(host, t, effects, out);
 
         return out;
     }
 
-    std::vector<std::shared_ptr<IImageNode> > ImageGraph::_effects(
-        const std::shared_ptr<ImageEffectHost>& host,
-        OTIO_NS::RationalTime& time,
+    OTIO_NS::RationalTime ImageGraph::_timeWarps(
+        const OTIO_NS::RationalTime& time,
         const OTIO_NS::TimeRange& timeRange,
         const std::vector<OTIO_NS::SerializableObject::Retainer<OTIO_NS::Effect> >& effects)
     {
-        std::vector<std::shared_ptr<IImageNode> > out;
+        OTIO_NS::RationalTime out = time;
         for (const auto& effect : effects)
         {
             if (auto linearTimeWarp = dynamic_cast<OTIO_NS::LinearTimeWarp*>(effect.value))
             {
                 const double s = linearTimeWarp->time_scalar();
-                time = OTIO_NS::RationalTime(
-                    (time - timeRange.start_time()).value() * s,
+                out = OTIO_NS::RationalTime(
+                    (out - timeRange.start_time()).value() * s,
                     time.rate()).round();
             }
-            else
+        }
+        return out;
+    }
+
+    std::shared_ptr<IImageNode> ImageGraph::_effects(
+        const std::shared_ptr<ImageEffectHost>& host,
+        const OTIO_NS::RationalTime& time,
+        const std::vector<OTIO_NS::SerializableObject::Retainer<OTIO_NS::Effect> >& effects,
+        const std::shared_ptr<IImageNode>& input)
+    {
+        std::shared_ptr<IImageNode> out = input;
+        for (const auto& effect : effects)
+        {
+            if (auto imageEffect = host->createNode(
+                effect->metadata(),
+                effect->effect_name(),
+                { out }))
             {
-                std::vector<std::shared_ptr<IImageNode> > inputs;
-                if (!out.empty())
-                {
-                    inputs.push_back(out.back());
-                }
-                if (auto imageEffect = host->createNode(
-                    effect->metadata(),
-                    effect->effect_name(),
-                    inputs))
-                {
-                    out.push_back(imageEffect);
-                }
+                out = imageEffect;
             }
         }
         return out;
