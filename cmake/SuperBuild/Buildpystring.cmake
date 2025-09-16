@@ -1,9 +1,11 @@
 include(ExternalProject)
 
 set(pystring_GIT_REPOSITORY "https://github.com/imageworks/pystring.git")
-set(pystring_GIT_TAG "v1.1.3")
+set(pystring_GIT_TAG "v1.1.4")
 
-set(pystring_ARGS ${toucan_EXTERNAL_PROJECT_ARGS})
+set(pystring_ARGS
+    -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+    ${toucan_EXTERNAL_PROJECT_ARGS})
 
 ExternalProject_Add(
     pystring
