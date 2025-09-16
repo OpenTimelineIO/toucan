@@ -100,14 +100,14 @@ namespace toucan
             test.model->timeAction(TimeAction::FrameNextX10, nullptr);
             assert(OTIO_NS::RationalTime(11.0, 24.0) == test.currentTime);
             test.model->timeAction(TimeAction::FrameNextX100, nullptr);
-            assert(OTIO_NS::RationalTime(47.0, 24.0) == test.currentTime);
+            assert(OTIO_NS::RationalTime(0.0, 24.0) == test.currentTime);
 
             test.model->timeAction(TimeAction::FramePrev, nullptr);
-            assert(OTIO_NS::RationalTime(46.0, 24.0) == test.currentTime);
+            assert(OTIO_NS::RationalTime(47.0, 24.0) == test.currentTime);
             test.model->timeAction(TimeAction::FramePrevX10, nullptr);
-            assert(OTIO_NS::RationalTime(36.0, 24.0) == test.currentTime);
+            assert(OTIO_NS::RationalTime(37.0, 24.0) == test.currentTime);
             test.model->timeAction(TimeAction::FramePrevX100, nullptr);
-            assert(OTIO_NS::RationalTime(0.0, 24.0) == test.currentTime);
+            assert(OTIO_NS::RationalTime(47.0, 24.0) == test.currentTime);
         }
         {
             Test test(context);
