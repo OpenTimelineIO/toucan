@@ -78,36 +78,6 @@ jobs:
     - name: Upload artifact URL
       run: echo 'Artifact URL ${{ steps.linux-package-artifact.outputs.artifact-url }}'
 
-  macos-13-build:
-    runs-on: macos-13
-
-    env:
-      FFMPEG_MINIMAL: ON
-
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        path: toucan
-        submodules: recursive
-
-    # \bug DYLD_LIBRARY_PATH is not being set here?
-    # \bug Remove OpenEXR install.
-    - name: Setup
-      run: |
-        echo "$PWD/install-Debug/bin" >> $GITHUB_PATH
-        echo "DYLD_LIBRARY_PATH=$PWD/install-Debug/lib:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
-        cmake --version
-        brew uninstall --ignore-dependencies openexr imath || true
-
-    - name: Build
-      run: sh toucan/sbuild-macos.sh Debug
-
-    - name: Install
-      run: cmake --build build-Debug --config Debug --target install
-
-    - name: Tests
-      run: build-Debug/tests/toucan-test/toucan-test toucan/data
-
   macos-build:
     runs-on: macos-latest
 
