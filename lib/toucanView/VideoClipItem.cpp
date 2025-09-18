@@ -57,7 +57,6 @@ namespace toucan
             context,
             timelineWrapper,
             _clip,
-            _clip->media_reference(),
             data.thumbnailGenerator,
             data.thumbnailCache,
             timeRange,

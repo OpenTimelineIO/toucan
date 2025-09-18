@@ -3,10 +3,9 @@
 
 #pragma once
 
-#include <toucanRender/TimelineWrapper.h>
+#include <opentimelineio/item.h>
 
 #include <feather-tk/core/Image.h>
-#include <feather-tk/core/LRUCache.h>
 #include <feather-tk/core/LogSystem.h>
 
 #include <atomic>
@@ -18,9 +17,14 @@
 
 namespace toucan
 {
+    class IReadNode;
+    class ImageEffectHost;
+    class ImageGraph;
+    class TimelineWrapper;
+
     //! Get a thumbnail cache key.
     std::string getThumbnailCacheKey(
-        const OTIO_NS::MediaReference*,
+        const OTIO_NS::Item*,
         const OTIO_NS::RationalTime&,
         int height);
 
@@ -39,21 +43,20 @@ namespace toucan
     public:
         ThumbnailGenerator(
             const std::shared_ptr<ftk::Context>&,
+            const std::shared_ptr<ImageEffectHost>&,
             const std::shared_ptr<TimelineWrapper>&);
 
         ~ThumbnailGenerator();
 
-        //! Get a media aspect ratio.
-        std::future<float> getAspect(const OTIO_NS::MediaReference*);
+        //! Get an aspect ratio.
+        std::future<float> getAspect(
+            const OTIO_NS::Item*,
+            const OTIO_NS::RationalTime&);
 
-        //! Get a media thumbnail.
-        //!
-        //! \bug The availableRange parameter is a workaround for files that
-        //! are missing timecode.
+        //! Get a thumbnail.
         ThumbnailRequest getThumbnail(
-            const OTIO_NS::MediaReference*,
+            const OTIO_NS::Item*,
             const OTIO_NS::RationalTime&,
-            const OTIO_NS::TimeRange& availableRange,
             int height);
 
         //! Cancel thumbnail requests.
@@ -64,20 +67,22 @@ namespace toucan
         void _cancel();
 
         std::shared_ptr<ftk::LogSystem> _logSystem;
+        std::shared_ptr<ImageEffectHost> _host;
         std::shared_ptr<TimelineWrapper> _timelineWrapper;
+        std::shared_ptr<ImageGraph> _graph;
 
         struct AspectRequest
         {
-            const OTIO_NS::MediaReference* ref = nullptr;
+            const OTIO_NS::Item* item = nullptr;
+            OTIO_NS::RationalTime time;
             std::promise<float> promise;
         };
 
         struct Request
         {
             uint64_t id = 0;
-            const OTIO_NS::MediaReference* ref = nullptr;
+            const OTIO_NS::Item* item = nullptr;
             OTIO_NS::RationalTime time;
-            OTIO_NS::TimeRange availableRange;
             int height = 0;
             std::promise<std::shared_ptr<ftk::Image> > promise;
         };
@@ -97,7 +102,6 @@ namespace toucan
             std::condition_variable cv;
             std::thread thread;
             std::atomic<bool> running;
-            ftk::LRUCache<const OTIO_NS::MediaReference*, std::shared_ptr<IReadNode> > readCache;
         };
         Thread _thread;
     };

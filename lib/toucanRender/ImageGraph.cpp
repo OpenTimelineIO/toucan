@@ -143,13 +143,17 @@ namespace toucan
 
     std::shared_ptr<IImageNode> ImageGraph::exec(
         const std::shared_ptr<ImageEffectHost>& host,
-        const OTIO_NS::RationalTime& time)
+        const OTIO_NS::RationalTime& time,
+        const OTIO_NS::Item* itemNode)
     {
+        _host = host;
+        _itemNode = itemNode;
+
         // Set the background color.
         OTIO_NS::AnyDictionary metaData;
         metaData["size"] = vecToAny(_imageSize);
         metaData["color"] = vecToAny(IMATH_NAMESPACE::V4f(0.F, 0.F, 0.F, 1.F));
-        std::shared_ptr<IImageNode> node = host->createNode(metaData, "toucan:Fill");
+        auto node = host->createNode(metaData, "toucan:Fill");
 
         // Apply time warps.
         auto stack = _timelineWrapper->getTimeline()->tracks();
@@ -173,10 +177,10 @@ namespace toucan
                     }
 
                     // Process this track.
-                    auto trackNode = _track(host, t2, track);
+                    auto trackNode = _track(t2, track);
 
                     // Add the track effects.
-                    trackNode = _effects(host, t2, trackEffects, trackNode);
+                    trackNode = _effects(t2, trackEffects, trackNode);
 
                     // Composite this track over the previous track.
                     std::vector<std::shared_ptr<IImageNode> > nodes;
@@ -196,13 +200,21 @@ namespace toucan
         }
 
         // Add the stack effects.
-        node = _effects(host, t, stackEffects, node);
+        node = _effects(t, stackEffects, node);
+
+        // Clean up.
+        _host.reset();
+        _itemNode = nullptr;
+        if (_outNode)
+        {
+            node = _outNode;
+        }
+        _outNode.reset();
 
         return node;
     }
 
     std::shared_ptr<IImageNode> ImageGraph::_track(
-        const std::shared_ptr<ImageEffectHost>& host,
         const OTIO_NS::RationalTime& time,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Track>& track)
     {
@@ -224,7 +236,6 @@ namespace toucan
                 if (trimmedRangeInParent.has_value() && trimmedRangeInParent.value().contains(time))
                 {
                     out = _item(
-                        host,
                         track->transformed_time(time, item),
                         item);
                     if (i > 0)
@@ -263,19 +274,18 @@ namespace toucan
                             trimmedRangeInParent.value().duration().value();
 
                         auto a = _item(
-                            host,
                             track->transformed_time(time, prevItem),
                             prevItem);
 
                         auto metaData = prevTransition->metadata();
                         metaData["value"] = value;
-                        auto node = host->createNode(
+                        auto node = _host->createNode(
                             metaData,
                             prevTransition->transition_type(),
                             { a, out });
                         if (!node)
                         {
-                            node = host->createNode(
+                            node = _host->createNode(
                                 metaData,
                                 "toucan:Dissolve",
                                 { a, out });
@@ -296,19 +306,18 @@ namespace toucan
                             trimmedRangeInParent.value().duration().value();
 
                         auto b = _item(
-                            host,
                             track->transformed_time(time, nextItem),
                             nextItem);
 
                         auto metaData = nextTransition->metadata();
                         metaData["value"] = value;
-                        auto node = host->createNode(
+                        auto node = _host->createNode(
                             metaData,
                             nextTransition->transition_type(),
                             { out, b });
                         if (!node)
                         {
-                            node = host->createNode(
+                            node = _host->createNode(
                                 metaData,
                                 "toucan:Dissolve",
                                 { out, b });
@@ -323,7 +332,6 @@ namespace toucan
     }
 
     std::shared_ptr<IImageNode> ImageGraph::_item(
-        const std::shared_ptr<ImageEffectHost>& host,
         const OTIO_NS::RationalTime& time,
         const OTIO_NS::SerializableObject::Retainer<OTIO_NS::Item>& item)
     {
@@ -396,7 +404,7 @@ namespace toucan
             }
             else if (auto generatorRef = dynamic_cast<OTIO_NS::GeneratorReference*>(mediaRef))
             {
-                out = host->createNode(
+                out = _host->createNode(
                     generatorRef->parameters(),
                     generatorRef->generator_kind());
             }
@@ -405,11 +413,16 @@ namespace toucan
         {
             OTIO_NS::AnyDictionary metaData;
             metaData["size"] = vecToAny(_imageSize);
-            out = host->createNode(metaData, "toucan:Fill");
+            out = _host->createNode(metaData, "toucan:Fill");
         }
 
         // Add the effects.
-        out = _effects(host, t, effects, out);
+        out = _effects(t, effects, out);
+
+        if (item == _itemNode)
+        {
+            _outNode = out;
+        }
 
         return out;
     }
@@ -434,7 +447,6 @@ namespace toucan
     }
 
     std::shared_ptr<IImageNode> ImageGraph::_effects(
-        const std::shared_ptr<ImageEffectHost>& host,
         const OTIO_NS::RationalTime& time,
         const std::vector<OTIO_NS::SerializableObject::Retainer<OTIO_NS::Effect> >& effects,
         const std::shared_ptr<IImageNode>& input)
@@ -442,7 +454,7 @@ namespace toucan
         std::shared_ptr<IImageNode> out = input;
         for (const auto& effect : effects)
         {
-            if (auto imageEffect = host->createNode(
+            if (auto imageEffect = _host->createNode(
                 effect->metadata(),
                 effect->effect_name(),
                 { out }))

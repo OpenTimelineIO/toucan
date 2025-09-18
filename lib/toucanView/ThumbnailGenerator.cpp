@@ -3,7 +3,10 @@
 
 #include "ThumbnailGenerator.h"
 
+#include <toucanRender/ImageEffectHost.h>
+#include <toucanRender/ImageGraph.h>
 #include <toucanRender/Read.h>
+#include <toucanRender/TimelineWrapper.h>
 
 #include <OpenImageIO/imagebufalgo.h>
 
@@ -16,13 +19,13 @@
 namespace toucan
 {
     std::string getThumbnailCacheKey(
-        const OTIO_NS::MediaReference* ref,
+        const OTIO_NS::Item* item,
         const OTIO_NS::RationalTime& time,
         int height)
     {
         std::vector<std::string> s;
         std::stringstream ss;
-        ss << ref;
+        ss << item;
         s.push_back(ss.str());
         s.push_back(ftk::Format("{0}@{1}").arg(time.value()).arg(time.rate()));
         s.push_back(ftk::Format("{0}").arg(height));
@@ -31,13 +34,19 @@ namespace toucan
 
     ThumbnailGenerator::ThumbnailGenerator(
         const std::shared_ptr<ftk::Context>& context,
+        const std::shared_ptr<ImageEffectHost>& host,
         const std::shared_ptr<TimelineWrapper>& timelineWrapper) :
+        _host(host),
         _timelineWrapper(timelineWrapper)
     {
         _logSystem = context->getSystem<ftk::LogSystem>();
 
+        _graph = std::make_shared<ImageGraph>(
+            context,
+            timelineWrapper->getPath().parent_path(),
+            timelineWrapper);
+
         _thread.running = true;
-        _thread.readCache.setMax(100);
         _thread.thread = std::thread(
             [this]
             {
@@ -63,10 +72,12 @@ namespace toucan
     }
 
     std::future<float> ThumbnailGenerator::getAspect(
-        const OTIO_NS::MediaReference* ref)
+        const OTIO_NS::Item* item,
+        const OTIO_NS::RationalTime& time)
     {
         auto request = std::make_shared<AspectRequest>();
-        request->ref = ref;
+        request->item = item;
+        request->time = time;
         auto out = request->promise.get_future();
         bool valid = false;
         {
@@ -89,17 +100,15 @@ namespace toucan
     }
 
     ThumbnailRequest ThumbnailGenerator::getThumbnail(
-        const OTIO_NS::MediaReference* ref,
+        const OTIO_NS::Item* item,
         const OTIO_NS::RationalTime& time,
-        const OTIO_NS::TimeRange& availableRange,
         int height)
     {
         _requestId++;
         auto request = std::make_shared<Request>();
         request->id = _requestId;
-        request->ref = ref;
+        request->item = item;
         request->time = time;
-        request->availableRange = availableRange;
         request->height = height;
         ThumbnailRequest out;
         out.id = _requestId;
@@ -177,25 +186,12 @@ namespace toucan
         }
         if (aspectRequest)
         {
-            std::shared_ptr<IReadNode> read;
-            try
+            float aspect = 1.F;
+            if (auto node = _graph->exec(_host, aspectRequest->time, aspectRequest->item))
             {
-                read = _timelineWrapper->createReadNode(aspectRequest->ref);
-            }
-            catch (const std::exception& e)
-            {
-                _logSystem->print(
-                    "toucan::ThumbnailGenerator",
-                    e.what(),
-                    ftk::LogType::Error);
-            }
-            float aspect = 0.F;
-            if (read)
-            {
-                read->setTime(read->getTimeRange().start_time());
-                const OIIO::ImageBuf buf = read->exec();
-                const OIIO::ImageSpec& spec = buf.spec();
-                if (spec.height > 0)
+                OIIO::ImageBuf buf = node->exec();
+                const auto& spec = buf.spec();
+                if (spec.width > 0 && spec.height > 0)
                 {
                     aspect = spec.width / static_cast<float>(spec.height);
                 }
@@ -204,36 +200,10 @@ namespace toucan
         }
         if (request)
         {
-            std::shared_ptr<IReadNode> read;
-            if (!_thread.readCache.get(request->ref, read))
-            {
-                try
-                {
-                    read = _timelineWrapper->createReadNode(request->ref);
-                    _thread.readCache.add(request->ref, read);
-                }
-                catch (const std::exception& e)
-                {
-                    _logSystem->print(
-                        "toucan::ThumbnailGenerator",
-                        e.what(),
-                        ftk::LogType::Error);
-                }
-            }
-
             OIIO::ImageBuf buf;
-            if (read)
+            if (auto node = _graph->exec(_host, request->time, request->item))
             {
-                //! \bug Workaround for files that are missing timecode.
-                OTIO_NS::RationalTime t = request->time;
-                if (request->availableRange.start_time() !=
-                    read->getTimeRange().start_time())
-                {
-                    t -= request->availableRange.start_time();
-                }
-
-                read->setTime(t);
-                buf = read->exec();
+                buf = node->exec();
             }
 
             std::shared_ptr<ftk::Image> thumbnail;

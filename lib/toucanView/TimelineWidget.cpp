@@ -63,12 +63,14 @@ namespace toucan
                     }
 
                     auto context = getContext();
+                    auto app = appWeak.lock();
                     _thumbnailGenerator = std::make_shared<ThumbnailGenerator>(
                         context,
+                        app->getHost(),
                         file->getTimelineWrapper());
 
                     ItemData data;
-                    data.app = appWeak.lock();
+                    data.app = app;
                     data.file = file;
                     data.thumbnailGenerator = _thumbnailGenerator;
                     data.thumbnailCache = std::make_shared<ftk::LRUCache<std::string, std::shared_ptr<ftk::Image> > >();

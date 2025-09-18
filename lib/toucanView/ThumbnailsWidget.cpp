@@ -4,6 +4,7 @@
 #include "ThumbnailsWidget.h"
 
 #include <toucanRender/Read.h>
+#include <toucanRender/TimelineWrapper.h>
 #include <toucanRender/Util.h>
 
 #include <feather-tk/ui/DrawUtil.h>
@@ -14,7 +15,6 @@ namespace toucan
         const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<TimelineWrapper>& timelineWrapper,
         const OTIO_NS::Clip* clip,
-        const OTIO_NS::MediaReference* ref,
         const std::shared_ptr<ThumbnailGenerator>& thumbnailGenerator,
         const std::shared_ptr<ftk::LRUCache<std::string, std::shared_ptr<ftk::Image> > >& thumbnailCache,
         const OTIO_NS::TimeRange& timeRange,
@@ -24,11 +24,12 @@ namespace toucan
         
         _timelineWrapper = timelineWrapper;
         _clip = clip;
-        _ref = ref;
         _thumbnailGenerator = thumbnailGenerator;
         _thumbnailCache = thumbnailCache;
 
-        _thumbnailAspectRequest = _thumbnailGenerator->getAspect(ref);
+        _thumbnailAspectRequest = _thumbnailGenerator->getAspect(
+            _clip,
+            timeRange.start_time());
     }
     
     ThumbnailsWidget::~ThumbnailsWidget()
@@ -38,14 +39,13 @@ namespace toucan
         const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<TimelineWrapper>& timelineWrapper,
         const OTIO_NS::Clip* clip,
-        const OTIO_NS::MediaReference* ref,
         const std::shared_ptr<ThumbnailGenerator>& thumbnailGenerator,
         const std::shared_ptr<ftk::LRUCache<std::string, std::shared_ptr<ftk::Image> > >& thumbnailCache,
         const OTIO_NS::TimeRange& timeRange,
         const std::shared_ptr<IWidget>& parent)
     {
         auto out = std::make_shared<ThumbnailsWidget>();
-        out->_init(context, timelineWrapper, clip, ref, thumbnailGenerator, thumbnailCache, timeRange, parent);
+        out->_init(context, timelineWrapper, clip, thumbnailGenerator, thumbnailCache, timeRange, parent);
         return out;
     }
 
@@ -76,7 +76,7 @@ namespace toucan
             if (i->future.valid() &&
                 i->future.wait_for(std::chrono::seconds(0)) == std::future_status::ready)
             {
-                const std::string cacheKey = getThumbnailCacheKey(_ref, i->time, _size.thumbnailHeight);
+                const std::string cacheKey = getThumbnailCacheKey(_clip, i->time, _size.thumbnailHeight);
                 const auto image = i->future.get();
                 _thumbnailCache->add(cacheKey, image);
                 _setDrawUpdate();
@@ -132,11 +132,9 @@ namespace toucan
             const ftk::Box2I g2(x, y, thumbnailWidth, _size.thumbnailHeight);
             if (ftk::intersects(g2, drawRect))
             {
-                const OTIO_NS::RationalTime t = _timelineWrapper->getTimeline()->tracks()->transformed_time(
-                    posToTime(x),
-                    _clip) - _timelineWrapper->getTimeRange().start_time();
+                const OTIO_NS::RationalTime t = posToTime(x);
+                const std::string cacheKey = getThumbnailCacheKey(_clip, t, _size.thumbnailHeight);
                 std::shared_ptr<ftk::Image> image;
-                const std::string cacheKey = getThumbnailCacheKey(_ref, t, _size.thumbnailHeight);
                 if (_thumbnailCache->get(cacheKey, image))
                 {
                     if (image)
@@ -158,9 +156,8 @@ namespace toucan
                     if (j == _thumbnailRequests.end())
                     {
                         _thumbnailRequests.push_back(_thumbnailGenerator->getThumbnail(
-                            _ref,
+                            _clip,
                             t,
-                            _clip->available_range(),
                             _size.thumbnailHeight));
                     }
                 }
@@ -171,9 +168,7 @@ namespace toucan
         auto i = _thumbnailRequests.begin();
         while (i != _thumbnailRequests.end())
         {
-            const int x = timeToPos(
-                _timelineWrapper->getTimeRange().start_time() +
-                _clip->transformed_time(i->time, _timelineWrapper->getTimeline()->tracks()));
+            const int x = timeToPos(i->time);
             const ftk::Box2I g2(x, y, thumbnailWidth, _size.thumbnailHeight);
             if (!ftk::intersects(g2, drawRect))
             {

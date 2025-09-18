@@ -59,10 +59,10 @@ namespace toucan
             {
                 std::cout << "  " << otioFile << ": " << time.value() << "/" <<
                     timeRange.duration().value() << std::endl;
-                if (auto op = graph->exec(host, time))
+                if (auto node = graph->exec(host, time))
                 {
-                    // Execute the image operation graph.
-                    const auto buf = op->exec();
+                    // Execute the image graph.
+                    const auto buf = node->exec();
 
                     // Save the image.
                     const std::string fileName = getSequenceFrame(
