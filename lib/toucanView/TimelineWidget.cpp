@@ -258,6 +258,7 @@ namespace toucan
     void TimelineWidget::mouseReleaseEvent(ftk::MouseClickEvent& event)
     {
         IWidget::mouseReleaseEvent(event);
+        event.accept = true;
     }
 
     void TimelineWidget::scrollEvent(ftk::ScrollEvent& event)

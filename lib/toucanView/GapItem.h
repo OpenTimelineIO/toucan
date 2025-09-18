@@ -44,7 +44,6 @@ namespace toucan
     private:
         void _textUpdate();
 
-        const OTIO_NS::Timeline* _timeline = nullptr;
         const OTIO_NS::Gap* _gap = nullptr;
         std::string _text;
         ftk::Color4F _color;

@@ -99,7 +99,6 @@ namespace toucan
         _layout->setGeometry(value);
         _geom.g2 = ftk::margin(value, -_size.border, 0, -_size.border, 0);
         _geom.g3 = ftk::margin(_label->getGeometry(), -_size.border, 0, -_size.border, 0);
-        _selectionRect = _geom.g3;
     }
 
     ftk::Box2I GapItem::getChildrenClipRect() const

@@ -6,6 +6,7 @@
 #include "App.h"
 #include "FilesModel.h"
 #include "StackItem.h"
+#include "ThumbnailsWidget.h"
 #include "WindowModel.h"
 
 #include <feather-tk/ui/ScrollArea.h>
@@ -462,7 +463,7 @@ namespace toucan
     {
         if (auto iitem = std::dynamic_pointer_cast<IItem>(widget))
         {
-            if (ftk::contains(iitem->getSelectionRect(), pos))
+            if (ftk::contains(iitem->getGeometry(), pos))
             {
                 out = iitem;
             }

@@ -8,7 +8,7 @@
 
 #include <feather-tk/core/LRUCache.h>
 
-#include <opentimelineio/clip.h>
+#include <opentimelineio/item.h>
 
 namespace toucan
 {
@@ -21,7 +21,7 @@ namespace toucan
         void _init(
             const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<TimelineWrapper>&,
-            const OTIO_NS::Clip*,
+            const OTIO_NS::Item*,
             const std::shared_ptr<ThumbnailGenerator>&,
             const std::shared_ptr<ftk::LRUCache<std::string, std::shared_ptr<ftk::Image> > >&,
             const OTIO_NS::TimeRange&,
@@ -34,7 +34,7 @@ namespace toucan
         static std::shared_ptr<ThumbnailsWidget> create(
             const std::shared_ptr<ftk::Context>&,
             const std::shared_ptr<TimelineWrapper>&,
-            const OTIO_NS::Clip*,
+            const OTIO_NS::Item*,
             const std::shared_ptr<ThumbnailGenerator>&,
             const std::shared_ptr<ftk::LRUCache<std::string, std::shared_ptr<ftk::Image> > >&,
             const OTIO_NS::TimeRange&,
@@ -54,7 +54,7 @@ namespace toucan
         void _cancelThumbnails();
 
         std::shared_ptr<TimelineWrapper> _timelineWrapper;
-        const OTIO_NS::Clip* _clip = nullptr;
+        const OTIO_NS::Item* _item = nullptr;
         float _thumbnailAspect = 0.F;
         std::shared_ptr<ThumbnailGenerator> _thumbnailGenerator;
         std::shared_ptr<ftk::LRUCache<std::string, std::shared_ptr<ftk::Image> > > _thumbnailCache;

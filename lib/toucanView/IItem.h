@@ -44,9 +44,6 @@ namespace toucan
 
         //! Get the OTIO object.
         const OTIO_NS::SerializableObjectWithMetadata* getObject() const;
-        
-        //! Get the item selection rectangle.
-        const ftk::Box2I& getSelectionRect() const;
 
         //! Get whether the item is selected.
         bool isSelected() const;
@@ -54,7 +51,6 @@ namespace toucan
         //! Set whether the item is selected.
         void setSelected(bool);
 
-        void setGeometry(const ftk::Box2I&) override;
         void mousePressEvent(ftk::MouseClickEvent&) override;
         void mouseReleaseEvent(ftk::MouseClickEvent&) override;
 
@@ -66,7 +62,6 @@ namespace toucan
         std::shared_ptr<File> _file;
         const OTIO_NS::SerializableObjectWithMetadata* _object = nullptr;
         TimeUnits _timeUnits = TimeUnits::First;
-        ftk::Box2I _selectionRect;
         bool _selected = false;
         std::shared_ptr<ftk::Menu> _menu;
 

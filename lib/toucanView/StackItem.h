@@ -11,6 +11,8 @@
 
 namespace toucan
 {
+    class ThumbnailsWidget;
+
     //! Timeline stack item.
     class StackItem : public IItem
     {
@@ -44,16 +46,18 @@ namespace toucan
     private:
         void _textUpdate();
 
-        const OTIO_NS::Timeline* _timeline = nullptr;
         const OTIO_NS::Stack* _stack = nullptr;
         std::string _text;
         ftk::Color4F _color;
 
         std::shared_ptr<ftk::VerticalLayout> _layout;
         std::shared_ptr<ItemLabel> _label;
+        std::shared_ptr<ThumbnailsWidget> _thumbnailsWidget;
         std::shared_ptr<TimeLayout> _markerLayout;
         std::vector<std::shared_ptr<MarkerItem> > _markerItems;
         std::shared_ptr<TimeStackLayout> _timeLayout;
+
+        std::shared_ptr<ftk::ValueObserver<bool> > _thumbnailsObserver;
 
         struct SizeData
         {

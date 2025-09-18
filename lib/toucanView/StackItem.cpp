@@ -3,8 +3,11 @@
 
 #include "StackItem.h"
 
+#include "App.h"
 #include "File.h"
+#include "ThumbnailsWidget.h"
 #include "TrackItem.h"
+#include "WindowModel.h"
 
 #include <feather-tk/ui/DrawUtil.h>
 #include <feather-tk/core/RenderUtil.h>
@@ -45,6 +48,15 @@ namespace toucan
         _label = ItemLabel::create(context, _layout);
         _label->setName(_text);
 
+        _thumbnailsWidget = ThumbnailsWidget::create(
+            context,
+            timelineWrapper,
+            _stack,
+            data.thumbnailGenerator,
+            data.thumbnailCache,
+            timeRange,
+            _layout);
+
         const auto& markers = stack->markers();
         if (!markers.empty())
         {
@@ -79,6 +91,13 @@ namespace toucan
         }
 
         _textUpdate();
+
+        _thumbnailsObserver = ftk::ValueObserver<bool>::create(
+            data.app->getWindowModel()->observeThumbnails(),
+            [this](bool value)
+            {
+                _thumbnailsWidget->setVisible(value);
+            });
     }
 
     StackItem::~StackItem()
@@ -98,6 +117,7 @@ namespace toucan
     void StackItem::setScale(double value)
     {
         IItem::setScale(value);
+        _thumbnailsWidget->setScale(value);
         if (_markerLayout)
         {
             _markerLayout->setScale(value);
@@ -111,7 +131,6 @@ namespace toucan
         _layout->setGeometry(value);
         _geom.g2 = ftk::margin(value, -_size.border, 0, -_size.border, 0);
         _geom.g3 = ftk::margin(_label->getGeometry(), -_size.border, 0, -_size.border, 0);
-        _selectionRect = _geom.g3;
     }
 
     ftk::Box2I StackItem::getChildrenClipRect() const

@@ -40,11 +40,6 @@ namespace toucan
         return _object;
     }
 
-    const ftk::Box2I& IItem::getSelectionRect() const
-    {
-        return _selectionRect;
-    }
-
     bool IItem::isSelected() const
     {
         return _selected;
@@ -56,12 +51,6 @@ namespace toucan
             return;
         _selected = value;
         _setDrawUpdate();
-    }
-
-    void IItem::setGeometry(const ftk::Box2I& value)
-    {
-        ITimeWidget::setGeometry(value);
-        _selectionRect = value;
     }
 
     void IItem::mousePressEvent(ftk::MouseClickEvent& event)

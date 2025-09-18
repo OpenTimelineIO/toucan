@@ -14,7 +14,7 @@ namespace toucan
     void ThumbnailsWidget::_init(
         const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<TimelineWrapper>& timelineWrapper,
-        const OTIO_NS::Clip* clip,
+        const OTIO_NS::Item* item,
         const std::shared_ptr<ThumbnailGenerator>& thumbnailGenerator,
         const std::shared_ptr<ftk::LRUCache<std::string, std::shared_ptr<ftk::Image> > >& thumbnailCache,
         const OTIO_NS::TimeRange& timeRange,
@@ -23,12 +23,12 @@ namespace toucan
         ITimeWidget::_init(context, timeRange, "toucan::ThumbnailsWidget", parent);
         
         _timelineWrapper = timelineWrapper;
-        _clip = clip;
+        _item = item;
         _thumbnailGenerator = thumbnailGenerator;
         _thumbnailCache = thumbnailCache;
 
         _thumbnailAspectRequest = _thumbnailGenerator->getAspect(
-            _clip,
+            _item,
             timeRange.start_time());
     }
     
@@ -38,14 +38,14 @@ namespace toucan
     std::shared_ptr<ThumbnailsWidget> ThumbnailsWidget::create(
         const std::shared_ptr<ftk::Context>& context,
         const std::shared_ptr<TimelineWrapper>& timelineWrapper,
-        const OTIO_NS::Clip* clip,
+        const OTIO_NS::Item* item,
         const std::shared_ptr<ThumbnailGenerator>& thumbnailGenerator,
         const std::shared_ptr<ftk::LRUCache<std::string, std::shared_ptr<ftk::Image> > >& thumbnailCache,
         const OTIO_NS::TimeRange& timeRange,
         const std::shared_ptr<IWidget>& parent)
     {
         auto out = std::make_shared<ThumbnailsWidget>();
-        out->_init(context, timelineWrapper, clip, thumbnailGenerator, thumbnailCache, timeRange, parent);
+        out->_init(context, timelineWrapper, item, thumbnailGenerator, thumbnailCache, timeRange, parent);
         return out;
     }
 
@@ -76,7 +76,7 @@ namespace toucan
             if (i->future.valid() &&
                 i->future.wait_for(std::chrono::seconds(0)) == std::future_status::ready)
             {
-                const std::string cacheKey = getThumbnailCacheKey(_clip, i->time, _size.thumbnailHeight);
+                const std::string cacheKey = getThumbnailCacheKey(_item, i->time, _size.thumbnailHeight);
                 const auto image = i->future.get();
                 _thumbnailCache->add(cacheKey, image);
                 _setDrawUpdate();
@@ -133,7 +133,7 @@ namespace toucan
             if (ftk::intersects(g2, drawRect))
             {
                 const OTIO_NS::RationalTime t = posToTime(x);
-                const std::string cacheKey = getThumbnailCacheKey(_clip, t, _size.thumbnailHeight);
+                const std::string cacheKey = getThumbnailCacheKey(_item, t, _size.thumbnailHeight);
                 std::shared_ptr<ftk::Image> image;
                 if (_thumbnailCache->get(cacheKey, image))
                 {
@@ -156,7 +156,7 @@ namespace toucan
                     if (j == _thumbnailRequests.end())
                     {
                         _thumbnailRequests.push_back(_thumbnailGenerator->getThumbnail(
-                            _clip,
+                            _item,
                             t,
                             _size.thumbnailHeight));
                     }

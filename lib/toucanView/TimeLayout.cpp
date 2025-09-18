@@ -106,6 +106,7 @@ namespace toucan
     void TimeLayout::setGeometry(const ftk::Box2I& value)
     {
         ITimeWidget::setGeometry(value);
+        const int h = value.h();
         for (const auto& child : getChildren())
         {
             if (auto timeWidget = std::dynamic_pointer_cast<ITimeWidget>(child))
@@ -113,12 +114,11 @@ namespace toucan
                 const OTIO_NS::TimeRange& timeRange = timeWidget->getTimeRange();
                 const int t0 = timeToPos(timeRange.start_time());
                 const int t1 = timeToPos(timeRange.end_time_exclusive());
-                const ftk::Size2I& childSizeHint = child->getSizeHint();
                 child->setGeometry(ftk::Box2I(
                     t0,
                     value.min.y,
                     std::max(t1 - t0, timeWidget->getMinWidth()),
-                    childSizeHint.h));
+                    h));
             }
         }
     }
