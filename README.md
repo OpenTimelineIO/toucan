@@ -30,9 +30,8 @@ Toucan relies on the following libraries:
 * [FFmpeg](https://ffmpeg.org)
 * [feather-tk](https://github.com/darbyjohnston/feather-tk)
 
-Supported VFX platforms: 2024, 2023, 2022
-
 Screenshot of the toucan viewer:
+
 ![toucan-view](images/toucan-view-screenshot1.png)
 
 
