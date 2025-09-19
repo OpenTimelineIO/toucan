@@ -74,7 +74,7 @@ namespace toucan
                     data.file = file;
                     data.thumbnailGenerator = _thumbnailGenerator;
                     data.thumbnailCache = std::make_shared<ftk::LRUCache<std::string, std::shared_ptr<ftk::Image> > >();
-                    data.thumbnailCache->setMax(1000);
+                    data.thumbnailCache->setMax(200);
                     _timelineItem = TimelineItem::create(getContext(), data);
                     _timelineItem->setScale(_scale);
                     _timelineItem->setCurrentTimeCallback(

@@ -48,7 +48,7 @@ namespace toucan
         _timelineWrapper(timelineWrapper),
         _timeRange(timelineWrapper->getTimeRange())
     {
-        _readCache.setMax(100);
+        _readCache.setMax(20);
 
         // Get the image information from the first video clip.
         for (auto clip : getVideoClips(_timelineWrapper->getTimeline()))
