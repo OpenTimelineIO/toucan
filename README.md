@@ -21,10 +21,6 @@ OpenFX Plugins:
 * Transitions: Dissolve, Horizontal Wipe, Vertical Wipe
 * Color space: Color Convert, Premultiply Alpha, Un-Premultiply Alpha
 
-TODO:
-* Audio support
-* Nested timeline support
-
 Toucan relies on the following libraries:
 * [OpenTimelineIO](https://github.com/PixarAnimationStudios/OpenTimelineIO)
 * [OpenFX](https://github.com/AcademySoftwareFoundation/openfx)
@@ -32,8 +28,12 @@ Toucan relies on the following libraries:
 * [OpenColorIO](https://github.com/AcademySoftwareFoundation/OpenColorIO)
 * [OpenEXR](https://www.openexr.com/)
 * [FFmpeg](https://ffmpeg.org)
+* [feather-tk](https://github.com/darbyjohnston/feather-tk)
 
 Supported VFX platforms: 2024, 2023, 2022
+
+Screenshot of the toucan viewer:
+![toucan-view](images/toucan-view-screenshot1.png)
 
 
 ## Example Renders
