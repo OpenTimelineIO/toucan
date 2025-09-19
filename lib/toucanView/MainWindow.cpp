@@ -26,6 +26,11 @@
 
 #include <nlohmann/json.hpp>
 
+namespace toucan_resource
+{
+    extern std::vector<uint8_t> toucan_64;
+}
+
 namespace toucan
 {
     void MainWindow::_init(
@@ -53,6 +58,10 @@ namespace toucan
         catch (const std::exception&)
         {}
         setDisplayScale(displayScale);
+
+        auto iconSystem = context->getSystem<ftk::IconSystem>();
+        iconSystem->add("toucan_64", toucan_resource::toucan_64);
+        setIcon(iconSystem->get("toucan_64", 1.0));
 
         _layout = ftk::VerticalLayout::create(context, shared_from_this());
         _layout->setSpacingRole(ftk::SizeRole::None);
