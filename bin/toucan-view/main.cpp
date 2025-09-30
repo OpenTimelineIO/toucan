@@ -3,7 +3,7 @@
 
 #include "toucanView/App.h"
 
-#include <feather-tk/core/Context.h>
+#include <ftk/Core/Context.h>
 
 #include <iostream>
 

@@ -6,8 +6,8 @@
 #include "App.h"
 #include "FilesModel.h"
 
-#include <feather-tk/ui/Spacer.h>
-#include <feather-tk/core/Format.h>
+#include <ftk/Ui/Spacer.h>
+#include <ftk/Core/Format.h>
 
 namespace toucan
 {

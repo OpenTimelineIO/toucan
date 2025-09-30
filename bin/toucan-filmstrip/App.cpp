@@ -5,7 +5,7 @@
 
 #include <toucanRender/Util.h>
 
-#include <feather-tk/core/Time.h>
+#include <ftk/Core/Time.h>
 
 #include <OpenImageIO/imagebufalgo.h>
 

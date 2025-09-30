@@ -5,9 +5,9 @@
 
 #include <toucanView/WindowModel.h>
 
-#include <feather-tk/ui/Menu.h>
-#include <feather-tk/core/ObservableList.h>
-#include <feather-tk/core/ObservableMap.h>
+#include <ftk/Ui/Menu.h>
+#include <ftk/Core/ObservableList.h>
+#include <ftk/Core/ObservableMap.h>
 
 namespace toucan
 {

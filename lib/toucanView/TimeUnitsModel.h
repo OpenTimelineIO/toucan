@@ -3,9 +3,9 @@
 
 #pragma once
 
-#include <feather-tk/ui/Settings.h>
-#include <feather-tk/core/Context.h>
-#include <feather-tk/core/ObservableValue.h>
+#include <ftk/Ui/Settings.h>
+#include <ftk/Core/Context.h>
+#include <ftk/Core/ObservableValue.h>
 
 #include <opentimelineio/version.h>
 

@@ -6,7 +6,7 @@
 #include <toucanView/IItem.h>
 #include <toucanView/SelectionModel.h>
 
-#include <feather-tk/core/ObservableList.h>
+#include <ftk/Core/ObservableList.h>
 
 namespace toucan
 {

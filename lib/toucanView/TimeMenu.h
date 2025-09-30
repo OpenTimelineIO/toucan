@@ -5,7 +5,7 @@
 
 #include <toucanView/SelectionModel.h>
 
-#include <feather-tk/ui/Menu.h>
+#include <ftk/Ui/Menu.h>
 
 #include <opentimelineio/version.h>
 

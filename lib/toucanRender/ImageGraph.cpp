@@ -10,7 +10,7 @@
 #include "TimelineAlgo.h"
 #include "Util.h"
 
-#include <feather-tk/core/LogSystem.h>
+#include <ftk/Core/LogSystem.h>
 
 #include <opentimelineio/clip.h>
 #include <opentimelineio/externalReference.h>

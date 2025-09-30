@@ -11,12 +11,12 @@
 
 #include <toucanRender/Util.h>
 
-#include <feather-tk/ui/DialogSystem.h>
-#include <feather-tk/ui/FileBrowser.h>
-#include <feather-tk/ui/MessageDialog.h>
-#include <feather-tk/ui/Settings.h>
+#include <ftk/Ui/DialogSystem.h>
+#include <ftk/Ui/FileBrowser.h>
+#include <ftk/Ui/MessageDialog.h>
+#include <ftk/Ui/Settings.h>
 
-#include <feather-tk/core/CmdLine.h>
+#include <ftk/Core/CmdLine.h>
 
 #include <nlohmann/json.hpp>
 

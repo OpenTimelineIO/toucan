@@ -6,9 +6,9 @@
 #include <toucanView/FilesModel.h>
 #include <toucanView/ViewModel.h>
 
-#include <feather-tk/ui/IWidget.h>
+#include <ftk/Ui/IWidget.h>
 
-#include <feather-tk/core/Image.h>
+#include <ftk/Core/Image.h>
 
 namespace toucan
 {

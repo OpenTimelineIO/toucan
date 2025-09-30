@@ -6,7 +6,7 @@
 #include <toucanView/ThumbnailGenerator.h>
 #include <toucanView/TimeLayout.h>
 
-#include <feather-tk/core/LRUCache.h>
+#include <ftk/Core/LRUCache.h>
 
 #include <opentimelineio/item.h>
 

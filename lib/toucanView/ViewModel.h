@@ -3,10 +3,10 @@
 
 #pragma once
 
-#include <feather-tk/ui/Settings.h>
-#include <feather-tk/core/Context.h>
-#include <feather-tk/core/ObservableValue.h>
-#include <feather-tk/core/RenderOptions.h>
+#include <ftk/Ui/Settings.h>
+#include <ftk/Core/Context.h>
+#include <ftk/Core/ObservableValue.h>
+#include <ftk/Core/RenderOptions.h>
 
 #include <opentimelineio/timeline.h>
 

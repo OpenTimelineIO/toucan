@@ -5,12 +5,12 @@
 
 #include <toucanView/IToolWidget.h>
 
-#include <feather-tk/ui/Label.h>
-#include <feather-tk/ui/RowLayout.h>
-#include <feather-tk/ui/ScrollWidget.h>
-#include <feather-tk/ui/SearchBox.h>
-#include <feather-tk/ui/ToolButton.h>
-#include <feather-tk/core/LogSystem.h>
+#include <ftk/Ui/Label.h>
+#include <ftk/Ui/RowLayout.h>
+#include <ftk/Ui/ScrollWidget.h>
+#include <ftk/Ui/SearchBox.h>
+#include <ftk/Ui/ToolButton.h>
+#include <ftk/Core/LogSystem.h>
 
 namespace toucan
 {

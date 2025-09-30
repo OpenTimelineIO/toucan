@@ -5,12 +5,12 @@
 
 #include <toucanView/WindowModel.h>
 
-#include <feather-tk/ui/Divider.h>
-#include <feather-tk/ui/RowLayout.h>
-#include <feather-tk/ui/Splitter.h>
-#include <feather-tk/ui/TabWidget.h>
-#include <feather-tk/ui/Window.h>
-#include <feather-tk/core/ObservableList.h>
+#include <ftk/Ui/Divider.h>
+#include <ftk/Ui/RowLayout.h>
+#include <ftk/Ui/Splitter.h>
+#include <ftk/Ui/TabWidget.h>
+#include <ftk/Ui/Window.h>
+#include <ftk/Core/ObservableList.h>
 
 namespace toucan
 {

@@ -6,7 +6,7 @@
 #include "App.h"
 #include "FilesModel.h"
 
-#include <feather-tk/ui/Action.h>
+#include <ftk/Ui/Action.h>
 
 namespace toucan
 {

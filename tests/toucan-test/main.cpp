@@ -17,9 +17,9 @@
 #include <toucanRender/Util.h>
 
 #if defined(toucan_VIEW)
-#include <feather-tk/ui/Init.h>
+#include <ftk/Ui/Init.h>
 #endif // toucan_VIEW
-#include <feather-tk/core/Context.h>
+#include <ftk/Core/Context.h>
 
 #include <iostream>
 

@@ -46,7 +46,7 @@ endif()
 add_library(toucanRender ${HEADERS} ${HEADERS_PRIVATE} ${SOURCE})
 set(LIBS_PUBLIC
     toucanResource
-    ftk::feather-tk-core
+    ftk::ftkCore
     OTIO::opentimelineio
     OTIO::opentime
     lunasvg::lunasvg

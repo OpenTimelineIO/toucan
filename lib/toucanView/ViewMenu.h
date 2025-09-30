@@ -5,8 +5,8 @@
 
 #include <toucanView/ViewModel.h>
 
-#include <feather-tk/ui/Menu.h>
-#include <feather-tk/core/ObservableValue.h>
+#include <ftk/Ui/Menu.h>
+#include <ftk/Core/ObservableValue.h>
 
 namespace toucan
 {

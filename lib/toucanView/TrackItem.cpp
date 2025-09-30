@@ -8,8 +8,8 @@
 #include "GapItem.h"
 #include "VideoClipItem.h"
 
-#include <feather-tk/ui/DrawUtil.h>
-#include <feather-tk/core/RenderUtil.h>
+#include <ftk/Ui/DrawUtil.h>
+#include <ftk/Core/RenderUtil.h>
 
 namespace toucan
 {

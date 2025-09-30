@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <feather-tk/ui/MenuBar.h>
+#include <ftk/Ui/MenuBar.h>
 
 namespace toucan
 {

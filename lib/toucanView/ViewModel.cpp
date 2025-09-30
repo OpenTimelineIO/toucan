@@ -3,8 +3,8 @@
 
 #include "ViewModel.h"
 
-#include <feather-tk/core/Error.h>
-#include <feather-tk/core/String.h>
+#include <ftk/Core/Error.h>
+#include <ftk/Core/String.h>
 
 #include <nlohmann/json.hpp>
 

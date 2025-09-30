@@ -6,7 +6,7 @@
 #include "App.h"
 #include "FilesModel.h"
 
-#include <feather-tk/core/Format.h>
+#include <ftk/Core/Format.h>
 
 namespace toucan
 {

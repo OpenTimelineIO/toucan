@@ -5,7 +5,7 @@
 
 #include <OpenImageIO/imagebufalgo.h>
 
-#include <feather-tk/core/Time.h>
+#include <ftk/Core/Time.h>
 
 #include <iostream>
 #include <sstream>

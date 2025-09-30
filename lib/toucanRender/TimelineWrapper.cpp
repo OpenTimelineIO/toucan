@@ -7,7 +7,7 @@
 
 #include <toucanRender/Read.h>
 
-#include <feather-tk/core/String.h>
+#include <ftk/Core/String.h>
 
 #include <opentimelineio/clip.h>
 #include <opentimelineio/externalReference.h>

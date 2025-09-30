@@ -7,9 +7,9 @@
 #include <toucanView/TimeLayout.h>
 #include <toucanView/TimeUnitsModel.h>
 
-#include <feather-tk/ui/IWidget.h>
-#include <feather-tk/ui/Menu.h>
-#include <feather-tk/core/LRUCache.h>
+#include <ftk/Ui/IWidget.h>
+#include <ftk/Ui/Menu.h>
+#include <ftk/Core/LRUCache.h>
 
 #include <opentimelineio/timeline.h>
 

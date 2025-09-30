@@ -68,7 +68,7 @@ find_package(OpenColorIO)
 find_package(OpenImageIO)
 find_package(OpenFX)
 find_package(OpenTimelineIO)
-find_package(feather-tk)
+find_package(ftk)
 
 include_directories(lib)
 include_directories(tests)

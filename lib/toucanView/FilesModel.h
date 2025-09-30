@@ -6,11 +6,11 @@
 #include <toucanView/File.h>
 #include <toucanView/PlaybackModel.h>
 
-#include <feather-tk/ui/RecentFilesModel.h>
-#include <feather-tk/ui/Settings.h>
-#include <feather-tk/core/Context.h>
-#include <feather-tk/core/ObservableList.h>
-#include <feather-tk/core/ObservableValue.h>
+#include <ftk/Ui/RecentFilesModel.h>
+#include <ftk/Ui/Settings.h>
+#include <ftk/Core/Context.h>
+#include <ftk/Core/ObservableList.h>
+#include <ftk/Core/ObservableValue.h>
 
 namespace toucan
 {

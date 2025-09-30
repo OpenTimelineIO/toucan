@@ -5,9 +5,9 @@
 
 #include <opentimelineio/timeline.h>
 
-#include <feather-tk/core/ObservableValue.h>
-#include <feather-tk/core/Timer.h>
-#include <feather-tk/core/Vector.h>
+#include <ftk/Core/ObservableValue.h>
+#include <ftk/Core/Timer.h>
+#include <ftk/Core/Vector.h>
 
 #include <optional>
 

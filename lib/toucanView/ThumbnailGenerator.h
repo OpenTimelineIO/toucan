@@ -5,8 +5,8 @@
 
 #include <opentimelineio/item.h>
 
-#include <feather-tk/core/Image.h>
-#include <feather-tk/core/LogSystem.h>
+#include <ftk/Core/Image.h>
+#include <ftk/Core/LogSystem.h>
 
 #include <atomic>
 #include <filesystem>

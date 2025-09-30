@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <feather-tk/ui/Menu.h>
+#include <ftk/Ui/Menu.h>
 
 #include <map>
 

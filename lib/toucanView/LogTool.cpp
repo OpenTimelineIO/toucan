@@ -5,9 +5,9 @@
 
 #include "App.h"
 
-#include <feather-tk/ui/Divider.h>
-#include <feather-tk/ui/Spacer.h>
-#include <feather-tk/core/String.h>
+#include <ftk/Ui/Divider.h>
+#include <ftk/Ui/Spacer.h>
+#include <ftk/Core/String.h>
 
 namespace toucan
 {

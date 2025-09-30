@@ -5,7 +5,7 @@
 
 #include "ImageEffect.h"
 
-#include <feather-tk/core/LogSystem.h>
+#include <ftk/Core/LogSystem.h>
 
 #include <cstdarg>
 #include <cstring>

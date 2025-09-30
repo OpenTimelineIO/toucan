@@ -5,7 +5,7 @@
 
 #include <toucanRender/ImageEffect.h>
 
-#include <feather-tk/core/Context.h>
+#include <ftk/Core/Context.h>
 
 #include <OpenImageIO/imagebuf.h>
 

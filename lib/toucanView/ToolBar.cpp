@@ -7,7 +7,7 @@
 #include "ViewToolBar.h"
 #include "WindowToolBar.h"
 
-#include <feather-tk/ui/Divider.h>
+#include <ftk/Ui/Divider.h>
 
 namespace toucan
 {

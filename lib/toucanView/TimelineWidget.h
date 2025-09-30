@@ -6,8 +6,8 @@
 #include <toucanView/PlaybackModel.h>
 #include <toucanView/TimeUnitsModel.h>
 
-#include <feather-tk/ui/ScrollWidget.h>
-#include <feather-tk/core/ObservableList.h>
+#include <ftk/Ui/ScrollWidget.h>
+#include <ftk/Core/ObservableList.h>
 
 #include <opentimelineio/timeline.h>
 

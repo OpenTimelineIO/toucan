@@ -9,7 +9,7 @@
 #include "ThumbnailsWidget.h"
 #include "WindowModel.h"
 
-#include <feather-tk/ui/ScrollArea.h>
+#include <ftk/Ui/ScrollArea.h>
 
 namespace toucan
 {

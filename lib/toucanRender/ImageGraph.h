@@ -6,8 +6,8 @@
 #include <toucanRender/ImageNode.h>
 #include <toucanRender/TimelineWrapper.h>
 
-#include <feather-tk/core/Context.h>
-#include <feather-tk/core/LRUCache.h>
+#include <ftk/Core/Context.h>
+#include <ftk/Core/LRUCache.h>
 
 #include <opentimelineio/track.h>
 #include <opentimelineio/transition.h>

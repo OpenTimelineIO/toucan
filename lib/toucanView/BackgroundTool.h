@@ -7,11 +7,11 @@
 #include <toucanView/ViewModel.h>
 #include <toucanView/IToolWidget.h>
 
-#include <feather-tk/ui/ColorWidget.h>
-#include <feather-tk/ui/ComboBox.h>
-#include <feather-tk/ui/IntEditSlider.h>
-#include <feather-tk/ui/RowLayout.h>
-#include <feather-tk/ui/ScrollWidget.h>
+#include <ftk/Ui/ColorWidget.h>
+#include <ftk/Ui/ComboBox.h>
+#include <ftk/Ui/IntEditSlider.h>
+#include <ftk/Ui/RowLayout.h>
+#include <ftk/Ui/ScrollWidget.h>
 
 namespace toucan
 {

@@ -96,6 +96,7 @@ jobs:
         echo "$PWD/install-Debug/bin" >> $GITHUB_PATH
         echo "DYLD_LIBRARY_PATH=$PWD/install-Debug/lib:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
         cmake --version
+        system_profiler SPHardwareDataType
 
     - name: Build
       run: sh toucan/sbuild-macos.sh Debug
@@ -124,6 +125,7 @@ jobs:
         echo "$PWD/install-Debug/bin" >> $GITHUB_PATH
         echo "DYLD_LIBRARY_PATH=$PWD/install-Debug/lib:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
         cmake --version
+        system_profiler SPHardwareDataType
 
     - name: Build
       run: bash toucan/sbuild-macos.sh

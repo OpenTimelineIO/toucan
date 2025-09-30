@@ -9,7 +9,7 @@
 
 #include <toucanRender/TimelineWrapper.h>
 
-#include <feather-tk/core/Math.h>
+#include <ftk/Core/Math.h>
 
 namespace toucan
 {

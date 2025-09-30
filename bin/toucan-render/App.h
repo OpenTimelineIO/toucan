@@ -7,8 +7,8 @@
 #include <toucanRender/ImageGraph.h>
 #include <toucanRender/TimelineWrapper.h>
 
-#include <feather-tk/core/CmdLine.h>
-#include <feather-tk/core/IApp.h>
+#include <ftk/Core/CmdLine.h>
+#include <ftk/Core/IApp.h>
 
 #include <OpenImageIO/imagebuf.h>
 

@@ -3,7 +3,7 @@
 
 #include "TimeWidgets.h"
 
-#include <feather-tk/ui/ToolButton.h>
+#include <ftk/Ui/ToolButton.h>
 
 #include <sstream>
 

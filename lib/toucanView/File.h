@@ -7,9 +7,9 @@
 #include <toucanRender/ImageGraph.h>
 #include <toucanRender/TimelineWrapper.h>
 
-#include <feather-tk/core/Context.h>
-#include <feather-tk/core/Image.h>
-#include <feather-tk/core/ObservableValue.h>
+#include <ftk/Core/Context.h>
+#include <ftk/Core/Image.h>
+#include <ftk/Core/ObservableValue.h>
 
 #include <filesystem>
 

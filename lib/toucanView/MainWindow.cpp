@@ -19,10 +19,10 @@
 #include "TimelineWidget.h"
 #include "ToolBar.h"
 
-#include <feather-tk/ui/DialogSystem.h>
-#include <feather-tk/ui/MessageDialog.h>
-#include <feather-tk/ui/Settings.h>
-#include <feather-tk/core/String.h>
+#include <ftk/Ui/DialogSystem.h>
+#include <ftk/Ui/MessageDialog.h>
+#include <ftk/Ui/Settings.h>
+#include <ftk/Core/String.h>
 
 #include <nlohmann/json.hpp>
 
@@ -119,7 +119,7 @@ namespace toucan
         _infoBar = InfoBar::create(context, app, _layout);
 
         std::weak_ptr<App> appWeak(app);
-        _tabWidget->setTabCallback(
+        _tabWidget->setCurrentTabCallback(
             [appWeak](int index)
             {
                 if (auto app = appWeak.lock())
