@@ -1,7 +1,7 @@
 include(ExternalProject)
 
 set(OpenTimelineIO_GIT_REPOSITORY "https://github.com/AcademySoftwareFoundation/OpenTimelineIO.git")
-set(OpenTimelineIO_GIT_TAG "d3ca19d802f3c0ea750ab722aa90448a5fdff11f")
+set(OpenTimelineIO_GIT_TAG "v0.18.0")
 
 set(OpenTimelineIO_ARGS
     ${toucan_EXTERNAL_PROJECT_ARGS}
