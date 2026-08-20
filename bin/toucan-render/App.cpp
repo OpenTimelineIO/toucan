@@ -17,6 +17,8 @@ extern "C"
 
 } // extern "C"
 
+#include <algorithm>
+#include <cmath>
 #include <stdio.h>
 
 namespace toucan
@@ -70,6 +72,12 @@ namespace toucan
             "",
             "MJPEG",
             ftk::join(ffmpeg::getVideoCodecStrings(), ", "));
+        _cmdLine.scale = ftk::CmdLineValueOption<float>::create(
+            std::vector<std::string>{ "-scale" },
+            "Scale the rendered image size by the given factor, for example 0.5 to render "
+            "at half resolution. Must be greater than zero.",
+            "",
+            1.F);
         _cmdLine.printStart = ftk::CmdLineFlagOption::create(
             std::vector<std::string>{ "-print_start" },
             "Print the timeline start time and exit.");
@@ -106,6 +114,7 @@ namespace toucan
             { _cmdLine.input, _cmdLine.output },
             {
                 _cmdLine.videoCodec,
+                _cmdLine.scale,
                 _cmdLine.printStart,
                 _cmdLine.printDuration,
                 _cmdLine.printRate,
@@ -118,6 +127,11 @@ namespace toucan
         if (_cmdLine.output->hasValue() && _cmdLine.output->getValue() == "-")
         {
             _cmdLine.outputRaw = true;
+        }
+
+        if (_cmdLine.scale->getValue() <= 0.F)
+        {
+            throw std::runtime_error("The -scale value must be greater than zero.");
         }
     }
 
@@ -171,7 +185,11 @@ namespace toucan
             _context,
             inputPath.parent_path(),
             _timelineWrapper);
-        const IMATH_NAMESPACE::V2d imageSize = _graph->getImageSize();
+        const IMATH_NAMESPACE::V2i nativeImageSize = _graph->getImageSize();
+        const float scale = _cmdLine.scale->getValue();
+        const IMATH_NAMESPACE::V2i imageSize(
+            std::max(1, static_cast<int>(std::round(nativeImageSize.x * scale))),
+            std::max(1, static_cast<int>(std::round(nativeImageSize.y * scale))));
 
         // Print information.
         if (_cmdLine.printStart->found())
@@ -217,7 +235,7 @@ namespace toucan
         // Render the timeline frames.
         if (_cmdLine.y4m->hasValue())
         {
-            _writeY4mHeader();
+            _writeY4mHeader(imageSize);
         }
         for (OTIO_NS::RationalTime time = timeRange.start_time();
             time <= timeRange.end_time_inclusive();
@@ -232,7 +250,17 @@ namespace toucan
             if (auto node = _graph->exec(_host, time))
             {
                 // Execute the graph.
-                const auto buf = node->exec();
+                auto buf = node->exec();
+
+                // Scale the image, if requested.
+                if (imageSize.x != nativeImageSize.x || imageSize.y != nativeImageSize.y)
+                {
+                    buf = OIIO::ImageBufAlgo::resize(
+                        buf,
+                        "",
+                        0.0,
+                        OIIO::ROI(0, imageSize.x, 0, imageSize.y));
+                }
 
                 // Save the image.
                 if (!_cmdLine.outputRaw)
@@ -299,21 +327,21 @@ namespace toucan
             stdout);
     }
 
-    void App::_writeY4mHeader()
+    void App::_writeY4mHeader(const IMATH_NAMESPACE::V2i& imageSize)
     {
         std::string s = "YUV4MPEG2 ";
         fwrite(s.c_str(), s.size(), 1, stdout);
 
         {
             std::stringstream ss;
-            ss << "W" << _graph->getImageSize().x;
+            ss << "W" << imageSize.x;
             s = ss.str();
         }
         fwrite(s.c_str(), s.size(), 1, stdout);
 
         {
             std::stringstream ss;
-            ss << " H" << _graph->getImageSize().y;
+            ss << " H" << imageSize.y;
             s = ss.str();
         }
         fwrite(s.c_str(), s.size(), 1, stdout);

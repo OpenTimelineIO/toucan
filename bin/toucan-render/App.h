@@ -40,9 +40,9 @@ namespace toucan
     
     private:
         void _writeRawFrame(const OIIO::ImageBuf&);
-        void _writeY4mHeader();
+        void _writeY4mHeader(const IMATH_NAMESPACE::V2i&);
         void _writeY4mFrame(const OIIO::ImageBuf&);
-        
+
         struct CmdLine
         {
             std::shared_ptr<ftk::CmdLineValueArg<std::string> > input;
@@ -50,6 +50,7 @@ namespace toucan
             bool outputRaw = false;
 
             std::shared_ptr<ftk::CmdLineValueOption<std::string> > videoCodec;
+            std::shared_ptr<ftk::CmdLineValueOption<float> > scale;
             std::shared_ptr<ftk::CmdLineFlagOption> printStart;
             std::shared_ptr<ftk::CmdLineFlagOption> printDuration;
             std::shared_ptr<ftk::CmdLineFlagOption> printRate;

@@ -43,6 +43,9 @@ else()
         PluginUnix.cpp)
 endif()
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(FFmpeg REQUIRED IMPORTED_TARGET libavcodec libavformat libavutil libswscale)
+
 add_library(toucanRender ${HEADERS} ${HEADERS_PRIVATE} ${SOURCE})
 set(LIBS_PUBLIC
     toucanResource
@@ -51,7 +54,8 @@ set(LIBS_PUBLIC
     OTIO::opentime
     lunasvg::lunasvg
     OpenImageIO::OpenImageIO
-    MINIZIP::minizip)
+    MINIZIP::minizip
+    PkgConfig::FFmpeg)
 if(CMAKE_COMPILER_IS_GNUCXX AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9)
     list(APPEND LIBS_PUBLIC stdc++fs)
 endif()
